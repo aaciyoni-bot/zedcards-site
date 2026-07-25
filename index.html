@@ -508,7 +508,17 @@
 
         SERVICE_FEE_PERCENT: 3,             // small fee shown at checkout (covers MoMo charges)
         WHATSAPP_ORDERS: "260971234567",    // every paid order is copied to this WhatsApp number (business line)
-        WHATSAPP_SUPPORT: "260971234567"    // customer support WhatsApp (support section only — no floating button)
+        WHATSAPP_SUPPORT: "260971234567",   // customer support WhatsApp (support section only — no floating button)
+
+        /* ---- VeriPoints (shared ORIZIS wallet & loyalty) — OPTIONAL PLUGIN ----
+           When VERIPOINTS_ENABLED is false OR the SDK can't load, the site works
+           EXACTLY as before (Mobile Money only) — no wallet UI, no errors.
+           Flip to true only after the central VeriPoints project is configured. */
+        VERIPOINTS_ENABLED: false,
+        VERIPOINTS_SDK: "",                 // e.g. "https://<central>.web.app/sdk/veripoints-sdk.js"
+        VERIPOINTS_CONFIG: null,            // optional central Firebase config override (else SDK default)
+        EARN_PERCENT: 3,                    // loyalty points earned on every paid order (% of subtotal)
+        REDEEM_RATE: 1                      // 1 point = this many ZMW of discount when redeeming
     };
 
     /* ================================================================
@@ -678,6 +688,17 @@
     let selectedProvider = null;
     let activeCat = 'all';
     let activeSearch = '';
+
+    // VeriPoints plugin state (inert unless CONFIG.VERIPOINTS_ENABLED and the SDK loads)
+    const VP = {
+        enabled: !!CONFIG.VERIPOINTS_ENABLED,
+        earnPercent: Number(CONFIG.EARN_PERCENT) || 0,
+        redeemRate: Number(CONFIG.REDEEM_RATE) || 1,
+        ready: false,
+        user: null,
+        balance: 0,      // available points
+        applied: 0       // ZMW worth of points applied to the current checkout
+    };
 
     /* ================================================================
        HELPERS
@@ -914,13 +935,18 @@
         selectedProvider = null;
         document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('selected'));
         $('payError').classList.add('hidden');
+        VP.applied = 0;                       // reset any prior points redemption
         $('payTotal').textContent = fmtK(cartTotals().total);
         $('payStep1').classList.remove('hidden');
         $('payStep2').classList.add('hidden');
         $('payStep3').classList.add('hidden');
         $('checkoutModal').classList.remove('hidden');
         $('checkoutModal').classList.add('flex');
+        vpOnCheckoutOpen();                   // no-op unless VeriPoints is enabled + ready
     }
+
+    // Amount still due by Mobile Money after any VeriPoints points are applied.
+    function dueTotal() { return Math.max(0, cartTotals().total - (VP.enabled ? VP.applied : 0)); }
 
     function closeCheckout() {
         $('checkoutModal').classList.add('hidden');
@@ -973,7 +999,7 @@
     // Asks the backend to deliver the codes for a paid order. The backend
     // re-verifies the payment server-side (tx_ref) before releasing any code.
     // Returns { codes:[...] , simulated?, pending? } — or null on failure.
-    async function deliverCodes(ref, order, tx_ref) {
+    async function deliverCodes(ref, order, tx_ref, vpCaptureId) {
         if (!CONFIG.API_BASE_URL) return null;
         const base = CONFIG.API_BASE_URL.replace(/\/$/, '');
         try {
@@ -983,6 +1009,7 @@
                 body: JSON.stringify({
                     orderRef: ref,
                     tx_ref: tx_ref || null,
+                    vpCaptureId: vpCaptureId || null,
                     email: order.email,
                     phone: order.phone,
                     items: cart.map(i => ({ brandId: i.key.split('-').slice(0,-1).join('-'), brand: i.brand, denom: i.denom, qty: i.qty, price: i.price }))
@@ -1002,38 +1029,67 @@
         const email = $('payEmail').value.trim();
         const err = $('payError');
 
-        if (!selectedProvider) { err.textContent = 'Please choose your mobile network.'; err.classList.remove('hidden'); return; }
-        if (!/^(9|7)\d{8}$/.test(phone)) { err.textContent = 'Enter a valid Zambian number, e.g. 971234567.'; err.classList.remove('hidden'); return; }
+        const t = cartTotals();
+        const pointsApplied = VP.enabled ? VP.applied : 0;   // ZMW worth of points being redeemed
+        const due = Math.max(0, t.total - pointsApplied);    // remainder to charge via Mobile Money
+
+        // Mobile Money details are required only when there is a balance left to pay.
+        if (due > 0) {
+            if (!selectedProvider) { err.textContent = 'Please choose your mobile network.'; err.classList.remove('hidden'); return; }
+            if (!/^(9|7)\d{8}$/.test(phone)) { err.textContent = 'Enter a valid Zambian number, e.g. 971234567.'; err.classList.remove('hidden'); return; }
+        }
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid email so we can send your code.'; err.classList.remove('hidden'); return; }
         err.classList.add('hidden');
 
-        const t = cartTotals();
-        const order = { provider: selectedProvider, phone, email, total: t.total };
-        $('pay2Total').textContent = fmtK(t.total);
-        $('pay2Phone').textContent = '+260 ' + phone;
+        const order = { provider: selectedProvider, phone, email, total: t.total, due, pointsApplied };
+
+        // Redeem VeriPoints first: place a server-verifiable hold on the user's own
+        // wallet. If it fails (e.g. balance changed) we stop before charging anything.
+        let vpHold = null;
+        if (pointsApplied > 0) {
+            vpHold = await vpHoldPoints(pointsApplied, order);
+            if (!vpHold) {
+                err.textContent = 'Could not reserve your VeriPoints. Please try again.';
+                err.classList.remove('hidden');
+                return;
+            }
+        }
+
+        $('pay2Total').textContent = fmtK(due);
+        $('pay2Phone').textContent = due > 0 ? '+260 ' + phone : 'your VeriPoints';
         $('payStep1').classList.add('hidden');
         $('payStep2').classList.remove('hidden');
 
-        const outcome = await tryRealPayment(order);
-
-        if (outcome === 'failed') {
-            $('payStep2').classList.add('hidden');
-            $('payStep1').classList.remove('hidden');
-            err.textContent = 'The payment was not completed. Please check your phone and try again.';
-            err.classList.remove('hidden');
-            return;
+        // Charge the remainder via Mobile Money (skipped entirely if points cover it all).
+        let outcome = true, simulated = false, tx_ref = null;
+        if (due > 0) {
+            outcome = await tryRealPayment({ ...order, total: due });
+            if (outcome === 'failed') {
+                if (vpHold) await vpReleasePoints(vpHold);   // undo the reservation
+                $('payStep2').classList.add('hidden');
+                $('payStep1').classList.remove('hidden');
+                err.textContent = 'The payment was not completed. Please check your phone and try again.';
+                err.classList.remove('hidden');
+                return;
+            }
+            simulated = outcome !== true && !(outcome && outcome.tx_ref);
+            if (simulated) await new Promise(r => setTimeout(r, 4000));
+            tx_ref = (outcome && outcome.tx_ref) || null;
         }
 
-        // Simulated mode keeps a short "check your phone" pause for realism
-        const simulated = outcome !== true && !(outcome && outcome.tx_ref);
-        if (simulated) await new Promise(r => setTimeout(r, 4000));
-
         const ref = 'ZC' + String(Math.floor(100000 + Math.random() * 900000));
-        const tx_ref = (outcome && outcome.tx_ref) || null;
 
-        // Deliver codes (server re-verifies payment before releasing them)
-        const delivery = await deliverCodes(ref, order, tx_ref);
-        renderCodes(ref, order, delivery, simulated);
+        // Capture the reserved points now that the payment is settled (server-verified).
+        let vpCaptureId = null;
+        if (vpHold) vpCaptureId = await vpCapturePoints(vpHold, ref, order);
+
+        // Deliver codes — the server re-verifies the MoMo payment and/or the points
+        // capture before releasing any code.
+        const delivery = await deliverCodes(ref, order, tx_ref, vpCaptureId);
+        renderCodes(ref, order, delivery, simulated && !vpCaptureId);
+
+        // Reward loyalty points on the order subtotal (server-verified credit).
+        vpEarnPoints(ref, order, tx_ref, vpCaptureId);
 
         $('orderRef').textContent = '#' + ref;
         $('payStep2').classList.add('hidden');
@@ -1105,15 +1161,18 @@
         const status = (delivery && delivery.codes && delivery.codes.length) ? 'Auto-delivered ✅'
             : (delivery && delivery.pending) ? 'NEEDS FULFILMENT ⏳'
             : 'DEMO (not real) 🧪';
+        const pay = (o.due > 0)
+            ? `📞 +260${o.phone} (${(o.provider || '').toUpperCase()})` + ((o.pointsApplied > 0) ? ` + ${fmtK(o.pointsApplied)} VeriPoints` : '')
+            : `🪙 Paid fully with VeriPoints`;
         const lines = [
             `🎁 *New ZedCards Order ${'#' + ref}*`,
-            `📞 +260${o.phone} (${o.provider.toUpperCase()})`,
+            pay,
             `✉️ ${o.email}`,
             ``,
             `🛒 *Items:*`,
             ...itemLines,
             ``,
-            `💰 *Paid: ${fmtK(o.total)}*`,
+            `💰 *Total: ${fmtK(o.total)}*` + (o.pointsApplied > 0 ? ` (MoMo ${fmtK(o.due)} + ${fmtK(o.pointsApplied)} pts)` : ''),
             `📦 Delivery: ${status}`
         ];
         const url = 'https://wa.me/' + CONFIG.WHATSAPP_ORDERS + '?text=' + encodeURIComponent(lines.join('\n'));
@@ -1177,6 +1236,163 @@
     if (IS_MOBILE && !IS_INSTALLED) setTimeout(showInstallBanner, 3000);
 
     /* ================================================================
+       VERIPOINTS PLUGIN — shared ORIZIS wallet & loyalty (OPTIONAL)
+       Reuses the central VeriPoints SDK (sdk/veripoints-sdk.js). Every
+       function here is a NO-OP unless CONFIG.VERIPOINTS_ENABLED is true and
+       the SDK loads, so the store falls back to Mobile Money-only cleanly.
+       All balance/points changes are verified server-side — never trusted
+       from the client. Default mode = loyalty points (earn + redeem for
+       discount), which is low-risk; real cash top-up stays off (regulated).
+       ================================================================ */
+    function vpLoadSdk() {
+        return new Promise((resolve, reject) => {
+            if (window.VeriPoints) return resolve();
+            if (!CONFIG.VERIPOINTS_SDK) return reject(new Error('no SDK url'));
+            const s = document.createElement('script');
+            s.src = CONFIG.VERIPOINTS_SDK; s.async = true;
+            s.onload = () => resolve();
+            s.onerror = () => reject(new Error('SDK load failed'));
+            document.head.appendChild(s);
+        });
+    }
+
+    async function vpInit() {
+        if (!VP.enabled) return;                       // OFF → the store is unchanged
+        try {
+            await vpLoadSdk();
+            await window.VeriPoints.init({ siteId: 'zedcards', config: CONFIG.VERIPOINTS_CONFIG || undefined });
+            VP.ready = true;
+            vpInjectHeaderChip();
+            window.VeriPoints.onUser(u => {
+                VP.user = u;
+                if (u) { try { window.VeriPoints.onBalance(b => { VP.balance = b.available || 0; vpRefreshHeader(); vpRefreshCheckoutPanel(); }); } catch (e) {} }
+                else { VP.balance = 0; }
+                vpRefreshHeader();
+                vpRefreshCheckoutPanel();
+            });
+        } catch (e) {
+            console.warn('VeriPoints unavailable — Mobile Money only:', e);
+            VP.enabled = false;                        // graceful fallback, no broken UI
+        }
+    }
+
+    // Header balance / sign-in chip (only exists when the plugin is live)
+    function vpInjectHeaderChip() {
+        if ($('vpChip')) return;
+        const cartBtn = document.querySelector('header button[onclick="toggleCart(true)"]');
+        if (!cartBtn) return;
+        const chip = document.createElement('button');
+        chip.id = 'vpChip';
+        chip.className = 'shrink-0 hidden sm:inline-flex items-center gap-1.5 bg-vio-50 text-vio-700 hover:bg-vio-100 text-xs font-bold px-3 py-2 rounded-full transition';
+        chip.onclick = vpChipClick;
+        cartBtn.parentNode.insertBefore(chip, cartBtn);
+        vpRefreshHeader();
+    }
+    function vpRefreshHeader() {
+        const chip = $('vpChip');
+        if (!chip) return;
+        chip.innerHTML = VP.user
+            ? `<i class="fas fa-coins text-gold-deep"></i> ${VP.balance.toLocaleString()} pts`
+            : `<i class="fas fa-coins text-gold-deep"></i> Sign in`;
+    }
+    async function vpChipClick() {
+        try { if (!VP.user) await window.VeriPoints.signInWithGoogle(); else showToast('VeriPoints balance: ' + VP.balance + ' pts'); }
+        catch (e) { showToast('Sign-in cancelled'); }
+    }
+
+    // Checkout panel: sign-in prompt, or balance + "apply points" toggle
+    function vpOnCheckoutOpen() {
+        if (!VP.enabled || !VP.ready) return;
+        VP.applied = 0; VP.pointsUsed = 0;
+        vpRefreshCheckoutPanel();
+    }
+    function vpRefreshCheckoutPanel() {
+        const step1 = $('payStep1');
+        if (!VP.enabled || !VP.ready || !step1) return;
+        const host = step1.querySelector('.p-5.space-y-4');
+        if (!host) return;
+        let panel = $('vpPanel');
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.id = 'vpPanel';
+            panel.className = 'bg-vio-50 border border-vio-100 rounded-xl p-3';
+            host.insertBefore(panel, host.firstChild);
+        }
+        const total = cartTotals().total;
+        if (!VP.user) {
+            panel.innerHTML = `<button type="button" onclick="vpChipClick()" class="w-full text-sm font-bold text-vio-700 flex items-center justify-center gap-2 py-1">
+                <i class="fab fa-google"></i> Sign in to pay with VeriPoints &amp; earn points</button>`;
+            return;
+        }
+        const maxPoints = Math.min(VP.balance, Math.ceil(total / VP.redeemRate));
+        const maxZmw = Math.min(total, maxPoints * VP.redeemRate);
+        const applied = VP.applied > 0;
+        panel.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-vio-700"><i class="fas fa-coins text-gold-deep mr-1"></i>VeriPoints: ${VP.balance.toLocaleString()} pts</span>
+                ${maxZmw > 0
+                    ? `<button type="button" onclick="vpToggleApply()" class="text-xs font-bold ${applied ? 'text-zam-red' : 'text-vio-700'} hover:underline">${applied ? 'Remove' : 'Use ' + fmtK(maxZmw)}</button>`
+                    : `<span class="text-[11px] text-slate-400">Earn points on this order</span>`}
+            </div>
+            ${applied ? `<p class="text-[11px] text-slate-500 mt-1">− ${fmtK(VP.applied)} paid with ${VP.pointsUsed} points${dueTotal() > 0 ? '; balance by Mobile Money' : '; fully covered'}</p>` : ''}`;
+    }
+    function vpToggleApply() {
+        const total = cartTotals().total;
+        if (VP.applied > 0) { VP.applied = 0; VP.pointsUsed = 0; }
+        else {
+            VP.pointsUsed = Math.min(VP.balance, Math.ceil(total / VP.redeemRate));
+            VP.applied = Math.min(total, VP.pointsUsed * VP.redeemRate);
+        }
+        $('payTotal').textContent = fmtK(dueTotal());
+        vpRefreshCheckoutPanel();
+    }
+
+    // Server-verifiable client hold on the user's own wallet (SDK, per contract §3.1)
+    async function vpHoldPoints(zmw, order) {
+        try {
+            if (!VP.ready || !VP.user || !VP.pointsUsed) return null;
+            const r = await window.VeriPoints.hold({ amount: VP.pointsUsed, reference: 'zedcards:' + (order.email || '') });
+            return r && r.holdId ? { holdId: r.holdId, points: VP.pointsUsed } : null;
+        } catch (e) { console.warn('VeriPoints hold failed:', e); return null; }
+    }
+    // Capture (server-side, serverKey) — turns the hold into a settled redemption
+    async function vpCapturePoints(hold, ref, order) {
+        try {
+            if (!CONFIG.API_BASE_URL || !hold) return null;
+            const res = await fetch(CONFIG.API_BASE_URL.replace(/\/$/, '') + '/api/veripoints/capture', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ holdId: hold.holdId, uid: VP.user && VP.user.uid, orderRef: ref, points: hold.points }),
+                signal: AbortSignal.timeout(20000)
+            });
+            const d = await res.json();
+            return d && d.captureId ? d.captureId : null;
+        } catch (e) { console.warn('VeriPoints capture failed:', e); return null; }
+    }
+    async function vpReleasePoints(hold) {
+        try {
+            if (!CONFIG.API_BASE_URL || !hold) return;
+            await fetch(CONFIG.API_BASE_URL.replace(/\/$/, '') + '/api/veripoints/release', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ holdId: hold.holdId, uid: VP.user && VP.user.uid }),
+                signal: AbortSignal.timeout(15000)
+            });
+        } catch (e) { /* best-effort; central release/expiry reconciles */ }
+    }
+    // Loyalty earn — server verifies the payment before crediting points
+    async function vpEarnPoints(ref, order, tx_ref, vpCaptureId) {
+        try {
+            if (!VP.enabled || !VP.ready || !VP.user || !CONFIG.API_BASE_URL || VP.earnPercent <= 0) return;
+            const res = await fetch(CONFIG.API_BASE_URL.replace(/\/$/, '') + '/api/veripoints/earn', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ uid: VP.user.uid, subtotal: cartTotals().subtotal, orderRef: ref, tx_ref: tx_ref || null, vpCaptureId: vpCaptureId || null }),
+                signal: AbortSignal.timeout(20000)
+            });
+            const d = await res.json();
+            if (d && d.earned > 0) showToast('🎉 You earned ' + d.earned + ' VeriPoints!');
+        } catch (e) { /* earning is non-blocking */ }
+    }
+
+    /* ================================================================
        INIT
        ================================================================ */
     (function initSupportLinks() {
@@ -1186,6 +1402,7 @@
 
     renderCart();
     renderCatalog();
+    vpInit();   // activates the VeriPoints plugin only if enabled + SDK available
     </script>
 </body>
 </html>
