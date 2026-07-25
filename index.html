@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ZedCards — Gift Cards & Subscriptions, Pay with Mobile Money 🇿🇲</title>
+    <meta name="description" content="ZedCards — Zambia's instant gift-card & subscription store: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha. Code delivered instantly.">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ZedCards">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // "vio" = the ZedCards vibrant purple/violet brand ramp
+                        vio: {
+                            50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa',
+                            500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95'
+                        },
+                        gold: { DEFAULT: '#e3ae4e', soft: '#f4d58d', deep: '#b8862f' },
+                        zam: { green: '#198a00', red: '#de2010', black: '#000000', orange: '#ef7d00' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Playfair Display"', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .spinner { border: 3px solid #ede9fe; border-top-color: #7c3aed; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .pulse-ring { animation: pulseRing 1.5s ease-out infinite; }
+        @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(25,138,0,0.4); } 100% { box-shadow: 0 0 0 16px rgba(25,138,0,0); } }
+    </style>
+</head>
+<body class="bg-vio-50 font-sans text-slate-800 min-h-screen flex flex-col">
+
+    <!-- ═══ ORIZIS INTRO · standalone module ═══ -->
+    <div id="orizis-intro">
+      <style>
+        #orizis-intro { position: fixed; inset: 0; z-index: 999999; background: #0d0510; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.45s ease; }
+        #orizis-intro.oi-out { opacity: 0; pointer-events: none; }
+        #orizis-intro .oi-mark { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; font-size: clamp(38px, 9vw, 72px); letter-spacing: 0.22em; margin-right: -0.22em; background: linear-gradient(100deg, #4c1d95 0%, #ede9fe 28%, #e3ae4e 50%, #ede9fe 72%, #4c1d95 100%); background-size: 240% auto; -webkit-background-clip: text; background-clip: text; color: transparent; opacity: 0; animation: oiShine 1.9s ease forwards, oiRise 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
+        #orizis-intro .oi-sub { font-family: 'Inter', Arial, sans-serif; font-weight: 700; font-size: clamp(10px, 2.2vw, 14px); letter-spacing: 0.55em; margin-right: -0.55em; color: #8b6fae; margin-top: 14px; opacity: 0; animation: oiFade 0.7s ease 0.55s forwards; }
+        #orizis-intro .oi-line { width: 0; height: 1px; background: linear-gradient(90deg, transparent, #e3ae4e, transparent); margin-top: 22px; animation: oiLine 1.1s ease 0.35s forwards; }
+        #orizis-intro .oi-load { display: flex; align-items: center; gap: 8px; margin-top: 26px; color: #8b6fae; font-family: 'Inter', Arial, sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.2em; opacity: 0; animation: oiFade 0.7s ease 0.9s forwards; }
+        #orizis-intro .oi-spin { width: 14px; height: 14px; border: 2px solid rgba(227,174,78,0.25); border-top-color: #e3ae4e; border-radius: 50%; animation: oiSpin 0.9s linear infinite; }
+        @keyframes oiSpin { to { transform: rotate(360deg); } }
+        @keyframes oiShine { from { background-position: 200% center; } to { background-position: -40% center; } }
+        @keyframes oiRise { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
+        @keyframes oiFade { to { opacity: 1; } }
+        @keyframes oiLine { to { width: min(320px, 60vw); } }
+      </style>
+      <div class="oi-mark">ORIZIS</div>
+      <div class="oi-line"></div>
+      <div class="oi-sub">TECHNOLOGY</div>
+      <div class="oi-load"><div class="oi-spin"></div>LOADING</div>
+      <script>
+        (function () {
+          var el = document.getElementById('orizis-intro');
+          var done = false;
+          function out() { if (done) return; done = true; el.classList.add('oi-out'); setTimeout(function () { el.remove(); }, 500); }
+          el.addEventListener('click', out);
+          el.addEventListener('touchstart', out, { passive: true });
+          setTimeout(out, 1300);
+        })();
+      </script>
+    </div>
+    <!-- ═══ /ORIZIS INTRO ═══ -->
+
+    <!-- ======================= TOP BAR ======================= -->
+    <div class="bg-vio-900 text-white text-xs sm:text-sm py-1.5 px-4 text-center">
+        <i class="fas fa-bolt mr-1 text-gold-soft"></i> Instant code delivery &nbsp;•&nbsp; Pay with <b>MTN MoMo</b>, <b>Airtel Money</b> &amp; <b>Zamtel Kwacha</b>
+    </div>
+
+    <!-- ======================= HEADER ======================= -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 sm:gap-6">
+            <a href="#" onclick="goHome(); return false;" class="flex items-center gap-2 shrink-0">
+                <div class="bg-gradient-to-br from-vio-500 to-vio-700 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-md">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-display font-extrabold tracking-tight leading-none">Zed<span class="text-vio-600">Cards</span></h1>
+                    <p class="text-[10px] text-slate-400 leading-none mt-0.5">Gift cards. Pay Local.</p>
+                </div>
+            </a>
+
+            <div class="flex-1 relative">
+                <input id="searchInput" type="text" placeholder="Search Netflix, DSTV, Free Fire..."
+                    class="w-full border-2 border-vio-500 rounded-full py-2.5 pl-5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-vio-100"
+                    oninput="doSearch()" onkeydown="if(event.key==='Enter') doSearch()">
+                <button onclick="doSearch()" class="absolute right-1 top-1 bottom-1 bg-vio-600 hover:bg-vio-700 text-white rounded-full w-10 flex items-center justify-center transition">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <button onclick="toggleCart(true)" class="relative shrink-0 text-slate-600 hover:text-vio-600 transition p-2">
+                <i class="fas fa-cart-shopping text-2xl"></i>
+                <span id="cartCount" class="absolute -top-1 -right-1 bg-zam-red text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+            </button>
+        </div>
+
+        <!-- Categories -->
+        <nav class="max-w-7xl mx-auto px-4 pb-2.5 flex gap-2 items-center overflow-x-auto no-scrollbar">
+            <button onclick="filterCategory('all')" data-cat="all" class="cat-chip cat-active shrink-0"><i class="fas fa-border-all mr-1.5"></i>All</button>
+            <button onclick="filterCategory('streaming')" data-cat="streaming" class="cat-chip shrink-0"><i class="fas fa-tv mr-1.5"></i>Streaming &amp; TV</button>
+            <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip shrink-0"><i class="fas fa-gamepad mr-1.5"></i>Gaming Credit</button>
+            <button onclick="filterCategory('appstore')" data-cat="appstore" class="cat-chip shrink-0"><i class="fas fa-mobile-screen mr-1.5"></i>App Stores</button>
+            <button onclick="filterCategory('music')" data-cat="music" class="cat-chip shrink-0"><i class="fas fa-music mr-1.5"></i>Music</button>
+            <button onclick="filterCategory('giftcard')" data-cat="giftcard" class="cat-chip shrink-0"><i class="fas fa-gift mr-1.5"></i>Gift Cards</button>
+        </nav>
+    </header>
+
+    <!-- ======================= HERO ======================= -->
+    <section id="heroSection" class="relative overflow-hidden bg-vio-900 text-white">
+        <div class="absolute inset-0 bg-gradient-to-br from-vio-700 via-vio-900 to-[#1e0b3a]"></div>
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-vio-500/30 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-20 w-96 h-96 bg-gold/20 rounded-full blur-3xl"></div>
+        <div class="relative max-w-7xl mx-auto px-4 py-12 sm:py-16 grid sm:grid-cols-2 gap-8 items-center">
+            <div>
+                <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur text-vio-100 text-xs font-bold px-3 py-1.5 rounded-full border border-white/10"><i class="fas fa-bolt text-gold-soft"></i> Instant digital delivery — no shipping, no wait</span>
+                <h2 class="mt-4 text-3xl sm:text-5xl font-display font-extrabold leading-tight">Top up your world,<br>pay in <span class="bg-gradient-to-r from-gold-soft to-white bg-clip-text text-transparent">Kwacha</span> 🇿🇲</h2>
+                <p class="mt-3 text-vio-100/90 text-sm sm:text-base max-w-md">Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG and more — buy the code in seconds with the mobile money you already use. No credit card. Ever.</p>
+                <div class="mt-5 flex flex-wrap gap-3 text-sm font-semibold">
+                    <span class="bg-white/10 backdrop-blur px-4 py-2 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-yellow-300"></i> MTN MoMo</span>
+                    <span class="bg-white/10 backdrop-blur px-4 py-2 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-red-400"></i> Airtel Money</span>
+                    <span class="bg-white/10 backdrop-blur px-4 py-2 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-green-400"></i> Zamtel Kwacha</span>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <button onclick="filterCategory('streaming')" class="bg-vio-600 hover:bg-vio-700 text-white font-bold px-6 py-3 rounded-full transition shadow-lg shadow-vio-900/40"><i class="fas fa-gift mr-1"></i> Browse cards</button>
+                    <a href="#how-it-works" class="inline-flex items-center text-sm font-bold text-white/90 hover:text-white underline underline-offset-4 px-2">How it works ↓</a>
+                </div>
+            </div>
+            <div class="hidden sm:grid grid-cols-3 gap-3 text-center text-sm">
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur"><div class="text-3xl text-gold-soft"><i class="fas fa-tv"></i></div><p class="mt-2 font-semibold text-vio-50">Streaming &amp; TV</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur"><div class="text-3xl text-green-400"><i class="fas fa-mobile-screen-button"></i></div><p class="mt-2 font-semibold text-vio-50">Mobile Money</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur"><div class="text-3xl text-vio-200"><i class="fas fa-bolt"></i></div><p class="mt-2 font-semibold text-vio-50">Instant code</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur col-span-3"><p class="font-semibold text-vio-50"><i class="fas fa-shield-halved text-gold-soft mr-1"></i> 100% genuine codes from authorized distributors</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= MAIN ======================= -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
+        <div class="flex items-center justify-between mb-4">
+            <h3 id="resultsTitle" class="text-xl font-bold">Popular in Zambia</h3>
+            <span id="resultsCount" class="text-sm text-slate-400"></span>
+        </div>
+
+        <div id="emptyBox" class="hidden text-center py-16 text-slate-400">
+            <i class="fas fa-magnifying-glass text-4xl mb-3"></i>
+            <p class="text-sm">No cards match your search. Try "Netflix", "DSTV" or "gaming".</p>
+        </div>
+
+        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"></div>
+    </main>
+
+    <!-- ======================= HOW IT WORKS ======================= -->
+    <section id="how-it-works" class="bg-white border-t border-vio-100">
+        <div class="max-w-7xl mx-auto px-4 py-14">
+            <h3 class="text-2xl sm:text-3xl font-display font-extrabold text-center">How ZedCards Works</h3>
+            <p class="text-center text-slate-500 mt-2 max-w-xl mx-auto">From your phone to your screen in seconds — no credit card, no shipping.</p>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10">
+                <div class="text-center p-5 rounded-2xl bg-vio-50">
+                    <div class="text-4xl text-vio-500"><i class="fas fa-gift"></i></div>
+                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 1</div>
+                    <h4 class="font-bold mt-1">Pick your card</h4>
+                    <p class="text-sm text-slate-500 mt-1">Choose a brand and the amount you want — every price is in Kwacha, all-in.</p>
+                </div>
+                <div class="text-center p-5 rounded-2xl bg-vio-50">
+                    <div class="text-4xl text-vio-500"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 2</div>
+                    <h4 class="font-bold mt-1">Pay with Mobile Money</h4>
+                    <p class="text-sm text-slate-500 mt-1">Enter your MTN, Airtel or Zamtel number and approve the prompt with your PIN.</p>
+                </div>
+                <div class="text-center p-5 rounded-2xl bg-vio-50">
+                    <div class="text-4xl text-vio-500"><i class="fas fa-bolt"></i></div>
+                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 3</div>
+                    <h4 class="font-bold mt-1">Get your code instantly</h4>
+                    <p class="text-sm text-slate-500 mt-1">Your genuine code appears on screen the moment your payment is confirmed.</p>
+                </div>
+                <div class="text-center p-5 rounded-2xl bg-vio-50">
+                    <div class="text-4xl text-vio-500"><i class="fas fa-circle-check"></i></div>
+                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 4</div>
+                    <h4 class="font-bold mt-1">Redeem &amp; enjoy</h4>
+                    <p class="text-sm text-slate-500 mt-1">Follow the simple redeem steps we send with every code — by email and WhatsApp too.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= ABOUT ======================= -->
+    <section id="about" class="bg-vio-50 border-t border-vio-100">
+        <div class="max-w-7xl mx-auto px-4 py-14 grid sm:grid-cols-2 gap-10 items-center">
+            <div>
+                <h3 class="text-2xl sm:text-3xl font-display font-extrabold">About Zed<span class="text-vio-600">Cards</span></h3>
+                <p class="mt-4 text-slate-600 leading-relaxed">Paying for Netflix, DSTV, a game top-up or an app-store card in Zambia usually means hunting for a voucher shop or a card you can't buy with a local wallet.</p>
+                <p class="mt-3 text-slate-600 leading-relaxed"><b>ZedCards fixes that.</b> We sell 100% genuine gift cards and subscription codes sourced only from authorized distributors, priced in Kwacha and paid for with the mobile money you already use every day. You choose a card, approve a prompt on your phone, and your code appears in seconds.</p>
+                <p class="mt-3 text-slate-600 leading-relaxed">Genuine codes. Honest prices. Proudly built for Zambia. 🇿🇲</p>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
+                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-shield-halved"></i></div>
+                    <div><h4 class="font-bold">Genuine codes only</h4><p class="text-sm text-slate-500">Every code comes from an authorized distributor — never grey-market. Guaranteed to work.</p></div>
+                </div>
+                <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
+                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-lock"></i></div>
+                    <div><h4 class="font-bold">Safe payments</h4><p class="text-sm text-slate-500">You approve every payment yourself with your Mobile Money PIN. We never see your PIN.</p></div>
+                </div>
+                <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
+                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-headset"></i></div>
+                    <div><h4 class="font-bold">Real human support</h4><p class="text-sm text-slate-500">Code didn't arrive? Our Zambian team sorts it on WhatsApp, 7 days a week.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= FAQ ======================= -->
+    <section id="faq" class="bg-white border-t border-vio-100">
+        <div class="max-w-3xl mx-auto px-4 py-14">
+            <h3 class="text-2xl sm:text-3xl font-display font-extrabold text-center">Frequently Asked Questions</h3>
+            <div class="mt-8 space-y-3">
+                <details class="faq-item">
+                    <summary>Are the codes genuine?</summary>
+                    <p>Yes. Every code is 100% genuine and sourced only from authorized distributors and official brand partners — never from the grey market. If a code ever fails, we replace it or refund you in full.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How fast do I get my code?</summary>
+                    <p>Instantly. The moment your Mobile Money payment is confirmed, your code appears on the screen. We also send it to your email and WhatsApp so you never lose it.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Do I need a credit card or bank account?</summary>
+                    <p>No! All you need is a Mobile Money wallet — MTN MoMo, Airtel Money or Zamtel Kwacha — with enough balance for your card.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Which brands can I buy?</summary>
+                    <p>Streaming &amp; TV (Netflix, DSTV, GOtv, Showmax), music (Spotify, Apple Music), app stores (Google Play, Apple/iTunes), gaming credit (Free Fire, PUBG Mobile, Mobile Legends, Roblox) and general gift cards. We add more brands as the pilot grows.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>How do I redeem my code?</summary>
+                    <p>Every code comes with simple step-by-step redeem instructions for that exact brand — shown on screen and sent to your email and WhatsApp. It usually takes under a minute.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What if my code doesn't work?</summary>
+                    <p>Message us on WhatsApp with your order number. If a genuine code fails to redeem, we replace it or refund you in full to your mobile money wallet.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= SUPPORT BANNER ======================= -->
+    <section id="support" class="bg-vio-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 py-10 text-center">
+            <h3 class="text-2xl font-display font-extrabold">Need help? <i class="fas fa-comments text-gold-soft ml-1"></i></h3>
+            <p class="mt-2 text-vio-100/90">Orders, codes, redeeming or refunds — chat with our team on WhatsApp, 7 days a week, 08:00–20:00.</p>
+            <a id="waSupportBtn" href="#" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 mt-5 bg-[#25D366] text-white font-extrabold px-8 py-3.5 rounded-full hover:brightness-110 transition">
+                <i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- ======================= FOOTER ======================= -->
+    <footer class="bg-[#160a2e] text-vio-100/70 mt-10">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid sm:grid-cols-3 gap-8 text-sm">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="bg-gradient-to-br from-vio-500 to-vio-700 text-white w-8 h-8 rounded-lg flex items-center justify-center"><i class="fas fa-gift"></i></div>
+                    <span class="font-display font-extrabold text-white text-lg">Zed<span class="text-vio-400">Cards</span></span>
+                </div>
+                <p class="text-vio-100/60">Zambia's instant store for genuine gift cards &amp; subscription codes — streaming, gaming, app stores and music. Pay with the mobile money you already have.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-3">Quick links</h4>
+                <ul class="space-y-2 text-vio-100/60">
+                    <li><a href="#how-it-works" class="hover:text-white transition">How it works</a></li>
+                    <li><a href="#about" class="hover:text-white transition">About ZedCards</a></li>
+                    <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
+                    <li><a href="#support" class="hover:text-white transition">Customer support</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white mb-3">We accept</h4>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-yellow-400 text-black font-bold px-3 py-1.5 rounded-lg text-xs">MTN MoMo</span>
+                    <span class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Airtel Money</span>
+                    <span class="bg-green-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Zamtel Kwacha</span>
+                </div>
+                <p class="mt-4 text-vio-100/50 text-xs">Prices shown in Zambian Kwacha (ZMW), all-in. Codes from authorized distributors only.</p>
+            </div>
+        </div>
+        <div class="border-t border-white/10 text-center py-4 text-xs text-vio-100/50">© 2026 ZedCards Zambia · an ORIZIS TECHNOLOGY brand. All rights reserved.</div>
+    </footer>
+
+    <!-- ======================= CART DRAWER ======================= -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="toggleCart(false)"></div>
+    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="font-bold text-lg"><i class="fas fa-cart-shopping text-vio-600 mr-2"></i>Your Cart</h3>
+            <button onclick="toggleCart(false)" class="text-slate-400 hover:text-slate-700 p-2"><i class="fas fa-xmark text-xl"></i></button>
+        </div>
+        <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+        <div class="border-t p-4 space-y-3 bg-vio-50">
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Subtotal</span><span id="cartSubtotal" class="font-semibold">K0.00</span></div>
+            <div class="flex justify-between text-sm"><span class="text-slate-500">Service fee</span><span id="cartFees" class="font-semibold">K0.00</span></div>
+            <div class="flex justify-between text-lg font-extrabold"><span>Total</span><span id="cartTotal" class="text-vio-700">K0.00</span></div>
+            <button id="checkoutBtn" onclick="openCheckout()" class="w-full bg-zam-green hover:bg-green-800 text-white font-bold py-3.5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fas fa-mobile-screen mr-2"></i>Pay with Mobile Money
+            </button>
+        </div>
+    </aside>
+
+    <!-- ======================= CHECKOUT MODAL ======================= -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-[60] hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden fade-in max-h-[92vh] overflow-y-auto">
+
+            <!-- Step 1: payment details -->
+            <div id="payStep1">
+                <div class="bg-zam-green text-white p-5">
+                    <h3 class="font-bold text-lg"><i class="fas fa-mobile-screen mr-2"></i>Mobile Money Checkout</h3>
+                    <p class="text-emerald-100 text-sm mt-1">Total to pay: <b id="payTotal" class="text-white">K0.00</b></p>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 block mb-2">Choose your network</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="selectProvider('mtn', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                                <div class="bg-yellow-400 text-black font-extrabold text-xs rounded-md py-1 mb-1">MTN</div>
+                                <span class="text-[11px] text-slate-500">MoMo</span>
+                            </button>
+                            <button onclick="selectProvider('airtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                                <div class="bg-red-600 text-white font-extrabold text-xs rounded-md py-1 mb-1">Airtel</div>
+                                <span class="text-[11px] text-slate-500">Money</span>
+                            </button>
+                            <button onclick="selectProvider('zamtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                                <div class="bg-green-700 text-white font-extrabold text-xs rounded-md py-1 mb-1">Zamtel</div>
+                                <span class="text-[11px] text-slate-500">Kwacha</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 block mb-2">Mobile money number</label>
+                        <div class="flex">
+                            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3 flex items-center text-sm font-semibold text-slate-500">🇿🇲 +260</span>
+                            <input id="payPhone" type="tel" maxlength="9" placeholder="97 1234567"
+                                class="flex-1 border border-slate-300 rounded-r-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-zam-green"
+                                oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-600 block mb-2">Email address <span class="text-slate-400 font-normal">(where we send your code &amp; receipt)</span></label>
+                        <input id="payEmail" type="email" placeholder="you@example.com" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-zam-green">
+                    </div>
+                    <p class="text-[11px] text-slate-400 flex items-start gap-1.5"><i class="fas fa-bolt text-vio-500 mt-0.5"></i> Your code is delivered digitally — no shipping address needed.</p>
+                    <p id="payError" class="text-zam-red text-sm font-semibold hidden"></p>
+                    <button onclick="submitPayment()" class="w-full bg-zam-green hover:bg-green-800 text-white font-bold py-3.5 rounded-xl transition">
+                        Send payment request <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                    <button onclick="closeCheckout()" class="w-full text-slate-400 text-sm py-1 hover:text-slate-600">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Step 2: waiting for approval -->
+            <div id="payStep2" class="hidden p-8 text-center">
+                <div class="w-20 h-20 mx-auto rounded-full bg-zam-green/10 flex items-center justify-center pulse-ring">
+                    <i class="fas fa-mobile-screen-button text-zam-green text-3xl"></i>
+                </div>
+                <h3 class="font-bold text-lg mt-5">Check your phone 📲</h3>
+                <p class="text-slate-500 text-sm mt-2">We sent a payment request of <b id="pay2Total" class="text-zam-green">K0.00</b> to <b id="pay2Phone"></b>.<br>Enter your Mobile Money PIN to approve.</p>
+                <p class="text-xs text-slate-400 mt-4"><span class="spinner inline-block !w-4 !h-4 !border-2 align-middle mr-1"></span> Waiting for confirmation...</p>
+            </div>
+
+            <!-- Step 3: success + code delivery -->
+            <div id="payStep3" class="hidden p-6 text-center">
+                <div class="w-16 h-16 mx-auto rounded-full bg-zam-green flex items-center justify-center">
+                    <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+                <h3 class="font-bold text-xl mt-4 text-zam-green">Payment received! 🎉</h3>
+                <p class="text-slate-500 text-sm mt-1">Order <b id="orderRef"></b> is confirmed.</p>
+                <div id="codesBox" class="mt-4 text-left space-y-3"></div>
+                <p id="codesNote" class="text-xs text-slate-400 mt-4"></p>
+                <button onclick="finishOrder()" class="mt-5 w-full bg-vio-600 hover:bg-vio-700 text-white font-bold py-3 rounded-xl transition">Done — keep shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= PRODUCT MODAL ======================= -->
+    <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" onclick="if(event.target===this) closeProduct()">
+        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden fade-in max-h-[92vh] overflow-y-auto">
+            <div id="pmCover" class="relative h-32 flex items-center justify-center text-white">
+                <i id="pmIcon" class="fas fa-gift text-5xl drop-shadow"></i>
+                <button onclick="closeProduct()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+                <span id="pmBadge" class="absolute bottom-3 left-4 bg-black/25 backdrop-blur text-white text-[11px] font-bold px-2.5 py-1 rounded-full"></span>
+            </div>
+            <div class="p-5">
+                <h3 id="pmTitle" class="font-bold text-lg leading-snug"></h3>
+                <p id="pmDesc" class="text-sm text-slate-500 mt-1"></p>
+
+                <label class="text-sm font-semibold text-slate-600 block mt-4 mb-2">Choose amount</label>
+                <div id="pmDenoms" class="grid grid-cols-2 gap-2"></div>
+
+                <div class="mt-4 flex items-center gap-3">
+                    <div class="flex items-center border rounded-xl">
+                        <button onclick="pmQty(-1)" class="px-3 py-2 text-slate-500 hover:text-vio-600">−</button>
+                        <span id="pmQtyVal" class="px-2 font-bold text-sm">1</span>
+                        <button onclick="pmQty(1)" class="px-3 py-2 text-slate-500 hover:text-vio-600">+</button>
+                    </div>
+                    <button id="pmAddBtn" onclick="pmAdd()" class="flex-1 bg-vio-600 hover:bg-vio-700 text-white font-bold py-3 rounded-xl transition disabled:opacity-40" disabled>
+                        <i class="fas fa-cart-plus mr-1"></i> <span id="pmAddLabel">Select an amount</span>
+                    </button>
+                </div>
+
+                <details class="mt-4 text-sm">
+                    <summary class="font-semibold text-vio-700 cursor-pointer">How to redeem</summary>
+                    <p id="pmRedeem" class="text-slate-500 mt-2 leading-relaxed"></p>
+                </details>
+                <p class="text-xs text-slate-400 mt-4"><i class="fas fa-bolt mr-1"></i> Delivered instantly after payment · <i class="fas fa-shield-halved mr-1"></i> Genuine code guaranteed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= TOAST ======================= -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-vio-900 text-white text-sm font-semibold px-5 py-3 rounded-full shadow-xl z-[70] hidden"></div>
+
+    <!-- ======================= DOWNLOAD APP banner (mobile) ======================= -->
+    <div id="installBanner" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-vio-900 text-white px-4 py-3 flex items-center gap-3 shadow-2xl">
+        <img src="icon-192.png" alt="" class="w-10 h-10 rounded-xl shrink-0">
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-sm leading-tight">Get the ZedCards App 🇿🇲</p>
+            <p class="text-[11px] text-vio-100/80 leading-tight">Faster top-ups, right from your home screen</p>
+        </div>
+        <button onclick="installApp()" class="shrink-0 bg-vio-600 hover:bg-vio-500 text-white text-xs font-extrabold px-4 py-2.5 rounded-full transition">
+            <i class="fas fa-download mr-1"></i>DOWNLOAD APP
+        </button>
+        <button onclick="dismissInstall()" class="shrink-0 text-vio-100/70 hover:text-white p-1" aria-label="Dismiss"><i class="fas fa-xmark"></i></button>
+    </div>
+
+    <!-- ======================= INSTALL GUIDE overlays (with pointing arrows) ======================= -->
+    <div id="installGuide" class="hidden fixed inset-0 z-[80] bg-black/80" onclick="closeInstallGuide()">
+        <div id="guideIos" class="hidden absolute inset-x-0 bottom-0 pb-20 px-6 text-white text-center">
+            <div class="bg-white text-slate-800 rounded-2xl p-5 max-w-sm mx-auto text-left" onclick="event.stopPropagation()">
+                <h4 class="font-extrabold text-lg">📲 Install on iPhone</h4>
+                <ol class="mt-3 space-y-2.5 text-sm">
+                    <li><b>1.</b> Tap the <b>Share</b> button <span class="inline-block border border-slate-300 rounded-md px-1.5 py-0.5 text-blue-500"><i class="fas fa-arrow-up-from-bracket"></i></span> at the <b>bottom of Safari</b> (the arrow below points at it)</li>
+                    <li><b>2.</b> Scroll down and tap <b>"Add to Home Screen"</b> <span class="inline-block border border-slate-300 rounded-md px-1.5 py-0.5">➕</span></li>
+                    <li><b>3.</b> Tap <b>Add</b> — ZedCards appears on your home screen like an app!</li>
+                </ol>
+                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-vio-100 hover:bg-vio-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
+            </div>
+            <div class="guide-arrow-down mx-auto mt-4 text-5xl">⬇️</div>
+        </div>
+        <div id="guideAndroid" class="hidden absolute inset-x-0 top-0 pt-16 px-6 text-white">
+            <div class="guide-arrow-up ml-auto mr-3 text-5xl w-fit">⬆️</div>
+            <div class="bg-white text-slate-800 rounded-2xl p-5 max-w-sm mx-auto mt-4" onclick="event.stopPropagation()">
+                <h4 class="font-extrabold text-lg">📲 Install on Android</h4>
+                <ol class="mt-3 space-y-2.5 text-sm">
+                    <li><b>1.</b> Tap the <b>⋮ menu</b> at the <b>top-right of Chrome</b> (the arrow above points at it)</li>
+                    <li><b>2.</b> Tap <b>"Add to Home screen"</b> or <b>"Install app"</b></li>
+                    <li><b>3.</b> Confirm — ZedCards appears on your home screen like an app!</li>
+                </ol>
+                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-vio-100 hover:bg-vio-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        .cat-chip { flex-shrink: 0; display:inline-flex; align-items:center; background: #ede9fe; border-radius: 9999px; padding: 7px 15px; font-size: 12.5px; font-weight: 700; color: #6d28d9; transition: all .2s; }
+        .cat-chip:hover { background: #ddd6fe; color: #5b21b6; }
+        .cat-chip.cat-active { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; box-shadow: 0 6px 16px -5px rgba(124,58,237,.55); }
+        .denom-btn { border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px 8px; text-align: center; transition: all .15s; cursor: pointer; }
+        .denom-btn:hover { border-color: #a78bfa; }
+        .denom-btn.selected { border-color: #7c3aed; background: #f5f3ff; }
+        .provider-btn.selected { border-color: #7c3aed !important; background: #f5f3ff; }
+        .faq-item { background: #f5f3ff; border-radius: 16px; padding: 16px 20px; }
+        .faq-item summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after { content: '+'; font-size: 20px; color: #7c3aed; font-weight: 800; }
+        .faq-item[open] summary::after { content: '−'; }
+        .faq-item p { margin-top: 10px; color: #64748b; font-size: 14px; line-height: 1.6; }
+        .guide-arrow-down { animation: bounceDown 1s ease-in-out infinite; }
+        .guide-arrow-up { animation: bounceUp 1s ease-in-out infinite; }
+        @keyframes bounceDown { 0%,100% { transform: translateY(0); } 50% { transform: translateY(14px); } }
+        @keyframes bounceUp { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        .code-copy { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.08em; }
+    </style>
+
+    <script>
+    /* ================================================================
+       ZEDCARDS CONFIG — edit these values
+       ================================================================ */
+    const CONFIG = {
+        // Your backend API (the Vercel server.js: pawaPay payments + code delivery).
+        // Leave empty ("") to run fully in DEMO mode (simulated payment + demo codes).
+        API_BASE_URL: "https://zedcards-site.vercel.app",
+
+        SERVICE_FEE_PERCENT: 3,             // small fee shown at checkout (covers MoMo charges)
+        WHATSAPP_ORDERS: "260971234567",    // every paid order is copied to this WhatsApp number (business line)
+        WHATSAPP_SUPPORT: "260971234567"    // customer support WhatsApp (support section only — no floating button)
+    };
+
+    /* ================================================================
+       CATALOG — Zambia pilot. Genuine gift cards & subscription codes.
+       Prices are set DIRECTLY in Kwacha (bought wholesale from an
+       authorized distributor, sold with margin). denom.reloadly is the
+       optional Reloadly productId used for automatic delivery later.
+       ================================================================ */
+    const BRANDS = [
+        // ---------- STREAMING & TV ----------
+        { id:'netflix', name:'Netflix', cat:'streaming', icon:'fa-clapperboard', grad:'linear-gradient(135deg,#b1060f,#e50914)',
+          tag:'Streaming', desc:'Watch films & series on any device. Load your Netflix account with a gift code.',
+          redeem:'Go to netflix.com/redeem, sign in, enter the code and it is added to your account balance — Netflix bills your next months from it automatically.',
+          denoms:[ {label:'K150 Gift Card', price:165}, {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580} ] },
+
+        { id:'dstv', name:'DSTV', cat:'streaming', icon:'fa-satellite-dish', grad:'linear-gradient(135deg,#00539f,#0a7cc1)',
+          tag:'TV · MultiChoice', desc:'Pay your MultiChoice DSTV subscription for the month. Pick your package.',
+          redeem:'Send us your DSTV smartcard/IUC number by WhatsApp with your order; we credit the package to your account. Or dial the MultiChoice self-service and top up with the code.',
+          denoms:[ {label:'Access', price:270}, {label:'Family', price:440}, {label:'Compact', price:730}, {label:'Compact Plus', price:1160}, {label:'Premium', price:1750} ] },
+
+        { id:'gotv', name:'GOtv', cat:'streaming', icon:'fa-tv', grad:'linear-gradient(135deg,#1a8f2a,#0e6b1c)',
+          tag:'TV · MultiChoice', desc:'Renew your GOtv package for the month with a top-up code.',
+          redeem:'Send your GOtv IUC number by WhatsApp with your order and we credit the package. You can also renew via the GOtv app using the code.',
+          denoms:[ {label:'Smallie', price:95}, {label:'Jinja', price:185}, {label:'Jolli', price:275}, {label:'Max', price:410}, {label:'Supa', price:545} ] },
+
+        { id:'showmax', name:'Showmax', cat:'streaming', icon:'fa-film', grad:'linear-gradient(135deg,#e21e5a,#8a1140)',
+          tag:'Streaming', desc:'Series, movies and live sport. One month of Showmax.',
+          redeem:'Go to showmax.com, sign in, open Account → Vouchers and enter the code to activate your month.',
+          denoms:[ {label:'1 Month', price:120}, {label:'3 Months', price:330} ] },
+
+        // ---------- MUSIC ----------
+        { id:'spotify', name:'Spotify', cat:'music', icon:'fa-spotify', fab:true, grad:'linear-gradient(135deg,#1db954,#0e7a34)',
+          tag:'Music', desc:'Ad-free music & podcasts. Load Spotify Premium with a gift code.',
+          redeem:'Go to spotify.com/redeem, sign in, enter the PIN and your Premium time is added to your account.',
+          denoms:[ {label:'1 Month Premium', price:120}, {label:'3 Months Premium', price:330} ] },
+
+        { id:'applemusic', name:'Apple Music', cat:'music', icon:'fa-music', grad:'linear-gradient(135deg,#fa233b,#fb5c74)',
+          tag:'Music', desc:'Redeemable Apple gift card — works for Apple Music, iCloud+ and the App Store.',
+          redeem:'On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code. Use it for Apple Music, iCloud+ or any app.',
+          denoms:[ {label:'K150 Apple Card', price:165}, {label:'K300 Apple Card', price:320} ] },
+
+        // ---------- APP STORES ----------
+        { id:'googleplay', name:'Google Play', cat:'appstore', icon:'fa-google-play', fab:true, grad:'linear-gradient(135deg,#0f9d58,#4285f4)',
+          tag:'App Store', desc:'Buy apps, games, in-app coins, books & more on Android.',
+          redeem:'Open the Google Play Store → tap your profile → Payments & subscriptions → Redeem code, and enter it. The balance is added to your Google account.',
+          denoms:[ {label:'K150 Card', price:165}, {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
+
+        { id:'appstore', name:'Apple / iTunes', cat:'appstore', icon:'fa-apple', fab:true, grad:'linear-gradient(135deg,#333,#000)',
+          tag:'App Store', desc:'Apple gift card for the App Store, iTunes, iCloud+ and Apple Music.',
+          redeem:'On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code to top up your Apple ID balance.',
+          denoms:[ {label:'K150 Card', price:165}, {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
+
+        // ---------- GAMING CREDIT ----------
+        { id:'freefire', name:'Free Fire', cat:'gaming', icon:'fa-fire', grad:'linear-gradient(135deg,#f7971e,#e2401b)',
+          tag:'Gaming · Diamonds', desc:'Garena Free Fire diamonds — skins, characters and the Elite Pass.',
+          redeem:'We deliver a Garena PIN. Open the Garena top-up site / in-game top-up, choose Free Fire, enter your Player ID and the PIN — diamonds are added instantly.',
+          denoms:[ {label:'100 💎 Diamonds', price:35}, {label:'310 💎 Diamonds', price:95}, {label:'520 💎 Diamonds', price:155}, {label:'1060 💎 Diamonds', price:300} ] },
+
+        { id:'pubg', name:'PUBG Mobile', cat:'gaming', icon:'fa-crosshairs', grad:'linear-gradient(135deg,#e8a020,#7a4e12)',
+          tag:'Gaming · UC', desc:'PUBG Mobile Unknown Cash (UC) — outfits, crates and the Royale Pass.',
+          redeem:'We deliver a UC voucher/PIN. Redeem it on the Midasbuy top-up page for your PUBG Mobile character ID — UC is credited instantly.',
+          denoms:[ {label:'60 UC', price:35}, {label:'325 UC', price:155}, {label:'660 UC', price:300}, {label:'1800 UC', price:750} ] },
+
+        { id:'mlbb', name:'Mobile Legends', cat:'gaming', icon:'fa-gem', grad:'linear-gradient(135deg,#3b82f6,#1e3a8a)',
+          tag:'Gaming · Diamonds', desc:'Mobile Legends: Bang Bang diamonds — heroes, skins and passes.',
+          redeem:'We deliver a top-up voucher. Redeem on the official MLBB / Codashop top-up page with your Player ID + Zone ID — diamonds arrive instantly.',
+          denoms:[ {label:'86 💎 Diamonds', price:35}, {label:'172 💎 Diamonds', price:65}, {label:'344 💎 Diamonds', price:130}, {label:'706 💎 Diamonds', price:250} ] },
+
+        { id:'roblox', name:'Roblox', cat:'gaming', icon:'fa-cubes', grad:'linear-gradient(135deg,#e2231a,#9c1712)',
+          tag:'Gaming · Robux', desc:'Roblox gift card — Robux and premium items across every Roblox game.',
+          redeem:'Go to roblox.com/redeem, sign in, enter the code and your Robux / credit is added to your account.',
+          denoms:[ {label:'K150 (≈800 Robux)', price:165}, {label:'K300 (≈1700 Robux)', price:320} ] },
+
+        // ---------- GENERAL GIFT CARDS ----------
+        { id:'amazon', name:'Amazon', cat:'giftcard', icon:'fa-amazon', fab:true, grad:'linear-gradient(135deg,#ff9900,#232f3e)',
+          tag:'Gift Card', desc:'Shop millions of products worldwide with an Amazon gift card balance.',
+          redeem:'Sign in at amazon.com → Account → Gift cards → Redeem a gift card, and enter the claim code to add it to your balance.',
+          denoms:[ {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580}, {label:'K1100 Gift Card', price:1150} ] }
+    ];
+
+    // Flatten into individually-addressable products (one per brand+denomination).
+    const PRODUCTS = [];
+    BRANDS.forEach(b => b.denoms.forEach((d, i) => {
+        PRODUCTS.push({
+            key: b.id + '-' + i,
+            brandId: b.id, brand: b.name, cat: b.cat, icon: b.icon, fab: !!b.fab,
+            grad: b.grad, tag: b.tag, desc: b.desc, redeem: b.redeem,
+            denom: d.label, price: d.price, reloadly: d.reloadly || null
+        });
+    }));
+
+    /* ================================================================
+       STATE
+       ================================================================ */
+    let cart = JSON.parse(localStorage.getItem('zedcards_cart') || '[]');
+    let currentBrand = null;      // brand object open in the modal
+    let pmDenomIdx = null;        // selected denomination index
+    let pmQtyCount = 1;
+    let selectedProvider = null;
+    let activeCat = 'all';
+    let activeSearch = '';
+
+    /* ================================================================
+       HELPERS
+       ================================================================ */
+    const $ = id => document.getElementById(id);
+    const fmtK = n => 'K' + Number(n).toLocaleString('en-ZM', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const iconCls = p => (p.fab ? 'fab ' : 'fas ') + p.icon;
+
+    function showToast(msg) {
+        const t = $('toast');
+        t.textContent = msg;
+        t.classList.remove('hidden');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.add('hidden'), 2500);
+    }
+
+    /* ================================================================
+       CATALOG RENDERING
+       ================================================================ */
+    function brandCardHtml(b) {
+        const from = b.denoms.reduce((m, d) => Math.min(m, d.price), Infinity);
+        const icon = (b.fab ? 'fab ' : 'fas ') + b.icon;
+        return `
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer group fade-in" onclick="openBrand('${b.id}')">
+                <div class="relative h-24 sm:h-28 flex items-center justify-center text-white" style="background:${b.grad}">
+                    <i class="${icon} text-4xl sm:text-5xl drop-shadow group-hover:scale-110 transition duration-300"></i>
+                    <span class="absolute top-2 left-2 bg-black/20 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded-full">${b.tag}</span>
+                </div>
+                <div class="p-3">
+                    <p class="font-bold text-sm leading-snug">${b.name}</p>
+                    <p class="text-[11px] text-slate-400 leading-snug line-clamp-1 mt-0.5">${b.denoms.length} option${b.denoms.length>1?'s':''}</p>
+                    <div class="mt-2 flex items-center justify-between">
+                        <span class="text-[11px] text-slate-400">from</span>
+                        <span class="font-extrabold text-vio-700">${fmtK(from)}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); openBrand('${b.id}')"
+                        class="mt-2 w-full bg-vio-50 text-vio-700 hover:bg-vio-600 hover:text-white text-xs font-bold py-2 rounded-xl transition">
+                        <i class="fas fa-bolt mr-1"></i>Buy code
+                    </button>
+                </div>
+            </div>`;
+    }
+
+    function renderCatalog() {
+        const q = activeSearch.trim().toLowerCase();
+        let list = BRANDS.filter(b => activeCat === 'all' || b.cat === activeCat);
+        if (q) list = list.filter(b =>
+            b.name.toLowerCase().includes(q) ||
+            b.tag.toLowerCase().includes(q) ||
+            b.cat.toLowerCase().includes(q) ||
+            b.desc.toLowerCase().includes(q));
+
+        $('productGrid').innerHTML = list.map(brandCardHtml).join('');
+        $('emptyBox').classList.toggle('hidden', list.length > 0);
+        $('resultsCount').textContent = list.length + ' brand' + (list.length === 1 ? '' : 's');
+        const titles = { all:'Popular in Zambia', streaming:'Streaming & TV', gaming:'Gaming Credit', appstore:'App Store Cards', music:'Music', giftcard:'Gift Cards' };
+        $('resultsTitle').textContent = q ? `Results for "${activeSearch.trim()}"` : (titles[activeCat] || 'Popular in Zambia');
+    }
+
+    function filterCategory(cat) {
+        activeCat = cat;
+        activeSearch = '';
+        $('searchInput').value = '';
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('cat-active', c.dataset.cat === cat));
+        renderCatalog();
+        window.scrollTo({ top: $('heroSection').offsetHeight, behavior: 'smooth' });
+    }
+
+    function doSearch() {
+        activeSearch = $('searchInput').value;
+        if (activeSearch.trim()) {
+            activeCat = 'all';
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('cat-active', c.dataset.cat === 'all'));
+        }
+        renderCatalog();
+    }
+
+    function goHome() {
+        activeSearch = '';
+        $('searchInput').value = '';
+        filterCategory('all');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ================================================================
+       BRAND / PRODUCT MODAL
+       ================================================================ */
+    function openBrand(id) {
+        currentBrand = BRANDS.find(b => b.id === id);
+        if (!currentBrand) return;
+        pmDenomIdx = null;
+        pmQtyCount = 1;
+        $('pmQtyVal').textContent = 1;
+        $('pmCover').style.background = currentBrand.grad;
+        $('pmIcon').className = (currentBrand.fab ? 'fab ' : 'fas ') + currentBrand.icon + ' text-5xl drop-shadow';
+        $('pmBadge').textContent = currentBrand.tag;
+        $('pmTitle').textContent = currentBrand.name + ' Gift Code';
+        $('pmDesc').textContent = currentBrand.desc;
+        $('pmRedeem').textContent = currentBrand.redeem;
+        $('pmDenoms').innerHTML = currentBrand.denoms.map((d, i) => `
+            <button class="denom-btn" data-idx="${i}" onclick="selectDenom(${i})">
+                <div class="font-bold text-sm">${d.label}</div>
+                <div class="text-vio-700 font-extrabold text-sm mt-0.5">${fmtK(d.price)}</div>
+            </button>`).join('');
+        updatePmAddBtn();
+        $('productModal').classList.remove('hidden');
+        $('productModal').classList.add('flex');
+    }
+
+    function selectDenom(i) {
+        pmDenomIdx = i;
+        document.querySelectorAll('#pmDenoms .denom-btn').forEach(b => b.classList.toggle('selected', +b.dataset.idx === i));
+        updatePmAddBtn();
+    }
+
+    function updatePmAddBtn() {
+        const btn = $('pmAddBtn');
+        if (pmDenomIdx == null) {
+            btn.disabled = true;
+            $('pmAddLabel').textContent = 'Select an amount';
+        } else {
+            btn.disabled = false;
+            const d = currentBrand.denoms[pmDenomIdx];
+            $('pmAddLabel').textContent = 'Add ' + fmtK(d.price * pmQtyCount);
+        }
+    }
+
+    function closeProduct() {
+        $('productModal').classList.add('hidden');
+        $('productModal').classList.remove('flex');
+    }
+
+    function pmQty(d) {
+        pmQtyCount = Math.max(1, Math.min(10, pmQtyCount + d));
+        $('pmQtyVal').textContent = pmQtyCount;
+        updatePmAddBtn();
+    }
+
+    function pmAdd() {
+        if (pmDenomIdx == null) return;
+        addToCart(currentBrand.id + '-' + pmDenomIdx, pmQtyCount);
+        closeProduct();
+    }
+
+    /* ================================================================
+       CART
+       ================================================================ */
+    function saveCart() {
+        localStorage.setItem('zedcards_cart', JSON.stringify(cart));
+        renderCart();
+    }
+
+    function addToCart(key, qty) {
+        const p = PRODUCTS.find(x => x.key === key);
+        if (!p) return;
+        const existing = cart.find(x => x.key === key);
+        if (existing) existing.qty = Math.min(10, existing.qty + qty);
+        else cart.push({ key: p.key, brand: p.brand, denom: p.denom, price: p.price, icon: p.icon, fab: p.fab, grad: p.grad, qty });
+        saveCart();
+        showToast('✅ Added to cart');
+    }
+
+    function changeQty(key, d) {
+        const item = cart.find(x => x.key === key);
+        if (!item) return;
+        item.qty += d;
+        if (item.qty <= 0) cart = cart.filter(x => x.key !== key);
+        item.qty = Math.min(10, item.qty);
+        saveCart();
+    }
+
+    function removeFromCart(key) {
+        cart = cart.filter(x => x.key !== key);
+        saveCart();
+    }
+
+    function cartTotals() {
+        const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const fees = Math.round(subtotal * CONFIG.SERVICE_FEE_PERCENT / 100 * 100) / 100;
+        return { subtotal, fees, total: subtotal + fees };
+    }
+
+    function renderCart() {
+        const count = cart.reduce((s, i) => s + i.qty, 0);
+        $('cartCount').textContent = count;
+        $('cartCount').classList.toggle('hidden', count === 0);
+
+        if (!cart.length) {
+            $('cartItems').innerHTML = `<div class="text-center text-slate-400 py-16">
+                <i class="fas fa-cart-shopping text-4xl mb-3"></i><p class="text-sm">Your cart is empty</p></div>`;
+        } else {
+            $('cartItems').innerHTML = cart.map(i => {
+                const icon = (i.fab ? 'fab ' : 'fas ') + i.icon;
+                return `
+                <div class="flex gap-3 bg-vio-50 rounded-xl p-3">
+                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0" style="background:${i.grad || '#7c3aed'}"><i class="${icon}"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-700 leading-tight">${i.brand}</p>
+                        <p class="text-[11px] text-slate-500 leading-tight">${i.denom}</p>
+                        <div class="flex items-center justify-between mt-1.5">
+                            <span class="font-bold text-sm text-vio-700">${fmtK(i.price * i.qty)}</span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeQty('${i.key}',-1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-vio-600 text-sm">−</button>
+                                <span class="text-sm font-bold w-4 text-center">${i.qty}</span>
+                                <button onclick="changeQty('${i.key}',1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-vio-600 text-sm">+</button>
+                                <button onclick="removeFromCart('${i.key}')" class="text-slate-300 hover:text-zam-red ml-1"><i class="fas fa-trash-can text-xs"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        const t = cartTotals();
+        $('cartSubtotal').textContent = fmtK(t.subtotal);
+        $('cartFees').textContent = fmtK(t.fees);
+        $('cartTotal').textContent = fmtK(t.total);
+        $('checkoutBtn').disabled = !cart.length;
+    }
+
+    function toggleCart(open) {
+        $('cartOverlay').classList.toggle('hidden', !open);
+        $('cartDrawer').classList.toggle('translate-x-full', !open);
+        if (open) renderCart();
+    }
+
+    /* ================================================================
+       CHECKOUT — Mobile Money flow (pawaPay in the backend; simulated
+       when the backend runs without a PAWAPAY_TOKEN)
+       ================================================================ */
+    function openCheckout() {
+        if (!cart.length) return;
+        toggleCart(false);
+        selectedProvider = null;
+        document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('selected'));
+        $('payError').classList.add('hidden');
+        $('payTotal').textContent = fmtK(cartTotals().total);
+        $('payStep1').classList.remove('hidden');
+        $('payStep2').classList.add('hidden');
+        $('payStep3').classList.add('hidden');
+        $('checkoutModal').classList.remove('hidden');
+        $('checkoutModal').classList.add('flex');
+    }
+
+    function closeCheckout() {
+        $('checkoutModal').classList.add('hidden');
+        $('checkoutModal').classList.remove('flex');
+    }
+
+    function selectProvider(p, btn) {
+        selectedProvider = p;
+        document.querySelectorAll('.provider-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    // Starts a real mobile money charge via the backend (pawaPay) and polls
+    // until it resolves. Returns { tx_ref } on confirmed payment, 'failed' on
+    // decline/timeout, or null when the backend is in simulated mode / unreachable.
+    async function tryRealPayment(order) {
+        if (!CONFIG.API_BASE_URL) return null;
+        const base = CONFIG.API_BASE_URL.replace(/\/$/, '');
+        try {
+            const res = await fetch(base + '/api/pay', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: order.phone,
+                    network: order.provider,
+                    amount: Math.round(order.total * 100) / 100,
+                    email: order.email
+                }),
+                signal: AbortSignal.timeout(30000)
+            });
+            const data = await res.json();
+            if (!res.ok || data.simulated || !data.tx_ref) return null;
+
+            for (let i = 0; i < 24; i++) {
+                await new Promise(r => setTimeout(r, 5000));
+                try {
+                    const s = await fetch(base + '/api/pay/status?tx_ref=' + encodeURIComponent(data.tx_ref),
+                        { signal: AbortSignal.timeout(15000) }).then(r => r.json());
+                    if (s.status === 'successful') return { tx_ref: data.tx_ref };
+                    if (s.status === 'failed' || s.status === 'cancelled') return 'failed';
+                } catch (e) { /* transient poll error - keep waiting */ }
+            }
+            return 'failed';
+        } catch (e) {
+            console.warn('Real payment unavailable, using simulation:', e);
+            return null;
+        }
+    }
+
+    // Asks the backend to deliver the codes for a paid order. The backend
+    // re-verifies the payment server-side (tx_ref) before releasing any code.
+    // Returns { codes:[...] , simulated?, pending? } — or null on failure.
+    async function deliverCodes(ref, order, tx_ref) {
+        if (!CONFIG.API_BASE_URL) return null;
+        const base = CONFIG.API_BASE_URL.replace(/\/$/, '');
+        try {
+            const res = await fetch(base + '/api/redeem', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderRef: ref,
+                    tx_ref: tx_ref || null,
+                    email: order.email,
+                    phone: order.phone,
+                    items: cart.map(i => ({ brandId: i.key.split('-').slice(0,-1).join('-'), brand: i.brand, denom: i.denom, qty: i.qty, price: i.price }))
+                }),
+                signal: AbortSignal.timeout(30000)
+            });
+            if (!res.ok) return null;
+            return await res.json();
+        } catch (e) {
+            console.warn('Code delivery call failed:', e);
+            return null;
+        }
+    }
+
+    async function submitPayment() {
+        const phone = $('payPhone').value.trim();
+        const email = $('payEmail').value.trim();
+        const err = $('payError');
+
+        if (!selectedProvider) { err.textContent = 'Please choose your mobile network.'; err.classList.remove('hidden'); return; }
+        if (!/^(9|7)\d{8}$/.test(phone)) { err.textContent = 'Enter a valid Zambian number, e.g. 971234567.'; err.classList.remove('hidden'); return; }
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid email so we can send your code.'; err.classList.remove('hidden'); return; }
+        err.classList.add('hidden');
+
+        const t = cartTotals();
+        const order = { provider: selectedProvider, phone, email, total: t.total };
+        $('pay2Total').textContent = fmtK(t.total);
+        $('pay2Phone').textContent = '+260 ' + phone;
+        $('payStep1').classList.add('hidden');
+        $('payStep2').classList.remove('hidden');
+
+        const outcome = await tryRealPayment(order);
+
+        if (outcome === 'failed') {
+            $('payStep2').classList.add('hidden');
+            $('payStep1').classList.remove('hidden');
+            err.textContent = 'The payment was not completed. Please check your phone and try again.';
+            err.classList.remove('hidden');
+            return;
+        }
+
+        // Simulated mode keeps a short "check your phone" pause for realism
+        const simulated = outcome !== true && !(outcome && outcome.tx_ref);
+        if (simulated) await new Promise(r => setTimeout(r, 4000));
+
+        const ref = 'ZC' + String(Math.floor(100000 + Math.random() * 900000));
+        const tx_ref = (outcome && outcome.tx_ref) || null;
+
+        // Deliver codes (server re-verifies payment before releasing them)
+        const delivery = await deliverCodes(ref, order, tx_ref);
+        renderCodes(ref, order, delivery, simulated);
+
+        $('orderRef').textContent = '#' + ref;
+        $('payStep2').classList.add('hidden');
+        $('payStep3').classList.remove('hidden');
+        sendOrderToWhatsApp(ref, order, delivery);
+    }
+
+    // Builds the on-screen code delivery. Three cases:
+    //  - real codes from the distributor (Reloadly)  -> show them
+    //  - payment ok but no auto-supplier configured   -> "code on its way"
+    //  - fully simulated (no backend / demo)          -> clearly-labelled DEMO codes
+    function renderCodes(ref, order, delivery, simulated) {
+        const box = $('codesBox');
+        const note = $('codesNote');
+        const cartLines = cart.map(i => ({ brand: i.brand, denom: i.denom, qty: i.qty }));
+
+        if (delivery && Array.isArray(delivery.codes) && delivery.codes.length) {
+            box.innerHTML = delivery.codes.map(c => codeCardHtml(c.brand, c.denom, c.code, c.pin, c.redeem, false)).join('');
+            note.innerHTML = `<i class="fas fa-envelope mr-1"></i> A copy has been sent to <b>${order.email}</b> and our team on WhatsApp.`;
+            return;
+        }
+
+        if (delivery && delivery.pending) {
+            box.innerHTML = `<div class="bg-vio-50 border border-vio-100 rounded-xl p-4 text-center">
+                <i class="fas fa-clock text-vio-500 text-2xl"></i>
+                <p class="font-bold mt-2 text-slate-700">Your code is being prepared</p>
+                <p class="text-xs text-slate-500 mt-1">We're issuing your genuine code now. It arrives at <b>${order.email}</b> and by WhatsApp within a few minutes — usually much faster.</p>
+            </div>` + cartLines.map(l => `<p class="text-xs text-slate-400 text-center">${l.qty}× ${l.brand} — ${l.denom}</p>`).join('');
+            note.innerHTML = `<i class="fas fa-shield-halved mr-1"></i> Codes are released only after your payment is confirmed.`;
+            return;
+        }
+
+        // Simulated / demo fallback — clearly labelled, never a real code
+        box.innerHTML = cart.flatMap(i => Array.from({ length: i.qty }, () =>
+            codeCardHtml(i.brand, i.denom, 'DEMO-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-XXXX', null,
+                'This is a DEMO code — add your distributor credentials (Reloadly) to deliver real codes.', true))).join('');
+        note.innerHTML = `<i class="fas fa-flask mr-1"></i> Demo mode — payment & codes are simulated until Mobile Money + a code distributor are connected.`;
+    }
+
+    function codeCardHtml(brand, denom, code, pin, redeem, demo) {
+        return `
+        <div class="border ${demo ? 'border-amber-200 bg-amber-50' : 'border-vio-100 bg-vio-50'} rounded-xl p-3">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-bold text-slate-600">${brand} · ${denom}</p>
+                ${demo ? '<span class="text-[9px] font-bold bg-amber-400 text-white px-1.5 py-0.5 rounded">DEMO</span>' : '<span class="text-[9px] font-bold bg-zam-green text-white px-1.5 py-0.5 rounded">GENUINE</span>'}
+            </div>
+            <div class="mt-1.5 flex items-center gap-2">
+                <code class="code-copy flex-1 bg-white border rounded-lg px-2.5 py-2 text-sm font-bold text-slate-800 break-all">${code}</code>
+                <button onclick="copyCode(this,'${code}')" class="shrink-0 bg-vio-600 hover:bg-vio-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fas fa-copy"></i></button>
+            </div>
+            ${pin ? `<p class="text-[11px] text-slate-500 mt-1">PIN: <b class="code-copy">${pin}</b></p>` : ''}
+            ${redeem ? `<p class="text-[11px] text-slate-500 mt-1.5 leading-snug">${redeem}</p>` : ''}
+        </div>`;
+    }
+
+    function copyCode(btn, code) {
+        (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).then(
+            () => { btn.innerHTML = '<i class="fas fa-check"></i>'; showToast('Code copied'); setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i>', 1500); },
+            () => showToast('Long-press the code to copy')
+        );
+    }
+
+    function sendOrderToWhatsApp(ref, o, delivery) {
+        // Copies every paid order to the business WhatsApp line so the team
+        // can fulfil / verify. No customer code is exposed publicly — this is
+        // an operational notification to the shop owner only.
+        if (!CONFIG.WHATSAPP_ORDERS) return;
+        const itemLines = cart.map(i => `• ${i.qty}x ${i.brand} — ${i.denom} — ${fmtK(i.price * i.qty)}`);
+        const status = (delivery && delivery.codes && delivery.codes.length) ? 'Auto-delivered ✅'
+            : (delivery && delivery.pending) ? 'NEEDS FULFILMENT ⏳'
+            : 'DEMO (not real) 🧪';
+        const lines = [
+            `🎁 *New ZedCards Order ${'#' + ref}*`,
+            `📞 +260${o.phone} (${o.provider.toUpperCase()})`,
+            `✉️ ${o.email}`,
+            ``,
+            `🛒 *Items:*`,
+            ...itemLines,
+            ``,
+            `💰 *Paid: ${fmtK(o.total)}*`,
+            `📦 Delivery: ${status}`
+        ];
+        const url = 'https://wa.me/' + CONFIG.WHATSAPP_ORDERS + '?text=' + encodeURIComponent(lines.join('\n'));
+        // Open silently in a background tab where possible; harmless if blocked.
+        window.open(url, '_blank');
+    }
+
+    function finishOrder() {
+        cart = [];
+        saveCart();
+        closeCheckout();
+        showToast('🎉 Thank you for shopping with ZedCards!');
+    }
+
+    /* ================================================================
+       DOWNLOAD APP (PWA install)
+       ================================================================ */
+    let deferredInstallPrompt = null;
+    const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const IS_MOBILE = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+    const IS_INSTALLED = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    const INSTALL_SNOOZE_MS = 3 * 24 * 60 * 60 * 1000;
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        showInstallBanner();
+    });
+
+    function showInstallBanner() {
+        if (IS_INSTALLED || !IS_MOBILE) return;
+        const snoozedAt = parseInt(localStorage.getItem('zedcards_install_snooze') || '0');
+        if (Date.now() - snoozedAt < INSTALL_SNOOZE_MS) return;
+        $('installBanner').classList.remove('hidden');
+    }
+
+    function hideInstallBanner() { $('installBanner').classList.add('hidden'); }
+
+    function dismissInstall() {
+        localStorage.setItem('zedcards_install_snooze', String(Date.now()));
+        hideInstallBanner();
+    }
+
+    async function installApp() {
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            hideInstallBanner();
+            return;
+        }
+        $('guideIos').classList.toggle('hidden', !IS_IOS);
+        $('guideAndroid').classList.toggle('hidden', IS_IOS);
+        $('installGuide').classList.remove('hidden');
+    }
+
+    function closeInstallGuide() { $('installGuide').classList.add('hidden'); }
+
+    if (IS_MOBILE && !IS_INSTALLED) setTimeout(showInstallBanner, 3000);
+
+    /* ================================================================
+       INIT
+       ================================================================ */
+    (function initSupportLinks() {
+        const msg = encodeURIComponent('Hello ZedCards! 👋 I need some help with my gift card / code order.');
+        $('waSupportBtn').href = 'https://wa.me/' + CONFIG.WHATSAPP_SUPPORT + '?text=' + msg;
+    })();
+
+    renderCart();
+    renderCatalog();
+    </script>
+</body>
+</html>
