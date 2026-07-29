@@ -1,27 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2d6657"/>
-      <stop offset=".55" stop-color="#1c4038"/>
-      <stop offset="1" stop-color="#122c26"/>
-    </linearGradient>
-    <linearGradient id="v" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ff8b64"/>
-      <stop offset="1" stop-color="#ec5124"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="512" height="512" fill="url(#bg)"/>
-
-  <!-- The voucher stub: rounded card with a torn notch on each side. -->
-  <path d="M134 141h244a48 48 0 0 1 48 48v35a32 32 0 0 0 0 64v35a48 48 0 0 1-48 48H134a48 48 0 0 1-48-48v-35a32 32 0 0 0 0-64v-35a48 48 0 0 1 48-48z"
-        fill="#fbf6ec"/>
-
-  <!-- Perforation running down the tear line. -->
-  <path d="M256 158v196" stroke="#122c26" stroke-opacity=".13" stroke-width="5"
-        stroke-linecap="round" stroke-dasharray="2 18"/>
-
-  <!-- The V of Vochira, drawn as the tick you get when the code lands. -->
-  <path d="M205 214l51 86 51-86" fill="none" stroke="url(#v)" stroke-width="34"
-        stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs>
+            <linearGradient id="vc-card" x1="0" y1="0" x2="0.9" y2="1">
+              <stop offset="0" stop-color="#3ba777"></stop><stop offset="0.38" stop-color="#177a52"></stop><stop offset="0.74" stop-color="#0a5238"></stop><stop offset="1" stop-color="#052e21"></stop>
+            </linearGradient>
+            <linearGradient id="vc-rib" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ffb99e"></stop><stop offset="0.42" stop-color="#ff7a52"></stop><stop offset="1" stop-color="#e0492a"></stop>
+            </linearGradient>
+            <linearGradient id="vc-rib2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#ff9c78"></stop><stop offset="1" stop-color="#d84326"></stop>
+            </linearGradient>
+            <linearGradient id="vc-spark" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff2c4"></stop><stop offset="1" stop-color="#ffb03a"></stop>
+            </linearGradient>
+            <filter id="vc-sh" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#04291d" flood-opacity="0.34"></feDropShadow>
+            </filter>
+          </defs>
+          <g transform="rotate(-9 512 512)" filter="url(#vc-sh)">
+            <rect x="120" y="286" width="784" height="472" rx="56" fill="url(#vc-card)"></rect>
+            <path d="M120 342 A56 56 0 0 1 176 286 H430 L200 758 H176 A56 56 0 0 1 120 702 Z" fill="#ffffff" opacity="0.1"></path>
+            <rect x="120" y="366" width="784" height="58" fill="#04291d" opacity="0.35"></rect>
+            <g>
+              <rect x="176" y="600" width="132" height="132" rx="10" fill="#eafaf1" opacity="0.94"></rect>
+              <g fill="#0a5238">
+                <rect x="196" y="620" width="30" height="30"></rect><rect x="258" y="620" width="30" height="30"></rect>
+                <rect x="196" y="682" width="30" height="30"></rect><rect x="238" y="662" width="20" height="20"></rect>
+                <rect x="272" y="682" width="16" height="16"></rect><rect x="238" y="700" width="16" height="12"></rect>
+              </g>
+            </g>
+            <rect x="470" y="286" width="104" height="472" fill="url(#vc-rib2)"></rect>
+            <rect x="120" y="470" width="784" height="104" fill="url(#vc-rib)"></rect>
+            <path d="M470 470 C388 380 322 386 306 428 C288 476 386 500 470 522 Z" fill="url(#vc-rib)"></path>
+            <path d="M574 470 C656 380 722 386 738 428 C756 476 658 500 574 522 Z" fill="url(#vc-rib2)"></path>
+            <circle cx="522" cy="522" r="46" fill="#ff8a63"></circle>
+            <circle cx="522" cy="522" r="46" fill="url(#vc-rib)" opacity="0.6"></circle>
+          </g>
+          <g transform="translate(18 -12)">
+            <path d="M818 160 L716 300 H784 L740 424 L892 268 H812 Z" fill="url(#vc-spark)"></path>
+          </g>
 </svg>
