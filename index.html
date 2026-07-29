@@ -7,13 +7,14 @@
     <meta name="description" content="ZedCards — Zambia's instant gift-card & subscription store: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha. Code delivered instantly.">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#7c3aed">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ZedCards">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -26,9 +27,10 @@
                             500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95'
                         },
                         gold: { DEFAULT: '#e3ae4e', soft: '#f4d58d', deep: '#b8862f' },
+                        neon: { cyan: '#22d3ee', pink: '#f472b6' },
                         zam: { green: '#198a00', red: '#de2010', black: '#000000', orange: '#ef7d00' }
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Playfair Display"', 'serif'] }
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Chakra Petch"', 'sans-serif'] }
                 }
             }
         }
@@ -42,6 +44,18 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .pulse-ring { animation: pulseRing 1.5s ease-out infinite; }
         @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(25,138,0,0.4); } 100% { box-shadow: 0 0 0 16px rgba(25,138,0,0); } }
+
+        /* ===== ZedCards — arcade / gaming identity ===== */
+        .font-display { letter-spacing: 0.005em; }
+        /* Product cards behave like glowing game tiles */
+        #productGrid > * { transition: transform .18s ease, box-shadow .18s ease; }
+        #productGrid > *:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(139,92,246,.35), 0 16px 34px -10px rgba(124,58,237,.5) !important; }
+        /* Neon glow + arcade underline for the hero headline */
+        .neon { text-shadow: 0 0 20px rgba(34,211,238,.45); }
+        .arcade-underline { position: relative; display: inline-block; }
+        .arcade-underline::after { content: ''; position: absolute; left: 0; bottom: -5px; height: 3px; width: 100%; background: linear-gradient(90deg, #22d3ee, #f472b6, #e3ae4e); border-radius: 2px; box-shadow: 0 0 14px rgba(34,211,238,.6); }
+        /* Faint dot-grid gives the hero an arcade texture */
+        #heroSection::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.09) 1px, transparent 1px); background-size: 22px 22px; opacity: .55; pointer-events: none; }
     </style>
 </head>
 <body class="bg-vio-50 font-sans text-slate-800 min-h-screen flex flex-col">
@@ -133,7 +147,7 @@
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div class="max-w-2xl">
                     <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur text-vio-100 text-[11px] font-bold px-3 py-1 rounded-full border border-white/10"><i class="fas fa-bolt text-gold-soft"></i> Instant digital delivery — no shipping, no wait</span>
-                    <h2 class="mt-3 text-2xl sm:text-4xl font-display font-extrabold leading-tight">Top up your world, pay in <span class="bg-gradient-to-r from-gold-soft to-white bg-clip-text text-transparent">Kwacha</span> 🇿🇲</h2>
+                    <h2 class="mt-3 text-2xl sm:text-4xl font-display font-bold leading-tight tracking-tight">Top up your world, pay in <span class="bg-gradient-to-r from-neon-cyan via-gold-soft to-neon-pink bg-clip-text text-transparent arcade-underline">Kwacha</span> 🇿🇲</h2>
                     <p class="mt-2 text-vio-100/85 text-sm sm:text-base max-w-xl">Netflix, DSTV, Spotify, Google Play, Free Fire, PUBG &amp; more — buy the code in seconds with the mobile money you already use.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2 text-xs font-semibold shrink-0">
