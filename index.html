@@ -118,7 +118,6 @@
             <button onclick="filterCategory('streaming')" data-cat="streaming" class="cat-chip shrink-0"><i class="fas fa-tv mr-1.5"></i>Streaming &amp; TV</button>
             <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip shrink-0"><i class="fas fa-gamepad mr-1.5"></i>Gaming Credit</button>
             <button onclick="filterCategory('appstore')" data-cat="appstore" class="cat-chip shrink-0"><i class="fas fa-mobile-screen mr-1.5"></i>App Stores</button>
-            <button onclick="filterCategory('music')" data-cat="music" class="cat-chip shrink-0"><i class="fas fa-music mr-1.5"></i>Music</button>
             <button onclick="filterCategory('giftcard')" data-cat="giftcard" class="cat-chip shrink-0"><i class="fas fa-gift mr-1.5"></i>Gift Cards</button>
         </nav>
     </header>
@@ -399,9 +398,10 @@
     <!-- ======================= PRODUCT MODAL ======================= -->
     <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" onclick="if(event.target===this) closeProduct()">
         <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden fade-in max-h-[92vh] overflow-y-auto">
-            <div id="pmCover" class="relative h-32 flex items-center justify-center text-white">
+            <div id="pmCover" class="relative h-32 flex items-center justify-center text-white overflow-hidden">
+                <img id="pmImg" src="" alt="" class="w-full h-full object-contain p-4" style="display:none">
                 <i id="pmIcon" class="fas fa-gift text-5xl drop-shadow"></i>
-                <button onclick="closeProduct()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-xmark"></i></button>
+                <button onclick="closeProduct()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/30 rounded-full w-8 h-8 flex items-center justify-center z-10"><i class="fas fa-xmark"></i></button>
                 <span id="pmBadge" class="absolute bottom-3 left-4 bg-black/25 backdrop-blur text-white text-[11px] font-bold px-2.5 py-1 rounded-full"></span>
             </div>
             <div class="p-5">
@@ -528,143 +528,78 @@
        optional Reloadly productId used for automatic delivery later.
        ================================================================ */
     const BRANDS = [
-        // ---------- STREAMING & TV ----------
-        { id:'netflix', name:'Netflix', cat:'streaming', icon:'fa-clapperboard', grad:'linear-gradient(135deg,#b1060f,#e50914)',
-          tag:'Streaming', desc:'Watch films & series on any device. Load your Netflix account with a gift code.',
-          redeem:'Go to netflix.com/redeem, sign in, enter the code and it is added to your account balance — Netflix bills your next months from it automatically.',
-          denoms:[ {label:'K150 Gift Card', price:165}, {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580} ] },
+        { id:"netflix", name:"Netflix", cat:"streaming", icon:"fa-clapperboard", fab:false, grad:"linear-gradient(135deg,#b1060f,#e50914)",
+          img:"https://cdn.reloadly.com/giftcards/dd02b7e3-a772-40e2-bba6-c11f9b0c3bda.jpeg", pid:18681, dtype:"FIXED",
+          tag:"Streaming", desc:"Netflix gift code — genuine, delivered instantly after payment.",
+          redeem:"Go to netflix.com/redeem, sign in, and enter the code — the value is added to your account and Netflix draws your monthly fee from it.",
+          denoms:[ {label:'US$20', price:665, face:20}, {label:'US$50', price:1660, face:50}, {label:'US$100', price:3320, face:100} ] },
 
-        { id:'dstv', name:'DSTV', cat:'streaming', icon:'fa-satellite-dish', grad:'linear-gradient(135deg,#00539f,#0a7cc1)',
-          tag:'TV · MultiChoice', desc:'Pay your MultiChoice DSTV subscription for the month. Pick your package.',
-          redeem:'Send us your DSTV smartcard/IUC number by WhatsApp with your order; we credit the package to your account. Or dial the MultiChoice self-service and top up with the code.',
-          denoms:[ {label:'Access', price:270}, {label:'Family', price:440}, {label:'Compact', price:730}, {label:'Compact Plus', price:1160}, {label:'Premium', price:1750} ] },
+        { id:"apple", name:"Apple / iTunes", cat:"appstore", icon:"fa-apple", fab:true, grad:"linear-gradient(135deg,#333,#000)",
+          img:"https://cdn.reloadly.com/giftcards/08ed62a9-52d3-47d2-9ad8-ae27d0a3f3a2.png", pid:21, dtype:"FIXED",
+          tag:"App Store · Music", desc:"Apple / iTunes gift code — genuine, delivered instantly after payment.",
+          redeem:"On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code. Works for the App Store, iTunes, Apple Music and iCloud+.",
+          denoms:[ {label:'US$10', price:310, face:10}, {label:'US$25', price:775, face:25}, {label:'US$50', price:1550, face:50}, {label:'US$100', price:3100, face:100} ] },
 
-        { id:'gotv', name:'GOtv', cat:'streaming', icon:'fa-tv', grad:'linear-gradient(135deg,#1a8f2a,#0e6b1c)',
-          tag:'TV · MultiChoice', desc:'Renew your GOtv package for the month with a top-up code.',
-          redeem:'Send your GOtv IUC number by WhatsApp with your order and we credit the package. You can also renew via the GOtv app using the code.',
-          denoms:[ {label:'Smallie', price:95}, {label:'Jinja', price:185}, {label:'Jolli', price:275}, {label:'Max', price:410}, {label:'Supa', price:545} ] },
+        { id:"googleplay", name:"Google Play", cat:"appstore", icon:"fa-google-play", fab:true, grad:"linear-gradient(135deg,#0f9d58,#4285f4)",
+          img:"https://cdn.reloadly.com/giftcards/da7374a4-a2b0-45ea-adae-a6ed972c4121.png", pid:3940, dtype:"RANGE",
+          tag:"App Store", desc:"Google Play gift code — genuine, delivered instantly after payment.",
+          redeem:"Open the Google Play Store → profile → Payments & subscriptions → Redeem code, and enter it. Balance is added to your Google account.",
+          denoms:[ {label:'US$10', price:320, face:10}, {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50} ] },
 
-        { id:'showmax', name:'Showmax', cat:'streaming', icon:'fa-film', grad:'linear-gradient(135deg,#e21e5a,#8a1140)',
-          tag:'Streaming', desc:'Series, movies and live sport. One month of Showmax.',
-          redeem:'Go to showmax.com, sign in, open Account → Vouchers and enter the code to activate your month.',
-          denoms:[ {label:'1 Month', price:120}, {label:'3 Months', price:330} ] },
+        { id:"amazon", name:"Amazon", cat:"giftcard", icon:"fa-amazon", fab:true, grad:"linear-gradient(135deg,#ff9900,#232f3e)",
+          img:"https://cdn.reloadly.com/giftcards/fbef9b57-e0b0-4ead-aee3-fdc2bc80e2db.png", pid:5, dtype:"RANGE",
+          tag:"Gift Card", desc:"Amazon gift code — genuine, delivered instantly after payment.",
+          redeem:"Sign in at amazon.com → Account → Gift cards → Redeem a gift card, and enter the claim code to add it to your balance.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50}, {label:'US$100', price:3160, face:100} ] },
 
-        // ---------- MUSIC ----------
-        { id:'spotify', name:'Spotify', cat:'music', icon:'fa-spotify', fab:true, grad:'linear-gradient(135deg,#1db954,#0e7a34)',
-          tag:'Music', desc:'Ad-free music & podcasts. Load Spotify Premium with a gift code.',
-          redeem:'Go to spotify.com/redeem, sign in, enter the PIN and your Premium time is added to your account.',
-          denoms:[ {label:'1 Month Premium', price:120}, {label:'3 Months Premium', price:330} ] },
+        { id:"steam", name:"Steam", cat:"gaming", icon:"fa-steam", fab:true, grad:"linear-gradient(135deg,#1b2838,#66c0f4)",
+          img:"https://cdn.reloadly.com/giftcards/795088c7-da49-4cfa-a631-e1cc2ff6b089.png", pid:11828, dtype:"FIXED",
+          tag:"Gaming · Wallet", desc:"Steam gift code — genuine, delivered instantly after payment.",
+          redeem:"Open Steam → your name → Account details → Redeem a Steam Wallet Code, and enter the code. Balance is added instantly.",
+          denoms:[ {label:'US$20', price:670, face:20}, {label:'US$50', price:1675, face:50} ] },
 
-        { id:'applemusic', name:'Apple Music', cat:'music', icon:'fa-music', grad:'linear-gradient(135deg,#fa233b,#fb5c74)',
-          tag:'Music', desc:'Redeemable Apple gift card — works for Apple Music, iCloud+ and the App Store.',
-          redeem:'On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code. Use it for Apple Music, iCloud+ or any app.',
-          denoms:[ {label:'K150 Apple Card', price:165}, {label:'K300 Apple Card', price:320} ] },
+        { id:"xbox", name:"Xbox", cat:"gaming", icon:"fa-xbox", fab:true, grad:"linear-gradient(135deg,#107c10,#0b5c0b)",
+          img:"https://cdn.reloadly.com/giftcards/28c35815-9fdc-4d29-91c6-73e6e3b2303d.png", pid:16061, dtype:"FIXED",
+          tag:"Gaming · Microsoft", desc:"Xbox gift code — genuine, delivered instantly after payment.",
+          redeem:"On Xbox or microsoft.com/redeem, sign in and enter the 25-character code to add it to your Microsoft account balance.",
+          denoms:[ {label:'US$15', price:470, face:15}, {label:'US$25', price:785, face:25}, {label:'US$50', price:1575, face:50} ] },
 
-        // ---------- APP STORES ----------
-        { id:'googleplay', name:'Google Play', cat:'appstore', icon:'fa-google-play', fab:true, grad:'linear-gradient(135deg,#0f9d58,#4285f4)',
-          tag:'App Store', desc:'Buy apps, games, in-app coins, books & more on Android.',
-          redeem:'Open the Google Play Store → tap your profile → Payments & subscriptions → Redeem code, and enter it. The balance is added to your Google account.',
-          denoms:[ {label:'K150 Card', price:165}, {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
+        { id:"razer", name:"Razer Gold", cat:"gaming", icon:"fa-bolt", fab:false, grad:"linear-gradient(135deg,#44d62c,#1e7d12)",
+          img:"https://cdn.reloadly.com/giftcards/89dfc34a-0bad-4fe6-be28-99a31551b9c1.png", pid:10296, dtype:"FIXED",
+          tag:"Gaming · Credit", desc:"Razer Gold gift code — genuine, delivered instantly after payment.",
+          redeem:"Sign in at gold.razer.com → Reload → Razer Gold PIN, and enter the code to add Gold to your wallet (works for 40,000+ games).",
+          denoms:[ {label:'US$10', price:315, face:10}, {label:'US$20', price:635, face:20}, {label:'US$50', price:1580, face:50} ] },
 
-        { id:'appstore', name:'Apple / iTunes', cat:'appstore', icon:'fa-apple', fab:true, grad:'linear-gradient(135deg,#333,#000)',
-          tag:'App Store', desc:'Apple gift card for the App Store, iTunes, iCloud+ and Apple Music.',
-          redeem:'On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code to top up your Apple ID balance.',
-          denoms:[ {label:'K150 Card', price:165}, {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
+        { id:"roblox", name:"Roblox", cat:"gaming", icon:"fa-cubes", fab:false, grad:"linear-gradient(135deg,#e2231a,#9c1712)",
+          img:"https://cdn.reloadly.com/giftcards/roblox.jpeg", pid:11500, dtype:"FIXED",
+          tag:"Gaming · Robux", desc:"Roblox gift code — genuine, delivered instantly after payment.",
+          redeem:"Go to roblox.com/redeem, sign in, and enter the code to add Robux / credit to your account.",
+          denoms:[ {label:'US$10', price:305, face:10}, {label:'US$25', price:765, face:25}, {label:'US$50', price:1535, face:50} ] },
 
-        // ---------- GAMING CREDIT ----------
-        { id:'freefire', name:'Free Fire', cat:'gaming', icon:'fa-fire', grad:'linear-gradient(135deg,#f7971e,#e2401b)',
-          tag:'Gaming · Diamonds', desc:'Garena Free Fire diamonds — skins, characters and the Elite Pass.',
-          redeem:'We deliver a Garena PIN. Open the Garena top-up site / in-game top-up, choose Free Fire, enter your Player ID and the PIN — diamonds are added instantly.',
-          denoms:[ {label:'100 💎 Diamonds', price:35}, {label:'310 💎 Diamonds', price:95}, {label:'520 💎 Diamonds', price:155}, {label:'1060 💎 Diamonds', price:300} ] },
+        { id:"pubg", name:"PUBG Mobile UC", cat:"gaming", icon:"fa-crosshairs", fab:false, grad:"linear-gradient(135deg,#e8a020,#7a4e12)",
+          img:"https://cdn.reloadly.com/giftcards/pubg-mobile.jpeg", pid:15552, dtype:"FIXED",
+          tag:"Gaming · UC", desc:"PUBG Mobile UC gift code — genuine, delivered instantly after payment.",
+          redeem:"Redeem on the Midasbuy top-up page for your PUBG Mobile character ID — UC is credited instantly.",
+          denoms:[ {label:'US$5', price:155, face:5}, {label:'US$10', price:305, face:10}, {label:'US$25', price:765, face:25}, {label:'US$50', price:1525, face:50} ] },
 
-        { id:'pubg', name:'PUBG Mobile', cat:'gaming', icon:'fa-crosshairs', grad:'linear-gradient(135deg,#e8a020,#7a4e12)',
-          tag:'Gaming · UC', desc:'PUBG Mobile Unknown Cash (UC) — outfits, crates and the Royale Pass.',
-          redeem:'We deliver a UC voucher/PIN. Redeem it on the Midasbuy top-up page for your PUBG Mobile character ID — UC is credited instantly.',
-          denoms:[ {label:'60 UC', price:35}, {label:'325 UC', price:155}, {label:'660 UC', price:300}, {label:'1800 UC', price:750} ] },
+        { id:"mlbb", name:"Mobile Legends", cat:"gaming", icon:"fa-gem", fab:false, grad:"linear-gradient(135deg,#3b82f6,#1e3a8a)",
+          img:"https://cdn.reloadly.com/giftcards/mobile-legends-diamonds.jpeg", pid:15347, dtype:"FIXED",
+          tag:"Gaming · Diamonds", desc:"Mobile Legends gift code — genuine, delivered instantly after payment.",
+          redeem:"Redeem on the official MLBB / Codashop top-up page with your Player ID + Zone ID — diamonds arrive instantly.",
+          denoms:[ {label:'US$4.99', price:155, face:4.99}, {label:'US$9.99', price:315, face:9.99}, {label:'US$19.99', price:625, face:19.99} ] },
 
-        { id:'mlbb', name:'Mobile Legends', cat:'gaming', icon:'fa-gem', grad:'linear-gradient(135deg,#3b82f6,#1e3a8a)',
-          tag:'Gaming · Diamonds', desc:'Mobile Legends: Bang Bang diamonds — heroes, skins and passes.',
-          redeem:'We deliver a top-up voucher. Redeem on the official MLBB / Codashop top-up page with your Player ID + Zone ID — diamonds arrive instantly.',
-          denoms:[ {label:'86 💎 Diamonds', price:35}, {label:'172 💎 Diamonds', price:65}, {label:'344 💎 Diamonds', price:130}, {label:'706 💎 Diamonds', price:250} ] },
+        { id:"ubereats", name:"Uber Eats", cat:"giftcard", icon:"fa-utensils", fab:false, grad:"linear-gradient(135deg,#0a7d33,#053d19)",
+          img:"https://cdn.reloadly.com/giftcards/f192817b-33af-454f-b69f-1ac4d0ea44f4.png", pid:13044, dtype:"FIXED",
+          tag:"Food · Gift Card", desc:"Uber Eats gift code — genuine, delivered instantly after payment.",
+          redeem:"In the Uber Eats app → Account → Wallet → Add gift card, and enter the code to top up your balance.",
+          denoms:[ {label:'US$15', price:475, face:15}, {label:'US$25', price:795, face:25}, {label:'US$50', price:1590, face:50} ] },
 
-        { id:'roblox', name:'Roblox', cat:'gaming', icon:'fa-cubes', grad:'linear-gradient(135deg,#e2231a,#9c1712)',
-          tag:'Gaming · Robux', desc:'Roblox gift card — Robux and premium items across every Roblox game.',
-          redeem:'Go to roblox.com/redeem, sign in, enter the code and your Robux / credit is added to your account.',
-          denoms:[ {label:'K150 (≈800 Robux)', price:165}, {label:'K300 (≈1700 Robux)', price:320} ] },
+        { id:"airbnb", name:"Airbnb", cat:"giftcard", icon:"fa-house", fab:true, grad:"linear-gradient(135deg,#ff5a5f,#bd2b30)",
+          img:"https://cdn.reloadly.com/giftcards/6808b1b1-b303-4283-a5a5-5f7fe3618324.png", pid:18270, dtype:"RANGE",
+          tag:"Travel · Gift Card", desc:"Airbnb gift code — genuine, delivered instantly after payment.",
+          redeem:"Go to airbnb.com/gift → Redeem, sign in, and enter the code to add the credit to your Airbnb account.",
+          denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
 
-        // ---------- GENERAL GIFT CARDS ----------
-        { id:'amazon', name:'Amazon', cat:'giftcard', icon:'fa-amazon', fab:true, grad:'linear-gradient(135deg,#ff9900,#232f3e)',
-          tag:'Gift Card', desc:'Shop millions of products worldwide with an Amazon gift card balance.',
-          redeem:'Sign in at amazon.com → Account → Gift cards → Redeem a gift card, and enter the claim code to add it to your balance.',
-          denoms:[ {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580}, {label:'K1100 Gift Card', price:1150} ] },
-
-        // ---------- MORE STREAMING ----------
-        { id:'youtube', name:'YouTube Premium', cat:'streaming', icon:'fa-youtube', fab:true, grad:'linear-gradient(135deg,#ff0000,#990000)',
-          tag:'Streaming', desc:'Ad-free YouTube, background play and YouTube Music. Load your Google account.',
-          redeem:'This is a Google Play gift code. Redeem it in the Google Play Store (profile → Redeem code); the balance covers your YouTube Premium subscription.',
-          denoms:[ {label:'K150 Card', price:165}, {label:'K300 Card', price:320} ] },
-
-        { id:'disney', name:'Disney+', cat:'streaming', icon:'fa-star', grad:'linear-gradient(135deg,#113ccf,#0a1a5c)',
-          tag:'Streaming', desc:'Disney, Pixar, Marvel, Star Wars and National Geographic — one month.',
-          redeem:'Go to disneyplus.com/redeem, sign in, and enter the code to activate your subscription time.',
-          denoms:[ {label:'1 Month', price:280}, {label:'3 Months', price:770} ] },
-
-        { id:'crunchyroll', name:'Crunchyroll', cat:'streaming', icon:'fa-film', grad:'linear-gradient(135deg,#f47521,#a3490f)',
-          tag:'Streaming · Anime', desc:'Ad-free anime — the biggest anime library, subs & dubs.',
-          redeem:'Go to crunchyroll.com, sign in, open your account → Gift Memberships / Redeem, and enter the code.',
-          denoms:[ {label:'1 Month Premium', price:170}, {label:'3 Months Premium', price:470} ] },
-
-        // ---------- MORE GAMING ----------
-        { id:'steam', name:'Steam', cat:'gaming', icon:'fa-steam', fab:true, grad:'linear-gradient(135deg,#1b2838,#66c0f4)',
-          tag:'Gaming · Wallet', desc:'Steam Wallet credit — buy any PC game, DLC or item on Steam.',
-          redeem:'Open Steam → click your name → Account details → Add funds / Redeem a Steam Wallet Code, and enter the code. Balance is added instantly.',
-          denoms:[ {label:'K150 Wallet', price:165}, {label:'K300 Wallet', price:320}, {label:'K550 Wallet', price:580} ] },
-
-        { id:'playstation', name:'PlayStation', cat:'gaming', icon:'fa-playstation', fab:true, grad:'linear-gradient(135deg,#003791,#0070d1)',
-          tag:'Gaming · PSN', desc:'PlayStation Store wallet — games, add-ons and PS Plus.',
-          redeem:'On PS console or the PlayStation Store, go to Redeem Codes, and enter the 12-digit code to top up your wallet.',
-          denoms:[ {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
-
-        { id:'xbox', name:'Xbox', cat:'gaming', icon:'fa-xbox', fab:true, grad:'linear-gradient(135deg,#107c10,#0b5c0b)',
-          tag:'Gaming · Microsoft', desc:'Xbox / Microsoft gift card — games, apps and Game Pass.',
-          redeem:'On Xbox or at microsoft.com/redeem, sign in and enter the 25-character code to add it to your Microsoft account balance.',
-          denoms:[ {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
-
-        { id:'nintendo', name:'Nintendo eShop', cat:'gaming', icon:'fa-gamepad', grad:'linear-gradient(135deg,#e60012,#8a000b)',
-          tag:'Gaming · eShop', desc:'Nintendo eShop credit — Switch games and DLC.',
-          redeem:'On your Switch open the Nintendo eShop → Redeem Code, and enter the 16-character code to add funds.',
-          denoms:[ {label:'K300 Card', price:320}, {label:'K550 Card', price:580} ] },
-
-        { id:'razer', name:'Razer Gold', cat:'gaming', icon:'fa-bolt', grad:'linear-gradient(135deg,#44d62c,#1e7d12)',
-          tag:'Gaming · Credit', desc:'Razer Gold — universal credit for 40,000+ games and Razer titles.',
-          redeem:'Sign in at gold.razer.com, choose Reload → Razer Gold PIN, and enter the code to add Gold to your wallet.',
-          denoms:[ {label:'K150 Gold', price:165}, {label:'K300 Gold', price:320} ] },
-
-        { id:'discord', name:'Discord Nitro', cat:'gaming', icon:'fa-discord', fab:true, grad:'linear-gradient(135deg,#5865f2,#3a44b0)',
-          tag:'Social · Nitro', desc:'Discord Nitro — bigger uploads, HD streaming, custom emoji and perks.',
-          redeem:'Open Discord → User Settings → Gift Inventory / Redeem Code, and enter the code to activate Nitro.',
-          denoms:[ {label:'1 Month Nitro', price:200}, {label:'1 Year Nitro', price:1850} ] },
-
-        // ---------- MORE GIFT CARDS (international) ----------
-        { id:'ebay', name:'eBay', cat:'giftcard', icon:'fa-ebay', fab:true, grad:'linear-gradient(135deg,#e53238,#0064d2)',
-          tag:'Gift Card', desc:'Shop and bid on millions of items worldwide with eBay credit.',
-          redeem:'At checkout on ebay.com, or under My eBay → Gift cards, enter the redemption code to apply the balance.',
-          denoms:[ {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580} ] },
-
-        { id:'uber', name:'Uber & Uber Eats', cat:'giftcard', icon:'fa-uber', fab:true, grad:'linear-gradient(135deg,#000,#333)',
-          tag:'Gift Card', desc:'Rides and food delivery — one card works for Uber and Uber Eats.',
-          redeem:'In the Uber or Uber Eats app → Account → Wallet → Add gift card, and enter the code to top up your balance.',
-          denoms:[ {label:'K300 Gift Card', price:320}, {label:'K550 Gift Card', price:580} ] },
-
-        { id:'airbnb', name:'Airbnb', cat:'giftcard', icon:'fa-airbnb', fab:true, grad:'linear-gradient(135deg,#ff5a5f,#bd2b30)',
-          tag:'Gift Card', desc:'Stays and experiences worldwide — redeemable toward any Airbnb booking.',
-          redeem:'Go to airbnb.com/gift → Redeem, sign in, and enter the code to add the credit to your Airbnb account.',
-          denoms:[ {label:'K550 Gift Card', price:580}, {label:'K1100 Gift Card', price:1150} ] },
-
-        { id:'visa', name:'Prepaid Shopping Card', cat:'giftcard', icon:'fa-credit-card', grad:'linear-gradient(135deg,#1a1f71,#4b53bc)',
-          tag:'Gift Card', desc:'A prepaid card balance you can spend at millions of online stores worldwide.',
-          redeem:'Use the card number, expiry and CVV we send at checkout on any site that accepts card payments. Spend up to the loaded balance.',
-          denoms:[ {label:'K300 Card', price:325}, {label:'K550 Card', price:590} ] }
     ];
 
     // Flatten into individually-addressable products (one per brand+denomination).
@@ -673,8 +608,9 @@
         PRODUCTS.push({
             key: b.id + '-' + i,
             brandId: b.id, brand: b.name, cat: b.cat, icon: b.icon, fab: !!b.fab,
-            grad: b.grad, tag: b.tag, desc: b.desc, redeem: b.redeem,
-            denom: d.label, price: d.price, reloadly: d.reloadly || null
+            grad: b.grad, img: b.img, tag: b.tag, desc: b.desc, redeem: b.redeem,
+            denom: d.label, price: d.price,
+            pid: b.pid, face: d.face, dtype: b.dtype
         });
     }));
 
@@ -723,9 +659,11 @@
         const icon = (b.fab ? 'fab ' : 'fas ') + b.icon;
         return `
             <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer group fade-in" onclick="openBrand('${b.id}')">
-                <div class="relative h-24 sm:h-28 flex items-center justify-center text-white" style="background:${b.grad}">
-                    <i class="${icon} text-4xl sm:text-5xl drop-shadow group-hover:scale-110 transition duration-300"></i>
-                    <span class="absolute top-2 left-2 bg-black/20 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded-full">${b.tag}</span>
+                <div class="relative h-24 sm:h-28 flex items-center justify-center text-white overflow-hidden" style="background:${b.grad}">
+                    ${b.img
+                        ? `<img src="${b.img}" alt="${b.name}" loading="lazy" class="w-full h-full object-contain p-3 group-hover:scale-105 transition duration-300" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon} text-4xl sm:text-5xl drop-shadow" style="display:none"></i>`
+                        : `<i class="${icon} text-4xl sm:text-5xl drop-shadow group-hover:scale-110 transition duration-300"></i>`}
+                    <span class="absolute top-2 left-2 bg-black/30 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded-full">${b.tag}</span>
                 </div>
                 <div class="p-3">
                     <p class="font-bold text-sm leading-snug">${b.name}</p>
@@ -793,6 +731,11 @@
         pmQtyCount = 1;
         $('pmQtyVal').textContent = 1;
         $('pmCover').style.background = currentBrand.grad;
+        const pmImg = $('pmImg');
+        if (currentBrand.img) {
+            pmImg.src = currentBrand.img; pmImg.style.display = 'block'; $('pmIcon').style.display = 'none';
+            pmImg.onerror = () => { pmImg.style.display = 'none'; $('pmIcon').style.display = 'block'; };
+        } else { pmImg.style.display = 'none'; $('pmIcon').style.display = 'block'; }
         $('pmIcon').className = (currentBrand.fab ? 'fab ' : 'fas ') + currentBrand.icon + ' text-5xl drop-shadow';
         $('pmBadge').textContent = currentBrand.tag;
         $('pmTitle').textContent = currentBrand.name + ' Gift Code';
@@ -856,7 +799,7 @@
         if (!p) return;
         const existing = cart.find(x => x.key === key);
         if (existing) existing.qty = Math.min(10, existing.qty + qty);
-        else cart.push({ key: p.key, brand: p.brand, denom: p.denom, price: p.price, icon: p.icon, fab: p.fab, grad: p.grad, qty });
+        else cart.push({ key: p.key, brand: p.brand, denom: p.denom, price: p.price, icon: p.icon, fab: p.fab, grad: p.grad, img: p.img, pid: p.pid, face: p.face, dtype: p.dtype, qty });
         saveCart();
         showToast('✅ Added to cart');
     }
@@ -894,7 +837,7 @@
                 const icon = (i.fab ? 'fab ' : 'fas ') + i.icon;
                 return `
                 <div class="flex gap-3 bg-vio-50 rounded-xl p-3">
-                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0" style="background:${i.grad || '#7c3aed'}"><i class="${icon}"></i></div>
+                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0 overflow-hidden" style="background:${i.grad || '#7c3aed'}">${i.img ? `<img src="${i.img}" alt="" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none"></i>` : `<i class="${icon}"></i>`}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-slate-700 leading-tight">${i.brand}</p>
                         <p class="text-[11px] text-slate-500 leading-tight">${i.denom}</p>
@@ -1012,7 +955,7 @@
                     vpCaptureId: vpCaptureId || null,
                     email: order.email,
                     phone: order.phone,
-                    items: cart.map(i => ({ brandId: i.key.split('-').slice(0,-1).join('-'), brand: i.brand, denom: i.denom, qty: i.qty, price: i.price }))
+                    items: cart.map(i => ({ brandId: i.key.split('-').slice(0,-1).join('-'), brand: i.brand, denom: i.denom, qty: i.qty, price: i.price, pid: i.pid, face: i.face, dtype: i.dtype }))
                 }),
                 signal: AbortSignal.timeout(30000)
             });

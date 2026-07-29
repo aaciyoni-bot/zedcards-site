@@ -161,22 +161,65 @@ async function getReloadlyToken() {
     return reloadlyToken;
 }
 
-// NOTE: mapping each ZedCards item to a Reloadly productId + unitPrice is the
-// last integration step (needs Yoni's Reloadly account + product catalog).
-// Until productIds are wired, redeem falls back to manual fulfilment so the
-// shop never hands out an unverified code. This keeps rule #1 (authorized
-// source only) and #6 (deliver only after verified payment) intact.
-async function reloadlyRedeem(items) {
-    // Placeholder for the live Reloadly order call. Returns [] to signal
-    // "auto-delivery not wired yet" -> manual fulfilment path.
-    // When ready: getReloadlyToken(), POST /orders per item.productId, then
-    // GET /orders/transactions/{id}/cards to read the code, and return
-    // [{ brand, denom, code, pin, redeem }].
-    return [];
+const GC_ACCEPT = 'application/com.reloadly.giftcards-v1+json';
+
+// Places one Reloadly gift-card order and reads back the redeem code.
+// Returns { code, pin, redeem } or null if the card wasn't ready/failed.
+async function reloadlyOrderOne(token, item, email, customId) {
+    const order = await axios.post(`${RELOADLY_GC_BASE}/orders`, {
+        productId: item.pid,
+        quantity: 1,
+        unitPrice: item.face,               // recipient-currency face value (USD)
+        senderName: 'ZedCards',
+        recipientEmail: email || undefined,
+        customIdentifier: customId,
+        preOrder: false
+    }, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Accept: GC_ACCEPT }, timeout: 30000 });
+
+    const txId = order.data && (order.data.transactionId || order.data.id);
+    if (!txId) return null;
+
+    // The card (code/PIN) is fetched from the transaction; retry briefly as it settles.
+    for (let attempt = 0; attempt < 4; attempt++) {
+        try {
+            const cardsRes = await axios.get(`${RELOADLY_GC_BASE}/orders/transactions/${txId}/cards`, {
+                headers: { Authorization: `Bearer ${token}`, Accept: GC_ACCEPT }, timeout: 20000
+            });
+            const arr = Array.isArray(cardsRes.data) ? cardsRes.data : (cardsRes.data && cardsRes.data.content) || [];
+            const c = arr[0];
+            if (c && (c.cardNumber || c.pinCode)) {
+                return {
+                    code: c.cardNumber || c.pinCode,
+                    pin: c.cardNumber && c.pinCode ? c.pinCode : null,
+                    redeem: (order.data && order.data.product && order.data.product.redeemInstruction && order.data.product.redeemInstruction.verbose) || null
+                };
+            }
+        } catch (e) { /* not ready yet */ }
+        await new Promise(r => setTimeout(r, 2500));
+    }
+    return null;   // ordered but code not retrievable synchronously -> caller falls back to pending
+}
+
+// Delivers real codes for the whole order via Reloadly (authorized distributor).
+// Any single failure => return [] so the caller uses manual fulfilment instead
+// of handing out a partial/unverified result.
+async function reloadlyRedeem(items, email, orderRef) {
+    const token = await getReloadlyToken();
+    const codes = [];
+    let idx = 0;
+    for (const item of items) {
+        if (!item.pid || !(item.face > 0)) return [];
+        for (let q = 0; q < (item.qty || 1); q++) {
+            const one = await reloadlyOrderOne(token, item, email, `${orderRef || 'zc'}-${idx++}`);
+            if (!one) return [];   // bail to manual fulfilment on any miss
+            codes.push({ brand: item.brand, denom: item.denom, code: one.code, pin: one.pin, redeem: one.redeem });
+        }
+    }
+    return codes;
 }
 
 app.post('/api/redeem', async (req, res) => {
-    const { tx_ref, vpCaptureId, items } = req.body || {};
+    const { tx_ref, vpCaptureId, items, email, orderRef } = req.body || {};
 
     if (!Array.isArray(items) || !items.length) {
         return res.status(400).json({ error: 'NO_ITEMS' });
@@ -210,7 +253,7 @@ app.post('/api/redeem', async (req, res) => {
     // 2) Payment confirmed. Try authorized auto-delivery (Reloadly).
     if (RELOADLY_ID && RELOADLY_SECRET) {
         try {
-            const codes = await reloadlyRedeem(items);
+            const codes = await reloadlyRedeem(items, email, orderRef);
             if (codes.length) return res.json({ codes });
         } catch (e) {
             console.warn('Reloadly delivery failed, falling back to manual:', e.message);
