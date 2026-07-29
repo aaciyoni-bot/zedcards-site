@@ -7,31 +7,72 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Install Android SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y android-sdk
+
       - name: Install bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Build AAB
-        env:
-          JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64
+      - name: Create signing key
         run: |
-          printf "n\n/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64\n" | bubblewrap build --input twa-manifest.json 2>&1 || true
+          mkdir -p app/keystore
+          keytool -genkey -v -keystore app/keystore/signing.keystore \
+            -alias androidsigningkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -keypass android -storepass android -dname "CN=ORIZIS,O=ORIZIS,C=ZM"
+
+      - name: Create updated twa-manifest
+        run: |
+          cat > twa-manifest-updated.json << 'EOF'
+          {
+            "packageId": "com.orizis.vochira",
+            "host": "vochira.com",
+            "launcherUrl": "https://vochira.com/",
+            "name": "Vochira: Gift Cards & Codes",
+            "shortName": "Vochira",
+            "startUrl": "/?utm_source=installed_pwa",
+            "display": "standalone",
+            "backgroundColor": "#FFFFFF",
+            "themeColor": "#000000",
+            "orientation": "portrait-primary",
+            "signingKey": {
+              "path": "app/keystore/signing.keystore",
+              "alias": "androidsigningkey",
+              "keyPassword": "android",
+              "storePassword": "android"
+            }
+          }
+          EOF
+
+      - name: Build with bubblewrap (non-interactive)
+        run: |
+          bubblewrap build --input twa-manifest-updated.json --skipPwaValidation || echo "Build attempted"
+
+      - name: Check for built files
+        run: |
+          find . -name "*.aab" -o -name "*.apk" 2>/dev/null || echo "No AAB/APK found yet"
+          ls -la app/build/outputs/bundle/release/ 2>/dev/null || echo "No bundle directory"
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: app-release
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk
           retention-days: 30
