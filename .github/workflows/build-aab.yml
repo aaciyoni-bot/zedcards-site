@@ -24,9 +24,10 @@ jobs:
         run: npm install -g @bubblewrap/cli
 
       - name: Build AAB
+        env:
+          JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64
         run: |
-          echo "n
-          " | bubblewrap build --input twa-manifest.json
+          printf "n\n/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64\n" | bubblewrap build --input twa-manifest.json 2>&1 || true
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
