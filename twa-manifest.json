@@ -1,0 +1,48 @@
+{
+  "packageId": "com.orizis.vochira",
+  "host": "vochira.com",
+  "launcherUrl": "https://vochira.com/",
+  "name": "Vochira: Gift Cards & Codes",
+  "shortName": "Vochira",
+  "startUrl": "/?utm_source=installed_pwa",
+  "display": "standalone",
+  "backgroundColor": "#FFFFFF",
+  "themeColor": "#000000",
+  "orientation": "portrait-primary",
+  "icon": {
+    "src": "icon-512.png",
+    "purpose": "any"
+  },
+  "maskableIcon": {
+    "src": "icon-512.png",
+    "purpose": "maskable"
+  },
+  "screenshots": [
+    {
+      "src": "store-screenshot-1-home.png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "store-screenshot-2-catalog.png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    }
+  ],
+  "preferredRelatedApplications": false,
+  "shortcuts": [],
+  "categories": ["shopping"],
+  "includeSourceURLParams": true,
+  "isSiteWide": true,
+  "isLauncherIcon": true,
+  "isNotificationIcon": true,
+  "isMonetized": true,
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": {
+    "path": "signing.keystore"
+  },
+  "enableNotifications": true,
+  "enableSiteSettingsShortcut": true,
+  "fallbackType": "customtabs"
+}

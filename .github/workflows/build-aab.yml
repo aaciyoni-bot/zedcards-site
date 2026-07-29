@@ -1,0 +1,36 @@
+name: Build AAB for Google Play
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Install bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build AAB
+        run: |
+          echo "n
+          " | bubblewrap build --input twa-manifest.json
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
