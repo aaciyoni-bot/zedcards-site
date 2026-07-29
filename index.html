@@ -116,9 +116,11 @@
         <nav class="max-w-7xl mx-auto px-4 pb-2.5 flex gap-2 items-center overflow-x-auto no-scrollbar">
             <button onclick="filterCategory('all')" data-cat="all" class="cat-chip cat-active shrink-0"><i class="fas fa-border-all mr-1.5"></i>All</button>
             <button onclick="filterCategory('streaming')" data-cat="streaming" class="cat-chip shrink-0"><i class="fas fa-tv mr-1.5"></i>Streaming &amp; TV</button>
-            <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip shrink-0"><i class="fas fa-gamepad mr-1.5"></i>Gaming Credit</button>
+            <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip shrink-0"><i class="fas fa-gamepad mr-1.5"></i>Gaming</button>
             <button onclick="filterCategory('appstore')" data-cat="appstore" class="cat-chip shrink-0"><i class="fas fa-mobile-screen mr-1.5"></i>App Stores</button>
-            <button onclick="filterCategory('giftcard')" data-cat="giftcard" class="cat-chip shrink-0"><i class="fas fa-gift mr-1.5"></i>Gift Cards</button>
+            <button onclick="filterCategory('shopping')" data-cat="shopping" class="cat-chip shrink-0"><i class="fas fa-bag-shopping mr-1.5"></i>Shopping</button>
+            <button onclick="filterCategory('travel')" data-cat="travel" class="cat-chip shrink-0"><i class="fas fa-plane mr-1.5"></i>Travel &amp; Food</button>
+            <button onclick="filterCategory('payments')" data-cat="payments" class="cat-chip shrink-0"><i class="fas fa-credit-card mr-1.5"></i>Payments</button>
         </nav>
     </header>
 
@@ -529,76 +531,164 @@
        ================================================================ */
     const BRANDS = [
         { id:"netflix", name:"Netflix", cat:"streaming", icon:"fa-clapperboard", fab:false, grad:"linear-gradient(135deg,#b1060f,#e50914)",
-          img:"https://cdn.reloadly.com/giftcards/dd02b7e3-a772-40e2-bba6-c11f9b0c3bda.jpeg", pid:18681, dtype:"FIXED",
-          tag:"Streaming", desc:"Netflix gift code — genuine, delivered instantly after payment.",
-          redeem:"Go to netflix.com/redeem, sign in, and enter the code — the value is added to your account and Netflix draws your monthly fee from it.",
+          img:"https://cdn.reloadly.com/giftcards/dd02b7e3-a772-40e2-bba6-c11f9b0c3bda.jpeg", pid:18681, dtype:"FIXED", tag:"Streaming",
+          desc:"Netflix — genuine code, delivered instantly after payment.", redeem:"Go to netflix.com/redeem, sign in, and enter the code — the value is added to your account.",
           denoms:[ {label:'US$20', price:665, face:20}, {label:'US$50', price:1660, face:50}, {label:'US$100', price:3320, face:100} ] },
 
         { id:"apple", name:"Apple / iTunes", cat:"appstore", icon:"fa-apple", fab:true, grad:"linear-gradient(135deg,#333,#000)",
-          img:"https://cdn.reloadly.com/giftcards/08ed62a9-52d3-47d2-9ad8-ae27d0a3f3a2.png", pid:21, dtype:"FIXED",
-          tag:"App Store · Music", desc:"Apple / iTunes gift code — genuine, delivered instantly after payment.",
-          redeem:"On iPhone open the App Store, tap your profile → Redeem Gift Card, and enter the code. Works for the App Store, iTunes, Apple Music and iCloud+.",
+          img:"https://cdn.reloadly.com/giftcards/08ed62a9-52d3-47d2-9ad8-ae27d0a3f3a2.png", pid:21, dtype:"FIXED", tag:"App Store",
+          desc:"Apple / iTunes — genuine code, delivered instantly after payment.", redeem:"App Store → your profile → Redeem Gift Card. Works for App Store, iTunes, Apple Music & iCloud+.",
           denoms:[ {label:'US$10', price:310, face:10}, {label:'US$25', price:775, face:25}, {label:'US$50', price:1550, face:50}, {label:'US$100', price:3100, face:100} ] },
 
         { id:"googleplay", name:"Google Play", cat:"appstore", icon:"fa-google-play", fab:true, grad:"linear-gradient(135deg,#0f9d58,#4285f4)",
-          img:"https://cdn.reloadly.com/giftcards/da7374a4-a2b0-45ea-adae-a6ed972c4121.png", pid:3940, dtype:"RANGE",
-          tag:"App Store", desc:"Google Play gift code — genuine, delivered instantly after payment.",
-          redeem:"Open the Google Play Store → profile → Payments & subscriptions → Redeem code, and enter it. Balance is added to your Google account.",
+          img:"https://cdn.reloadly.com/giftcards/da7374a4-a2b0-45ea-adae-a6ed972c4121.png", pid:3940, dtype:"RANGE", tag:"App Store",
+          desc:"Google Play — genuine code, delivered instantly after payment.", redeem:"Play Store → profile → Payments & subscriptions → Redeem code.",
           denoms:[ {label:'US$10', price:320, face:10}, {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50} ] },
 
-        { id:"amazon", name:"Amazon", cat:"giftcard", icon:"fa-amazon", fab:true, grad:"linear-gradient(135deg,#ff9900,#232f3e)",
-          img:"https://cdn.reloadly.com/giftcards/fbef9b57-e0b0-4ead-aee3-fdc2bc80e2db.png", pid:5, dtype:"RANGE",
-          tag:"Gift Card", desc:"Amazon gift code — genuine, delivered instantly after payment.",
-          redeem:"Sign in at amazon.com → Account → Gift cards → Redeem a gift card, and enter the claim code to add it to your balance.",
-          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50}, {label:'US$100', price:3160, face:100} ] },
-
         { id:"steam", name:"Steam", cat:"gaming", icon:"fa-steam", fab:true, grad:"linear-gradient(135deg,#1b2838,#66c0f4)",
-          img:"https://cdn.reloadly.com/giftcards/795088c7-da49-4cfa-a631-e1cc2ff6b089.png", pid:11828, dtype:"FIXED",
-          tag:"Gaming · Wallet", desc:"Steam gift code — genuine, delivered instantly after payment.",
-          redeem:"Open Steam → your name → Account details → Redeem a Steam Wallet Code, and enter the code. Balance is added instantly.",
+          img:"https://cdn.reloadly.com/giftcards/795088c7-da49-4cfa-a631-e1cc2ff6b089.png", pid:11828, dtype:"FIXED", tag:"Gaming",
+          desc:"Steam — genuine code, delivered instantly after payment.", redeem:"Steam → your name → Account details → Redeem a Steam Wallet Code.",
           denoms:[ {label:'US$20', price:670, face:20}, {label:'US$50', price:1675, face:50} ] },
 
         { id:"xbox", name:"Xbox", cat:"gaming", icon:"fa-xbox", fab:true, grad:"linear-gradient(135deg,#107c10,#0b5c0b)",
-          img:"https://cdn.reloadly.com/giftcards/28c35815-9fdc-4d29-91c6-73e6e3b2303d.png", pid:16061, dtype:"FIXED",
-          tag:"Gaming · Microsoft", desc:"Xbox gift code — genuine, delivered instantly after payment.",
-          redeem:"On Xbox or microsoft.com/redeem, sign in and enter the 25-character code to add it to your Microsoft account balance.",
+          img:"https://cdn.reloadly.com/giftcards/28c35815-9fdc-4d29-91c6-73e6e3b2303d.png", pid:16061, dtype:"FIXED", tag:"Gaming",
+          desc:"Xbox — genuine code, delivered instantly after payment.", redeem:"microsoft.com/redeem, sign in and enter the 25-character code.",
           denoms:[ {label:'US$15', price:470, face:15}, {label:'US$25', price:785, face:25}, {label:'US$50', price:1575, face:50} ] },
 
         { id:"razer", name:"Razer Gold", cat:"gaming", icon:"fa-bolt", fab:false, grad:"linear-gradient(135deg,#44d62c,#1e7d12)",
-          img:"https://cdn.reloadly.com/giftcards/89dfc34a-0bad-4fe6-be28-99a31551b9c1.png", pid:10296, dtype:"FIXED",
-          tag:"Gaming · Credit", desc:"Razer Gold gift code — genuine, delivered instantly after payment.",
-          redeem:"Sign in at gold.razer.com → Reload → Razer Gold PIN, and enter the code to add Gold to your wallet (works for 40,000+ games).",
+          img:"https://cdn.reloadly.com/giftcards/89dfc34a-0bad-4fe6-be28-99a31551b9c1.png", pid:10296, dtype:"FIXED", tag:"Gaming",
+          desc:"Razer Gold — genuine code, delivered instantly after payment.", redeem:"gold.razer.com → Reload → Razer Gold PIN (works for 40,000+ games).",
           denoms:[ {label:'US$10', price:315, face:10}, {label:'US$20', price:635, face:20}, {label:'US$50', price:1580, face:50} ] },
 
         { id:"roblox", name:"Roblox", cat:"gaming", icon:"fa-cubes", fab:false, grad:"linear-gradient(135deg,#e2231a,#9c1712)",
-          img:"https://cdn.reloadly.com/giftcards/roblox.jpeg", pid:11500, dtype:"FIXED",
-          tag:"Gaming · Robux", desc:"Roblox gift code — genuine, delivered instantly after payment.",
-          redeem:"Go to roblox.com/redeem, sign in, and enter the code to add Robux / credit to your account.",
+          img:"https://cdn.reloadly.com/giftcards/roblox.jpeg", pid:11500, dtype:"FIXED", tag:"Gaming",
+          desc:"Roblox — genuine code, delivered instantly after payment.", redeem:"roblox.com/redeem, sign in and enter the code for Robux.",
           denoms:[ {label:'US$10', price:305, face:10}, {label:'US$25', price:765, face:25}, {label:'US$50', price:1535, face:50} ] },
 
         { id:"pubg", name:"PUBG Mobile UC", cat:"gaming", icon:"fa-crosshairs", fab:false, grad:"linear-gradient(135deg,#e8a020,#7a4e12)",
-          img:"https://cdn.reloadly.com/giftcards/pubg-mobile.jpeg", pid:15552, dtype:"FIXED",
-          tag:"Gaming · UC", desc:"PUBG Mobile UC gift code — genuine, delivered instantly after payment.",
-          redeem:"Redeem on the Midasbuy top-up page for your PUBG Mobile character ID — UC is credited instantly.",
+          img:"https://cdn.reloadly.com/giftcards/pubg-mobile.jpeg", pid:15552, dtype:"FIXED", tag:"Gaming",
+          desc:"PUBG Mobile UC — genuine code, delivered instantly after payment.", redeem:"Redeem on Midasbuy with your PUBG Mobile ID — UC credited instantly.",
           denoms:[ {label:'US$5', price:155, face:5}, {label:'US$10', price:305, face:10}, {label:'US$25', price:765, face:25}, {label:'US$50', price:1525, face:50} ] },
 
         { id:"mlbb", name:"Mobile Legends", cat:"gaming", icon:"fa-gem", fab:false, grad:"linear-gradient(135deg,#3b82f6,#1e3a8a)",
-          img:"https://cdn.reloadly.com/giftcards/mobile-legends-diamonds.jpeg", pid:15347, dtype:"FIXED",
-          tag:"Gaming · Diamonds", desc:"Mobile Legends gift code — genuine, delivered instantly after payment.",
-          redeem:"Redeem on the official MLBB / Codashop top-up page with your Player ID + Zone ID — diamonds arrive instantly.",
+          img:"https://cdn.reloadly.com/giftcards/mobile-legends-diamonds.jpeg", pid:15347, dtype:"FIXED", tag:"Gaming",
+          desc:"Mobile Legends — genuine code, delivered instantly after payment.", redeem:"Redeem on Codashop with your Player ID + Zone ID.",
           denoms:[ {label:'US$4.99', price:155, face:4.99}, {label:'US$9.99', price:315, face:9.99}, {label:'US$19.99', price:625, face:19.99} ] },
 
-        { id:"ubereats", name:"Uber Eats", cat:"giftcard", icon:"fa-utensils", fab:false, grad:"linear-gradient(135deg,#0a7d33,#053d19)",
-          img:"https://cdn.reloadly.com/giftcards/f192817b-33af-454f-b69f-1ac4d0ea44f4.png", pid:13044, dtype:"FIXED",
-          tag:"Food · Gift Card", desc:"Uber Eats gift code — genuine, delivered instantly after payment.",
-          redeem:"In the Uber Eats app → Account → Wallet → Add gift card, and enter the code to top up your balance.",
+        { id:"riot", name:"Riot Access", cat:"gaming", icon:"fa-gun", fab:false, grad:"linear-gradient(135deg,#d13639,#8a1f21)",
+          img:"https://cdn.reloadly.com/giftcards/e4432a2a-3c7e-4ae4-957e-109482e51289.png", pid:11369, dtype:"FIXED", tag:"Gaming",
+          desc:"Riot Access — genuine code, delivered instantly after payment.", redeem:"Riot Access — redeem for Valorant, League of Legends, Wild Rift & more at your Riot account.",
+          denoms:[ {label:'US$10', price:315, face:10}, {label:'US$25', price:785, face:25}, {label:'US$50', price:1565, face:50} ] },
+
+        { id:"eaplay", name:"EA Play", cat:"gaming", icon:"fa-gamepad", fab:false, grad:"linear-gradient(135deg,#ff4747,#111)",
+          img:"https://cdn.reloadly.com/giftcards/-cfb39d16-e578-45f2-9c18-7b0f9ddfa106EA.jpg", pid:13957, dtype:"FIXED", tag:"Gaming",
+          desc:"EA Play — genuine code, delivered instantly after payment.", redeem:"Redeem on your platform store for EA Play membership & games.",
+          denoms:[ {label:'US$15', price:430, face:15}, {label:'US$25', price:715, face:25} ] },
+
+        { id:"amazon", name:"Amazon", cat:"shopping", icon:"fa-amazon", fab:true, grad:"linear-gradient(135deg,#ff9900,#232f3e)",
+          img:"https://cdn.reloadly.com/giftcards/fbef9b57-e0b0-4ead-aee3-fdc2bc80e2db.png", pid:5, dtype:"RANGE", tag:"Shopping",
+          desc:"Amazon — genuine code, delivered instantly after payment.", redeem:"amazon.com → Account → Gift cards → Redeem a gift card.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50}, {label:'US$100', price:3160, face:100} ] },
+
+        { id:"nike", name:"Nike", cat:"shopping", icon:"fa-shoe-prints", fab:false, grad:"linear-gradient(135deg,#111,#444)",
+          img:"https://cdn.reloadly.com/giftcards/nike.webp", pid:18420, dtype:"RANGE", tag:"Shopping",
+          desc:"Nike — genuine code, delivered instantly after payment.", redeem:"Enter the code at nike.com checkout or in the Nike app.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50}, {label:'US$100', price:3160, face:100} ] },
+
+        { id:"adidas", name:"Adidas", cat:"shopping", icon:"fa-shoe-prints", fab:false, grad:"linear-gradient(135deg,#000,#333)",
+          img:"https://cdn.reloadly.com/giftcards/adidas.jpeg", pid:18344, dtype:"RANGE", tag:"Shopping",
+          desc:"Adidas — genuine code, delivered instantly after payment.", redeem:"Apply the gift card code at adidas.com checkout.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50}, {label:'US$100', price:3160, face:100} ] },
+
+        { id:"sephora", name:"Sephora", cat:"shopping", icon:"fa-spray-can-sparkles", fab:false, grad:"linear-gradient(135deg,#111,#000)",
+          img:"https://cdn.reloadly.com/giftcards/cc58ae75-36e4-4275-922a-862d6afcf9c5.png", pid:18273, dtype:"RANGE", tag:"Shopping",
+          desc:"Sephora — genuine code, delivered instantly after payment.", redeem:"Redeem at sephora.com checkout or in-store.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50} ] },
+
+        { id:"walmart", name:"Walmart", cat:"shopping", icon:"fa-store", fab:false, grad:"linear-gradient(135deg,#0071ce,#004c91)",
+          img:"https://cdn.reloadly.com/giftcards/-542b7abf-756a-44a7-8015-797d222977d5Walmart.jpg", pid:18285, dtype:"RANGE", tag:"Shopping",
+          desc:"Walmart — genuine code, delivered instantly after payment.", redeem:"Add the card to your Walmart account or use the code at checkout.",
+          denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
+
+        { id:"target", name:"Target", cat:"shopping", icon:"fa-bullseye", fab:false, grad:"linear-gradient(135deg,#cc0000,#8a0000)",
+          img:"https://cdn.reloadly.com/giftcards/4ba0f8b8-2958-46aa-a47c-3698d8d12867.png", pid:12740, dtype:"FIXED", tag:"Shopping",
+          desc:"Target — genuine code, delivered instantly after payment.", redeem:"Enter the code at target.com or scan in-store.",
+          denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
+
+        { id:"etsy", name:"Etsy", cat:"shopping", icon:"fa-etsy", fab:true, grad:"linear-gradient(135deg,#f56400,#c14b00)",
+          img:"https://cdn.reloadly.com/giftcards/48fdaa1d-57ec-4ecc-92b3-682e171432f3.png", pid:20070, dtype:"RANGE", tag:"Shopping",
+          desc:"Etsy — genuine code, delivered instantly after payment.", redeem:"Apply the Etsy gift card code at checkout.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50} ] },
+
+        { id:"asos", name:"ASOS", cat:"shopping", icon:"fa-shirt", fab:false, grad:"linear-gradient(135deg,#111,#000)",
+          img:"https://cdn.reloadly.com/giftcards/3224fc13-bc96-486b-a354-c53ded219d3d.png", pid:18272, dtype:"RANGE", tag:"Shopping",
+          desc:"ASOS — genuine code, delivered instantly after payment.", redeem:"Enter the gift voucher code at asos.com checkout.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50} ] },
+
+        { id:"hm", name:"H&M", cat:"shopping", icon:"fa-shirt", fab:false, grad:"linear-gradient(135deg,#e50010,#a3000b)",
+          img:"https://cdn.reloadly.com/giftcards/h-and-m.png", pid:18274, dtype:"RANGE", tag:"Shopping",
+          desc:"H&M — genuine code, delivered instantly after payment.", redeem:"Redeem the code at hm.com checkout or in the H&M app.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50} ] },
+
+        { id:"airbnb", name:"Airbnb", cat:"travel", icon:"fa-airbnb", fab:true, grad:"linear-gradient(135deg,#ff5a5f,#bd2b30)",
+          img:"https://cdn.reloadly.com/giftcards/6808b1b1-b303-4283-a5a5-5f7fe3618324.png", pid:18270, dtype:"RANGE", tag:"Travel & Food",
+          desc:"Airbnb — genuine code, delivered instantly after payment.", redeem:"airbnb.com/gift → Redeem, sign in and enter the code.",
+          denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
+
+        { id:"ubereats", name:"Uber Eats", cat:"travel", icon:"fa-utensils", fab:false, grad:"linear-gradient(135deg,#0a7d33,#053d19)",
+          img:"https://cdn.reloadly.com/giftcards/f192817b-33af-454f-b69f-1ac4d0ea44f4.png", pid:13044, dtype:"FIXED", tag:"Travel & Food",
+          desc:"Uber Eats — genuine code, delivered instantly after payment.", redeem:"Uber Eats app → Wallet → Add gift card.",
           denoms:[ {label:'US$15', price:475, face:15}, {label:'US$25', price:795, face:25}, {label:'US$50', price:1590, face:50} ] },
 
-        { id:"airbnb", name:"Airbnb", cat:"giftcard", icon:"fa-house", fab:true, grad:"linear-gradient(135deg,#ff5a5f,#bd2b30)",
-          img:"https://cdn.reloadly.com/giftcards/6808b1b1-b303-4283-a5a5-5f7fe3618324.png", pid:18270, dtype:"RANGE",
-          tag:"Travel · Gift Card", desc:"Airbnb gift code — genuine, delivered instantly after payment.",
-          redeem:"Go to airbnb.com/gift → Redeem, sign in, and enter the code to add the credit to your Airbnb account.",
+        { id:"doordash", name:"DoorDash", cat:"travel", icon:"fa-burger", fab:false, grad:"linear-gradient(135deg,#ff3008,#a31d05)",
+          img:"https://cdn.reloadly.com/giftcards/b1339d25-ad02-43a8-8c2c-30ce5bda8389.jpeg", pid:18332, dtype:"RANGE", tag:"Travel & Food",
+          desc:"DoorDash — genuine code, delivered instantly after payment.", redeem:"DoorDash app → Account → Gift cards → Redeem.",
+          denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50} ] },
+
+        { id:"starbucks", name:"Starbucks", cat:"travel", icon:"fa-mug-hot", fab:false, grad:"linear-gradient(135deg,#00704a,#004832)",
+          img:"https://cdn.reloadly.com/giftcards/3def-2acd-5dbf-bdfe5-starbuck.jpeg", pid:18287, dtype:"RANGE", tag:"Travel & Food",
+          desc:"Starbucks — genuine code, delivered instantly after payment.", redeem:"Starbucks app → Add card, or enter the code at checkout.",
+          denoms:[ {label:'US$10', price:320, face:10}, {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50} ] },
+
+        { id:"hotels", name:"Hotels.com", cat:"travel", icon:"fa-hotel", fab:false, grad:"linear-gradient(135deg,#d32f2f,#7a1a1a)",
+          img:"https://cdn.reloadly.com/giftcards/hotels.com.jpeg", pid:15136, dtype:"RANGE", tag:"Travel & Food",
+          desc:"Hotels.com — genuine code, delivered instantly after payment.", redeem:"Apply the gift card at hotels.com when booking.",
+          denoms:[ {label:'US$50', price:1565, face:50}, {label:'US$100', price:3130, face:100} ] },
+
+        { id:"lyft", name:"Lyft", cat:"travel", icon:"fa-car-side", fab:false, grad:"linear-gradient(135deg,#ea0b8c,#8a0653)",
+          img:"https://cdn.reloadly.com/giftcards/0f2b9fa7-458e-422b-a611-181312abaeb2.png", pid:20033, dtype:"RANGE", tag:"Travel & Food",
+          desc:"Lyft — genuine code, delivered instantly after payment.", redeem:"Lyft app → Account → Payment → Add gift card.",
+          denoms:[ {label:'US$25', price:790, face:25}, {label:'US$50', price:1580, face:50} ] },
+
+        { id:"airalo", name:"Airalo eSIM", cat:"travel", icon:"fa-sim-card", fab:false, grad:"linear-gradient(135deg,#ff5900,#1b1b3a)",
+          img:"https://cdn.reloadly.com/giftcards/062c086f-b77d-427a-92fa-a1078f31f603.png", pid:20321, dtype:"FIXED", tag:"Travel & Food",
+          desc:"Airalo eSIM — genuine code, delivered instantly after payment.", redeem:"Redeem in the Airalo app for global eSIM data in 200+ countries.",
+          denoms:[ {label:'US$10', price:295, face:10}, {label:'US$20', price:585, face:20}, {label:'US$50', price:1465, face:50} ] },
+
+        { id:"paypal", name:"PayPal", cat:"payments", icon:"fa-paypal", fab:true, grad:"linear-gradient(135deg,#003087,#009cde)",
+          img:"https://cdn.reloadly.com/giftcards/e713b999-a0ee-43a3-b892-908ccb9f33b0.jpeg", pid:18747, dtype:"RANGE", tag:"Payments",
+          desc:"PayPal — genuine code, delivered instantly after payment.", redeem:"Add the gift card to your PayPal wallet balance.",
+          denoms:[ {label:'US$25', price:830, face:25}, {label:'US$50', price:1660, face:50}, {label:'US$100', price:3320, face:100} ] },
+
+        { id:"binance", name:"Binance (USDT)", cat:"payments", icon:"fa-coins", fab:false, grad:"linear-gradient(135deg,#f0b90b,#1e2026)",
+          img:"https://cdn.reloadly.com/giftcards/de7c4981-c29a-45ca-9ecf-ed06ea6c8455.jpeg", pid:18559, dtype:"RANGE", tag:"Payments",
+          desc:"Binance (USDT) — genuine code, delivered instantly after payment.", redeem:"Redeem in your Binance account as a USDT gift card.",
+          denoms:[ {label:'US$50', price:1740, face:50}, {label:'US$100', price:3480, face:100} ] },
+
+        { id:"crypto", name:"Crypto Voucher", cat:"payments", icon:"fa-bitcoin-sign", fab:false, grad:"linear-gradient(135deg,#2b6cb0,#1a4372)",
+          img:"https://cdn.reloadly.com/giftcards/d2de9400-07b9-443a-a476-15056ce560fa.jpeg", pid:14107, dtype:"RANGE", tag:"Payments",
+          desc:"Crypto Voucher — genuine code, delivered instantly after payment.", redeem:"Redeem at cryptovoucher.io for BTC/ETH and 50+ coins.",
+          denoms:[ {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
+
+        { id:"visa", name:"Virtual Visa", cat:"payments", icon:"fa-cc-visa", fab:true, grad:"linear-gradient(135deg,#1a1f71,#4b53bc)",
+          img:"https://cdn.reloadly.com/giftcards/2b1118dd-8b3e-47a3-9184-35abdb191721.png", pid:18731, dtype:"RANGE", tag:"Payments",
+          desc:"Virtual Visa — genuine code, delivered instantly after payment.", redeem:"Use the virtual Visa number to pay at any online store that takes Visa.",
           denoms:[ {label:'US$25', price:800, face:25}, {label:'US$50', price:1595, face:50}, {label:'US$100', price:3195, face:100} ] },
+
+        { id:"mastercard", name:"Mastercard Prepaid", cat:"payments", icon:"fa-cc-mastercard", fab:true, grad:"linear-gradient(135deg,#eb001b,#f79e1b)",
+          img:"https://cdn.reloadly.com/giftcards/36eb3eae-3dcc-4d0f-b05f-4fbff95dd1a4.png", pid:20305, dtype:"RANGE", tag:"Payments",
+          desc:"Mastercard Prepaid — genuine code, delivered instantly after payment.", redeem:"Use the prepaid Mastercard number to pay online where Mastercard is accepted.",
+          denoms:[ {label:'US$25', price:815, face:25}, {label:'US$50', price:1630, face:50}, {label:'US$100', price:3255, face:100} ] },
 
     ];
 
@@ -692,7 +782,7 @@
         $('productGrid').innerHTML = list.map(brandCardHtml).join('');
         $('emptyBox').classList.toggle('hidden', list.length > 0);
         $('resultsCount').textContent = list.length + ' brand' + (list.length === 1 ? '' : 's');
-        const titles = { all:'Popular in Zambia', streaming:'Streaming & TV', gaming:'Gaming Credit', appstore:'App Store Cards', music:'Music', giftcard:'Gift Cards' };
+        const titles = { all:'Popular in Zambia', streaming:'Streaming & TV', gaming:'Gaming', appstore:'App Store Cards', shopping:'Shopping', travel:'Travel & Food', payments:'Payments & Crypto', giftcard:'Gift Cards' };
         $('resultsTitle').textContent = q ? `Results for "${activeSearch.trim()}"` : (titles[activeCat] || 'Popular in Zambia');
     }
 
