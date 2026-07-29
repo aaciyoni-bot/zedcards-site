@@ -1,5 +1,5 @@
-/* ZedCards service worker - enables app installation and basic offline shell */
-const CACHE = 'zedcards-v1';
+/* Vochira service worker - enables app installation and basic offline shell */
+const CACHE = 'Vochira-v1';
 
 self.addEventListener('install', e => {
     self.skipWaiting();

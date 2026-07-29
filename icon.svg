@@ -1,38 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7c3aed"/>
-      <stop offset=".55" stop-color="#4c1d95"/>
-      <stop offset="1" stop-color="#2e1065"/>
+      <stop offset="0" stop-color="#2d6657"/>
+      <stop offset=".55" stop-color="#1c4038"/>
+      <stop offset="1" stop-color="#122c26"/>
     </linearGradient>
-    <radialGradient id="glowP" cx=".82" cy=".18" r=".6">
-      <stop offset="0" stop-color="#f472b6" stop-opacity=".55"/>
-      <stop offset="1" stop-color="#f472b6" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="glowC" cx=".15" cy=".85" r=".55">
-      <stop offset="0" stop-color="#22d3ee" stop-opacity=".45"/>
-      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="bolt" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#22d3ee"/>
-      <stop offset=".5" stop-color="#f4d58d"/>
-      <stop offset="1" stop-color="#f472b6"/>
+    <linearGradient id="v" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff8b64"/>
+      <stop offset="1" stop-color="#ec5124"/>
     </linearGradient>
-    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="10"/>
-    </filter>
   </defs>
+
   <rect width="512" height="512" fill="url(#bg)"/>
-  <rect width="512" height="512" fill="url(#glowP)"/>
-  <rect width="512" height="512" fill="url(#glowC)"/>
-  <g transform="translate(256,256) rotate(-12)">
-    <rect x="-138" y="-95" width="276" height="190" rx="30" fill="#ffffff" fill-opacity=".14" stroke="#ffffff" stroke-opacity=".55" stroke-width="7"/>
-    <rect x="-138" y="-64" width="276" height="27" fill="#ffffff" fill-opacity=".22"/>
-  </g>
-  <g transform="translate(256,256)" filter="url(#soft)" opacity=".75">
-    <path d="M13,-133 L-43.5,18.6 L-4.35,18.6 L-17.4,133 L43.5,-18.6 L4.35,-18.6 Z" fill="#22d3ee"/>
-  </g>
-  <g transform="translate(256,256)">
-    <path d="M13,-133 L-43.5,18.6 L-4.35,18.6 L-17.4,133 L43.5,-18.6 L4.35,-18.6 Z" fill="url(#bolt)"/>
-  </g>
+
+  <!-- The voucher stub: rounded card with a torn notch on each side. -->
+  <path d="M134 141h244a48 48 0 0 1 48 48v35a32 32 0 0 0 0 64v35a48 48 0 0 1-48 48H134a48 48 0 0 1-48-48v-35a32 32 0 0 0 0-64v-35a48 48 0 0 1 48-48z"
+        fill="#fbf6ec"/>
+
+  <!-- Perforation running down the tear line. -->
+  <path d="M256 158v196" stroke="#122c26" stroke-opacity=".13" stroke-width="5"
+        stroke-linecap="round" stroke-dasharray="2 18"/>
+
+  <!-- The V of Vochira, drawn as the tick you get when the code lands. -->
+  <path d="M205 214l51 86 51-86" fill="none" stroke="url(#v)" stroke-width="34"
+        stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

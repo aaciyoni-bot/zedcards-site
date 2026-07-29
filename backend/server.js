@@ -8,7 +8,7 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 /* =====================================================================
-   ZEDCARDS BACKEND
+   VOCHIRA BACKEND
    Environment variables (Vercel -> Project Settings -> Environment Vars):
      PAWAPAY_TOKEN          - pawaPay API token. Without it, /api/pay reports
                               simulated mode and the storefront simulates.
@@ -42,7 +42,7 @@ const RELOADLY_GC_BASE = RELOADLY_ENV === 'production'
 const VP_URL = process.env.VERIPOINTS_FUNCTIONS_URL;
 const VP_KEY = process.env.VERIPOINTS_SERVER_KEY;
 const VP_PLATFORM_UID = process.env.VERIPOINTS_PLATFORM_UID;
-const VP_SITE_ID = 'zedcards';
+const VP_SITE_ID = 'vochira';
 const VP_EARN_PERCENT = Number(process.env.VP_EARN_PERCENT) || 3;
 const VP_CONFIGURED = Boolean(VP_URL && VP_KEY);
 
@@ -57,7 +57,7 @@ async function vpCall(fnName, data) {
 app.get('/api/health', (req, res) => {
     res.json({
         ok: true,
-        service: 'zedcards-backend',
+        service: 'vochira-backend',
         paymentsConfigured: Boolean(PAWAPAY_TOKEN),
         paymentsEnv: process.env.PAWAPAY_ENV === 'production' ? 'production' : 'sandbox',
         codeDelivery: RELOADLY_ID && RELOADLY_SECRET ? 'reloadly-' + RELOADLY_ENV : 'manual',
@@ -101,7 +101,7 @@ app.post('/api/pay', async (req, res) => {
                 type: 'MMO',
                 accountDetails: { phoneNumber: '260' + phone, provider }
             },
-            customerMessage: 'ZedCards order'
+            customerMessage: 'Vochira order'
         }, { headers: pawapayHeaders(), timeout: 25000 });
 
         res.json({ tx_ref: depositId, status: r.data && r.data.status });
@@ -170,7 +170,7 @@ async function reloadlyOrderOne(token, item, email, customId) {
         productId: item.pid,
         quantity: 1,
         unitPrice: item.face,               // recipient-currency face value (USD)
-        senderName: 'ZedCards',
+        senderName: 'Vochira',
         recipientEmail: email || undefined,
         customIdentifier: customId,
         preOrder: false
@@ -299,7 +299,7 @@ app.post('/api/veripoints/release', async (req, res) => {
     const { holdId } = req.body || {};
     if (!holdId) return res.status(400).json({ error: 'INVALID_INPUT' });
     try {
-        await vpCall('walletRelease', { holdId, siteId: VP_SITE_ID, serverKey: VP_KEY, reason: 'zedcards payment failed' });
+        await vpCall('walletRelease', { holdId, siteId: VP_SITE_ID, serverKey: VP_KEY, reason: 'vochira payment failed' });
         res.json({ released: true });
     } catch (e) {
         res.status(502).json({ error: 'RELEASE_FAILED', message: e.message });

@@ -1,7 +1,7 @@
 {
-  "name": "zedcards-backend",
+  "name": "vochira-backend",
   "version": "1.0.0",
-  "description": "ZedCards API server - pawaPay Mobile Money + verified gift-card code delivery (Reloadly)",
+  "description": "Vochira API server - pawaPay Mobile Money + verified gift-card code delivery (Reloadly)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

@@ -3,34 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ZedCards — Gift Cards & Subscriptions, Pay with Mobile Money 🇿🇲</title>
-    <meta name="description" content="ZedCards — Zambia's instant gift-card & subscription store: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha. Code delivered instantly.">
+    <title>Vochira — Gift Cards & Subscriptions, Pay with Mobile Money 🇿🇲</title>
+    <meta name="description" content="Vochira — Zambia's instant gift-card & subscription store: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha. Code delivered instantly.">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#7c3aed">
+    <meta name="theme-color" content="#122c26">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ZedCards">
+    <meta name="apple-mobile-web-app-title" content="Vochira">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // "vio" = the ZedCards vibrant purple/violet brand ramp
-                        vio: {
-                            50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa',
-                            500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95'
+                        /* "ink" = Vochira's deep evergreen brand ramp.
+                           50/100 are warm paper tones (the voucher stock),
+                           500-900 are the evergreen the brand is built on. */
+                        ink: {
+                            50: '#fbf6ec', 100: '#f0e7d6', 200: '#bad8ce', 300: '#8ebdae', 400: '#5f9c89',
+                            500: '#3f7f6c', 600: '#2d6657', 700: '#245247', 800: '#1c4038', 900: '#122c26'
                         },
-                        gold: { DEFAULT: '#e3ae4e', soft: '#f4d58d', deep: '#b8862f' },
-                        neon: { cyan: '#22d3ee', pink: '#f472b6' },
+                        /* coral = the single accent. Primary actions only. */
+                        coral: { DEFAULT: '#ff6a3d', 400: '#ff8b64', 500: '#ff6a3d', 600: '#ec5124', 700: '#c53e17' },
+                        gold: { DEFAULT: '#e0a44b', soft: '#f2ce93', deep: '#b67c2c' },
                         zam: { green: '#198a00', red: '#de2010', black: '#000000', orange: '#ef7d00' }
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['"Chakra Petch"', 'sans-serif'] }
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Outfit', 'sans-serif'] }
                 }
             }
         }
@@ -40,61 +43,55 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .spinner { border: 3px solid #ede9fe; border-top-color: #7c3aed; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+        .spinner { border: 3px solid #f0e7d6; border-top-color: #ff6a3d; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .pulse-ring { animation: pulseRing 1.5s ease-out infinite; }
         @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(25,138,0,0.4); } 100% { box-shadow: 0 0 0 16px rgba(25,138,0,0); } }
 
-        /* ===== ZedCards — arcade / gaming identity ===== */
-        .font-display { letter-spacing: 0.005em; }
-        /* Product cards behave like glowing game tiles */
-        #productGrid > * { transition: transform .18s ease, box-shadow .18s ease; }
-        #productGrid > *:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px rgba(139,92,246,.35), 0 16px 34px -10px rgba(124,58,237,.5) !important; }
-        /* Neon glow + arcade underline for the hero headline */
-        .neon { text-shadow: 0 0 20px rgba(34,211,238,.45); }
-        .arcade-underline { position: relative; display: inline-block; }
-        .arcade-underline::after { content: ''; position: absolute; left: 0; bottom: -5px; height: 3px; width: 100%; background: linear-gradient(90deg, #22d3ee, #f472b6, #e3ae4e); border-radius: 2px; box-shadow: 0 0 14px rgba(34,211,238,.6); }
-        /* Faint dot-grid gives the hero an arcade texture */
-        #heroSection::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.09) 1px, transparent 1px); background-size: 22px 22px; opacity: .55; pointer-events: none; }
+        /* ===== VOCHIRA — voucher-stub identity =====
+           The whole brand is one idea: a paper voucher you tear off.
+           Perforations, warm stock, evergreen ink. No glow, no neon. */
+        .font-display { letter-spacing: -0.015em; }
+
+        /* Product cards read as tear-off vouchers: a perforated top edge
+           and a warm paper lift, instead of a glowing game tile. */
+        #productGrid > * { position: relative; transition: transform .2s ease-out, box-shadow .2s ease-out; }
+        #productGrid > *::before {
+            content: ''; position: absolute; top: 0; left: 12px; right: 12px; height: 2px;
+            background-image: radial-gradient(circle, #c9b89a 1px, transparent 1.2px);
+            background-size: 8px 2px; opacity: .5; pointer-events: none;
+        }
+        #productGrid > *:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(18,44,38,.06), 0 14px 30px -12px rgba(18,44,38,.34) !important; }
+
+        /* Torn-edge rule under the hero headline — the perforation you tear along. */
+        .stub-rule { position: relative; display: inline-block; }
+        .stub-rule::after {
+            content: ''; position: absolute; left: 0; bottom: -7px; height: 4px; width: 100%;
+            background-image: radial-gradient(circle, #ff6a3d 1.6px, transparent 1.8px);
+            background-size: 9px 4px;
+        }
+
+        /* Hero texture: a sheet of voucher stock, not an arcade grid. */
+        #heroSection::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+            background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 13px);
+        }
+        /* The tear line where the hero ends and the shop begins. */
+        #heroSection::after {
+            content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; pointer-events: none;
+            background-image: radial-gradient(circle at 50% 100%, #fbf6ec 5px, transparent 5.5px);
+            background-size: 18px 10px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #productGrid > *, .fade-in { transition: none !important; animation: none !important; }
+        }
     </style>
 </head>
-<body class="bg-vio-50 font-sans text-slate-800 min-h-screen flex flex-col">
-
-    <!-- ═══ ORIZIS INTRO · standalone module ═══ -->
-    <div id="orizis-intro">
-      <style>
-        #orizis-intro { position: fixed; inset: 0; z-index: 999999; background: #0d0510; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.45s ease; }
-        #orizis-intro.oi-out { opacity: 0; pointer-events: none; }
-        #orizis-intro .oi-mark { font-family: 'Playfair Display', Georgia, serif; font-weight: 900; font-size: clamp(38px, 9vw, 72px); letter-spacing: 0.22em; margin-right: -0.22em; background: linear-gradient(100deg, #4c1d95 0%, #ede9fe 28%, #e3ae4e 50%, #ede9fe 72%, #4c1d95 100%); background-size: 240% auto; -webkit-background-clip: text; background-clip: text; color: transparent; opacity: 0; animation: oiShine 1.9s ease forwards, oiRise 0.9s cubic-bezier(0.22,1,0.36,1) forwards; }
-        #orizis-intro .oi-sub { font-family: 'Inter', Arial, sans-serif; font-weight: 700; font-size: clamp(10px, 2.2vw, 14px); letter-spacing: 0.55em; margin-right: -0.55em; color: #8b6fae; margin-top: 14px; opacity: 0; animation: oiFade 0.7s ease 0.55s forwards; }
-        #orizis-intro .oi-line { width: 0; height: 1px; background: linear-gradient(90deg, transparent, #e3ae4e, transparent); margin-top: 22px; animation: oiLine 1.1s ease 0.35s forwards; }
-        #orizis-intro .oi-load { display: flex; align-items: center; gap: 8px; margin-top: 26px; color: #8b6fae; font-family: 'Inter', Arial, sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.2em; opacity: 0; animation: oiFade 0.7s ease 0.9s forwards; }
-        #orizis-intro .oi-spin { width: 14px; height: 14px; border: 2px solid rgba(227,174,78,0.25); border-top-color: #e3ae4e; border-radius: 50%; animation: oiSpin 0.9s linear infinite; }
-        @keyframes oiSpin { to { transform: rotate(360deg); } }
-        @keyframes oiShine { from { background-position: 200% center; } to { background-position: -40% center; } }
-        @keyframes oiRise { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: none; } }
-        @keyframes oiFade { to { opacity: 1; } }
-        @keyframes oiLine { to { width: min(320px, 60vw); } }
-      </style>
-      <div class="oi-mark">ORIZIS</div>
-      <div class="oi-line"></div>
-      <div class="oi-sub">TECHNOLOGY</div>
-      <div class="oi-load"><div class="oi-spin"></div>LOADING</div>
-      <script>
-        (function () {
-          var el = document.getElementById('orizis-intro');
-          var done = false;
-          function out() { if (done) return; done = true; el.classList.add('oi-out'); setTimeout(function () { el.remove(); }, 500); }
-          el.addEventListener('click', out);
-          el.addEventListener('touchstart', out, { passive: true });
-          setTimeout(out, 1300);
-        })();
-      </script>
-    </div>
-    <!-- ═══ /ORIZIS INTRO ═══ -->
+<body class="bg-ink-50 font-sans text-slate-800 min-h-screen flex flex-col">
 
     <!-- ======================= TOP BAR ======================= -->
-    <div class="bg-vio-900 text-white text-xs sm:text-sm py-1.5 px-4 text-center">
+    <div class="bg-ink-900 text-white text-xs sm:text-sm py-1.5 px-4 text-center">
         <i class="fas fa-bolt mr-1 text-gold-soft"></i> Instant code delivery &nbsp;•&nbsp; Pay with <b>MTN MoMo</b>, <b>Airtel Money</b> &amp; <b>Zamtel Kwacha</b>
     </div>
 
@@ -102,25 +99,26 @@
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 sm:gap-6">
             <a href="#" onclick="goHome(); return false;" class="flex items-center gap-2 shrink-0">
-                <div class="bg-gradient-to-br from-vio-500 to-vio-700 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-md">
-                    <i class="fas fa-gift"></i>
-                </div>
+                <svg viewBox="0 0 40 40" class="w-10 h-10 shrink-0" role="img" aria-label="Vochira">
+                    <path d="M8 8h24a6 6 0 0 1 6 6v2.5a3.5 3.5 0 0 0 0 7V26a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6v-2.5a3.5 3.5 0 0 0 0-7V14a6 6 0 0 1 6-6z" fill="#2d6657"/>
+                    <path d="M13.5 15.5 20 26l6.5-10.5" fill="none" stroke="#ff6a3d" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
                 <div class="hidden sm:block">
-                    <h1 class="text-xl font-display font-extrabold tracking-tight leading-none">Zed<span class="text-vio-600">Cards</span></h1>
-                    <p class="text-[10px] text-slate-400 leading-none mt-0.5">Gift cards. Pay Local.</p>
+                    <h1 class="text-xl font-display font-extrabold tracking-tight leading-none text-ink-900">Vochira</h1>
+                    <p class="text-[10px] text-ink-500 font-semibold leading-none mt-1 tracking-wide uppercase">Codes in seconds</p>
                 </div>
             </a>
 
             <div class="flex-1 relative">
                 <input id="searchInput" type="text" placeholder="Search Netflix, DSTV, Free Fire..."
-                    class="w-full border-2 border-vio-500 rounded-full py-2.5 pl-5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-vio-100"
+                    class="w-full border-2 border-ink-500 rounded-full py-2.5 pl-5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-ink-100"
                     oninput="doSearch()" onkeydown="if(event.key==='Enter') doSearch()">
-                <button onclick="doSearch()" class="absolute right-1 top-1 bottom-1 bg-vio-600 hover:bg-vio-700 text-white rounded-full w-10 flex items-center justify-center transition">
+                <button onclick="doSearch()" class="absolute right-1 top-1 bottom-1 bg-ink-600 hover:bg-ink-700 text-white rounded-full w-10 flex items-center justify-center transition">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
 
-            <button onclick="toggleCart(true)" class="relative shrink-0 text-slate-600 hover:text-vio-600 transition p-2">
+            <button onclick="toggleCart(true)" class="relative shrink-0 text-slate-600 hover:text-ink-600 transition p-2">
                 <i class="fas fa-cart-shopping text-2xl"></i>
                 <span id="cartCount" class="absolute -top-1 -right-1 bg-zam-red text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
             </button>
@@ -139,16 +137,16 @@
     </header>
 
     <!-- ======================= HERO (compact — products stay above the fold) ======================= -->
-    <section id="heroSection" class="relative overflow-hidden bg-vio-900 text-white">
-        <div class="absolute inset-0 bg-gradient-to-br from-vio-700 via-vio-900 to-[#1e0b3a]"></div>
-        <div class="absolute -top-20 -right-24 w-80 h-80 bg-vio-500/25 rounded-full blur-3xl"></div>
+    <section id="heroSection" class="relative overflow-hidden bg-ink-900 text-white">
+        <div class="absolute inset-0 bg-gradient-to-br from-ink-700 via-ink-900 to-[#1e0b3a]"></div>
+        <div class="absolute -top-20 -right-24 w-80 h-80 bg-ink-500/25 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-16 w-72 h-72 bg-gold/15 rounded-full blur-3xl"></div>
         <div class="relative max-w-7xl mx-auto px-4 py-7 sm:py-9">
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div class="max-w-2xl">
-                    <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur text-vio-100 text-[11px] font-bold px-3 py-1 rounded-full border border-white/10"><i class="fas fa-bolt text-gold-soft"></i> Instant digital delivery — no shipping, no wait</span>
-                    <h2 class="mt-3 text-2xl sm:text-4xl font-display font-bold leading-tight tracking-tight">Top up your world, pay in <span class="bg-gradient-to-r from-neon-cyan via-gold-soft to-neon-pink bg-clip-text text-transparent arcade-underline">Kwacha</span> 🇿🇲</h2>
-                    <p class="mt-2 text-vio-100/85 text-sm sm:text-base max-w-xl">Netflix, DSTV, Spotify, Google Play, Free Fire, PUBG &amp; more — buy the code in seconds with the mobile money you already use.</p>
+                    <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur text-ink-100 text-[11px] font-bold px-3 py-1 rounded-full border border-white/10"><i class="fas fa-bolt text-gold-soft"></i> Instant digital delivery — no shipping, no wait</span>
+                    <h2 class="mt-3 text-2xl sm:text-4xl font-display font-bold leading-tight tracking-tight">Top up your world, pay in <span class="bg-gradient-to-r from-gold-soft to-coral bg-clip-text text-transparent stub-rule">Kwacha</span> 🇿🇲</h2>
+                    <p class="mt-2 text-ink-100/85 text-sm sm:text-base max-w-xl">Netflix, DSTV, Spotify, Google Play, Free Fire, PUBG &amp; more — buy the code in seconds with the mobile money you already use.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2 text-xs font-semibold shrink-0">
                     <span class="bg-white/10 px-3 py-1.5 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-yellow-300"></i> MTN</span>
@@ -176,61 +174,61 @@
     </main>
 
     <!-- ======================= ORIZIS ACADEMY PROMO — flagship course ======================= -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-vio-700 via-vio-900 to-[#160a2e] text-white">
-        <div class="absolute -top-20 -right-16 w-80 h-80 bg-vio-500/30 rounded-full blur-3xl"></div>
+    <section class="relative overflow-hidden bg-gradient-to-br from-ink-700 via-ink-900 to-[#0e2420] text-white">
+        <div class="absolute -top-20 -right-16 w-80 h-80 bg-ink-500/30 rounded-full blur-3xl"></div>
         <div class="absolute -bottom-24 -left-16 w-80 h-80 bg-gold/20 rounded-full blur-3xl"></div>
         <div class="relative max-w-7xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-8 items-center">
             <div>
                 <span class="inline-flex items-center gap-1.5 bg-white/10 text-gold-soft text-xs font-bold px-3 py-1.5 rounded-full border border-white/10 uppercase tracking-wide"><i class="fas fa-graduation-cap"></i> From ORIZIS Academy</span>
                 <h3 class="mt-4 text-2xl sm:text-4xl font-display font-extrabold leading-tight">Learn a real profession:<br><span class="bg-gradient-to-r from-gold-soft to-white bg-clip-text text-transparent">build websites for a living</span> 🇿🇲</h3>
-                <p class="mt-3 text-vio-100/90 text-sm sm:text-base max-w-lg">A step-by-step online course: build real websites with Claude — connect GitHub &amp; Firebase, publish live, and get paid. No background needed. Finish it and you can <b>apply to work with ORIZIS Technology</b>, an international company.</p>
-                <p class="mt-1 text-vio-100/50 text-xs">An opportunity to apply for paid projects — not a guarantee of employment.</p>
+                <p class="mt-3 text-ink-100/90 text-sm sm:text-base max-w-lg">A step-by-step online course: build real websites with Claude — connect GitHub &amp; Firebase, publish live, and get paid. No background needed. Finish it and you can <b>apply to work with ORIZIS Technology</b>, an international company.</p>
+                <p class="mt-1 text-ink-100/50 text-xs">An opportunity to apply for paid projects — not a guarantee of employment.</p>
                 <div class="mt-5 flex flex-wrap items-center gap-3">
-                    <a href="https://aaciyoni-bot.github.io/orizis-academy/index.html?c=build-with-claude" class="bg-gold text-vio-900 font-extrabold px-7 py-3.5 rounded-full hover:brightness-105 transition"><i class="fas fa-graduation-cap mr-1"></i> Start the course</a>
+                    <a href="https://aaciyoni-bot.github.io/orizis-academy/index.html?c=build-with-claude" class="bg-gold text-ink-900 font-extrabold px-7 py-3.5 rounded-full hover:brightness-105 transition"><i class="fas fa-graduation-cap mr-1"></i> Start the course</a>
                     <a href="https://aaciyoni-bot.github.io/orizis-academy/syllabus.html" class="inline-flex items-center text-sm font-bold text-white/90 hover:text-white underline underline-offset-4 px-2">See the full syllabus →</a>
                 </div>
                 <div class="mt-4 inline-flex items-baseline gap-2 bg-white/10 border border-white/10 rounded-xl px-4 py-2">
                     <span class="text-xl font-extrabold text-gold-soft">K499</span>
-                    <span class="text-sm text-vio-100/50 line-through">K2,600</span>
-                    <span class="text-xs text-vio-100/80 font-semibold">· Community Scholarship price</span>
+                    <span class="text-sm text-ink-100/50 line-through">K2,600</span>
+                    <span class="text-xs text-ink-100/80 font-semibold">· Community Scholarship price</span>
                 </div>
             </div>
             <div class="hidden lg:grid grid-cols-2 gap-3 text-sm">
-                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-code"></i></div><p class="mt-2 font-semibold text-vio-50">Build with Claude</p></div>
-                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fab fa-github"></i></div><p class="mt-2 font-semibold text-vio-50">GitHub &amp; Firebase</p></div>
-                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-globe"></i></div><p class="mt-2 font-semibold text-vio-50">Publish live sites</p></div>
-                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-briefcase"></i></div><p class="mt-2 font-semibold text-vio-50">A path to paid work</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-code"></i></div><p class="mt-2 font-semibold text-ink-50">Build with Claude</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fab fa-github"></i></div><p class="mt-2 font-semibold text-ink-50">GitHub &amp; Firebase</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-globe"></i></div><p class="mt-2 font-semibold text-ink-50">Publish live sites</p></div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-2xl text-gold-soft"><i class="fas fa-briefcase"></i></div><p class="mt-2 font-semibold text-ink-50">A path to paid work</p></div>
             </div>
         </div>
     </section>
 
     <!-- ======================= HOW IT WORKS ======================= -->
-    <section id="how-it-works" class="bg-white border-t border-vio-100">
+    <section id="how-it-works" class="bg-white border-t border-ink-100">
         <div class="max-w-7xl mx-auto px-4 py-14">
-            <h3 class="text-2xl sm:text-3xl font-display font-extrabold text-center">How ZedCards Works</h3>
+            <h3 class="text-2xl sm:text-3xl font-display font-extrabold text-center">How Vochira Works</h3>
             <p class="text-center text-slate-500 mt-2 max-w-xl mx-auto">From your phone to your screen in seconds — no credit card, no shipping.</p>
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10">
-                <div class="text-center p-5 rounded-2xl bg-vio-50">
-                    <div class="text-4xl text-vio-500"><i class="fas fa-gift"></i></div>
-                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 1</div>
+                <div class="text-center p-5 rounded-2xl bg-ink-50">
+                    <div class="text-4xl text-ink-500"><i class="fas fa-gift"></i></div>
+                    <div class="mt-3 text-xs font-bold text-ink-600">STEP 1</div>
                     <h4 class="font-bold mt-1">Pick your card</h4>
                     <p class="text-sm text-slate-500 mt-1">Choose a brand and the amount you want — every price is in Kwacha, all-in.</p>
                 </div>
-                <div class="text-center p-5 rounded-2xl bg-vio-50">
-                    <div class="text-4xl text-vio-500"><i class="fas fa-mobile-screen"></i></div>
-                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 2</div>
+                <div class="text-center p-5 rounded-2xl bg-ink-50">
+                    <div class="text-4xl text-ink-500"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="mt-3 text-xs font-bold text-ink-600">STEP 2</div>
                     <h4 class="font-bold mt-1">Pay with Mobile Money</h4>
                     <p class="text-sm text-slate-500 mt-1">Enter your MTN, Airtel or Zamtel number and approve the prompt with your PIN.</p>
                 </div>
-                <div class="text-center p-5 rounded-2xl bg-vio-50">
-                    <div class="text-4xl text-vio-500"><i class="fas fa-bolt"></i></div>
-                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 3</div>
+                <div class="text-center p-5 rounded-2xl bg-ink-50">
+                    <div class="text-4xl text-ink-500"><i class="fas fa-bolt"></i></div>
+                    <div class="mt-3 text-xs font-bold text-ink-600">STEP 3</div>
                     <h4 class="font-bold mt-1">Get your code instantly</h4>
                     <p class="text-sm text-slate-500 mt-1">Your genuine code appears on screen the moment your payment is confirmed.</p>
                 </div>
-                <div class="text-center p-5 rounded-2xl bg-vio-50">
-                    <div class="text-4xl text-vio-500"><i class="fas fa-circle-check"></i></div>
-                    <div class="mt-3 text-xs font-bold text-vio-600">STEP 4</div>
+                <div class="text-center p-5 rounded-2xl bg-ink-50">
+                    <div class="text-4xl text-ink-500"><i class="fas fa-circle-check"></i></div>
+                    <div class="mt-3 text-xs font-bold text-ink-600">STEP 4</div>
                     <h4 class="font-bold mt-1">Redeem &amp; enjoy</h4>
                     <p class="text-sm text-slate-500 mt-1">Follow the simple redeem steps we send with every code — by email and WhatsApp too.</p>
                 </div>
@@ -239,25 +237,25 @@
     </section>
 
     <!-- ======================= ABOUT ======================= -->
-    <section id="about" class="bg-vio-50 border-t border-vio-100">
+    <section id="about" class="bg-ink-50 border-t border-ink-100">
         <div class="max-w-7xl mx-auto px-4 py-14 grid sm:grid-cols-2 gap-10 items-center">
             <div>
-                <h3 class="text-2xl sm:text-3xl font-display font-extrabold">About Zed<span class="text-vio-600">Cards</span></h3>
+                <h3 class="text-2xl sm:text-3xl font-display font-extrabold">About Vochira</h3>
                 <p class="mt-4 text-slate-600 leading-relaxed">Paying for Netflix, DSTV, a game top-up or an app-store card in Zambia usually means hunting for a voucher shop or a card you can't buy with a local wallet.</p>
-                <p class="mt-3 text-slate-600 leading-relaxed"><b>ZedCards fixes that.</b> We sell 100% genuine gift cards and subscription codes sourced only from authorized distributors, priced in Kwacha and paid for with the mobile money you already use every day. You choose a card, approve a prompt on your phone, and your code appears in seconds.</p>
+                <p class="mt-3 text-slate-600 leading-relaxed"><b>Vochira fixes that.</b> We sell 100% genuine gift cards and subscription codes sourced only from authorized distributors, priced in Kwacha and paid for with the mobile money you already use every day. You choose a card, approve a prompt on your phone, and your code appears in seconds.</p>
                 <p class="mt-3 text-slate-600 leading-relaxed">Genuine codes. Honest prices. Proudly built for Zambia. 🇿🇲</p>
             </div>
             <div class="grid grid-cols-1 gap-4">
                 <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
-                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-shield-halved"></i></div>
+                    <div class="text-2xl text-ink-500 w-8 text-center shrink-0"><i class="fas fa-shield-halved"></i></div>
                     <div><h4 class="font-bold">Genuine codes only</h4><p class="text-sm text-slate-500">Every code comes from an authorized distributor — never grey-market. Guaranteed to work.</p></div>
                 </div>
                 <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
-                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-lock"></i></div>
+                    <div class="text-2xl text-ink-500 w-8 text-center shrink-0"><i class="fas fa-lock"></i></div>
                     <div><h4 class="font-bold">Safe payments</h4><p class="text-sm text-slate-500">You approve every payment yourself with your Mobile Money PIN. We never see your PIN.</p></div>
                 </div>
                 <div class="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm">
-                    <div class="text-2xl text-vio-500 w-8 text-center shrink-0"><i class="fas fa-headset"></i></div>
+                    <div class="text-2xl text-ink-500 w-8 text-center shrink-0"><i class="fas fa-headset"></i></div>
                     <div><h4 class="font-bold">Real human support</h4><p class="text-sm text-slate-500">Code didn't arrive? Our Zambian team sorts it on WhatsApp, 7 days a week.</p></div>
                 </div>
             </div>
@@ -265,7 +263,7 @@
     </section>
 
     <!-- ======================= FAQ ======================= -->
-    <section id="faq" class="bg-white border-t border-vio-100">
+    <section id="faq" class="bg-white border-t border-ink-100">
         <div class="max-w-3xl mx-auto px-4 py-14">
             <h3 class="text-2xl sm:text-3xl font-display font-extrabold text-center">Frequently Asked Questions</h3>
             <div class="mt-8 space-y-3">
@@ -298,10 +296,10 @@
     </section>
 
     <!-- ======================= SUPPORT BANNER ======================= -->
-    <section id="support" class="bg-vio-900 text-white">
+    <section id="support" class="bg-ink-900 text-white">
         <div class="max-w-7xl mx-auto px-4 py-10 text-center">
             <h3 class="text-2xl font-display font-extrabold">Need help? <i class="fas fa-comments text-gold-soft ml-1"></i></h3>
-            <p class="mt-2 text-vio-100/90">Orders, codes, redeeming or refunds — chat with our team on WhatsApp, 7 days a week, 08:00–20:00.</p>
+            <p class="mt-2 text-ink-100/90">Orders, codes, redeeming or refunds — chat with our team on WhatsApp, 7 days a week, 08:00–20:00.</p>
             <a id="waSupportBtn" href="#" target="_blank" rel="noopener"
                class="inline-flex items-center gap-2 mt-5 bg-[#25D366] text-white font-extrabold px-8 py-3.5 rounded-full hover:brightness-110 transition">
                 <i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp
@@ -310,20 +308,23 @@
     </section>
 
     <!-- ======================= FOOTER ======================= -->
-    <footer class="bg-[#160a2e] text-vio-100/70 mt-10">
+    <footer class="bg-ink-900 text-ink-100/70 mt-10">
         <div class="max-w-7xl mx-auto px-4 py-10 grid sm:grid-cols-3 gap-8 text-sm">
             <div>
                 <div class="flex items-center gap-2 mb-3">
-                    <div class="bg-gradient-to-br from-vio-500 to-vio-700 text-white w-8 h-8 rounded-lg flex items-center justify-center"><i class="fas fa-gift"></i></div>
-                    <span class="font-display font-extrabold text-white text-lg">Zed<span class="text-vio-400">Cards</span></span>
+                    <svg viewBox="0 0 40 40" class="w-8 h-8 shrink-0" aria-hidden="true">
+                        <path d="M8 8h24a6 6 0 0 1 6 6v2.5a3.5 3.5 0 0 0 0 7V26a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6v-2.5a3.5 3.5 0 0 0 0-7V14a6 6 0 0 1 6-6z" fill="#fbf6ec"/>
+                        <path d="M13.5 15.5 20 26l6.5-10.5" fill="none" stroke="#ff6a3d" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="font-display font-extrabold text-white text-lg">Vochira</span>
                 </div>
-                <p class="text-vio-100/60">Zambia's instant store for genuine gift cards &amp; subscription codes — streaming, gaming, app stores and music. Pay with the mobile money you already have.</p>
+                <p class="text-ink-100/60">Zambia's instant store for genuine gift cards &amp; subscription codes — streaming, gaming, app stores and music. Pay with the mobile money you already have.</p>
             </div>
             <div>
                 <h4 class="font-bold text-white mb-3">Quick links</h4>
-                <ul class="space-y-2 text-vio-100/60">
+                <ul class="space-y-2 text-ink-100/60">
                     <li><a href="#how-it-works" class="hover:text-white transition">How it works</a></li>
-                    <li><a href="#about" class="hover:text-white transition">About ZedCards</a></li>
+                    <li><a href="#about" class="hover:text-white transition">About Vochira</a></li>
                     <li><a href="#faq" class="hover:text-white transition">FAQ</a></li>
                     <li><a href="#support" class="hover:text-white transition">Customer support</a></li>
                 </ul>
@@ -335,24 +336,24 @@
                     <span class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Airtel Money</span>
                     <span class="bg-green-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Zamtel Kwacha</span>
                 </div>
-                <p class="mt-4 text-vio-100/50 text-xs">Prices shown in Zambian Kwacha (ZMW), all-in. Codes from authorized distributors only.</p>
+                <p class="mt-4 text-ink-100/50 text-xs">Prices shown in Zambian Kwacha (ZMW), all-in. Codes from authorized distributors only.</p>
             </div>
         </div>
-        <div class="border-t border-white/10 text-center py-4 text-xs text-vio-100/50">© 2026 ZedCards Zambia · an ORIZIS TECHNOLOGY brand. All rights reserved.</div>
+        <div class="border-t border-white/10 text-center py-4 text-xs text-ink-100/50">© 2026 Vochira Zambia · an ORIZIS TECHNOLOGY brand. All rights reserved.</div>
     </footer>
 
     <!-- ======================= CART DRAWER ======================= -->
     <div id="cartOverlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="toggleCart(false)"></div>
     <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="flex items-center justify-between p-4 border-b">
-            <h3 class="font-bold text-lg"><i class="fas fa-cart-shopping text-vio-600 mr-2"></i>Your Cart</h3>
+            <h3 class="font-bold text-lg"><i class="fas fa-cart-shopping text-ink-600 mr-2"></i>Your Cart</h3>
             <button onclick="toggleCart(false)" class="text-slate-400 hover:text-slate-700 p-2"><i class="fas fa-xmark text-xl"></i></button>
         </div>
         <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-        <div class="border-t p-4 space-y-3 bg-vio-50">
+        <div class="border-t p-4 space-y-3 bg-ink-50">
             <div class="flex justify-between text-sm"><span class="text-slate-500">Subtotal</span><span id="cartSubtotal" class="font-semibold">K0.00</span></div>
             <div class="flex justify-between text-sm"><span class="text-slate-500">Service fee</span><span id="cartFees" class="font-semibold">K0.00</span></div>
-            <div class="flex justify-between text-lg font-extrabold"><span>Total</span><span id="cartTotal" class="text-vio-700">K0.00</span></div>
+            <div class="flex justify-between text-lg font-extrabold"><span>Total</span><span id="cartTotal" class="text-ink-700">K0.00</span></div>
             <button id="checkoutBtn" onclick="openCheckout()" class="w-full bg-zam-green hover:bg-green-800 text-white font-bold py-3.5 rounded-xl transition disabled:opacity-40 disabled:cursor-not-allowed">
                 <i class="fas fa-mobile-screen mr-2"></i>Pay with Mobile Money
             </button>
@@ -373,15 +374,15 @@
                     <div>
                         <label class="text-sm font-semibold text-slate-600 block mb-2">Choose your network</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="selectProvider('mtn', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                            <button onclick="selectProvider('mtn', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-ink-500">
                                 <div class="bg-yellow-400 text-black font-extrabold text-xs rounded-md py-1 mb-1">MTN</div>
                                 <span class="text-[11px] text-slate-500">MoMo</span>
                             </button>
-                            <button onclick="selectProvider('airtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                            <button onclick="selectProvider('airtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-ink-500">
                                 <div class="bg-red-600 text-white font-extrabold text-xs rounded-md py-1 mb-1">Airtel</div>
                                 <span class="text-[11px] text-slate-500">Money</span>
                             </button>
-                            <button onclick="selectProvider('zamtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-vio-500">
+                            <button onclick="selectProvider('zamtel', this)" class="provider-btn border-2 rounded-xl p-3 text-center transition hover:border-ink-500">
                                 <div class="bg-green-700 text-white font-extrabold text-xs rounded-md py-1 mb-1">Zamtel</div>
                                 <span class="text-[11px] text-slate-500">Kwacha</span>
                             </button>
@@ -400,7 +401,7 @@
                         <label class="text-sm font-semibold text-slate-600 block mb-2">Email address <span class="text-slate-400 font-normal">(where we send your code &amp; receipt)</span></label>
                         <input id="payEmail" type="email" placeholder="you@example.com" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-zam-green">
                     </div>
-                    <p class="text-[11px] text-slate-400 flex items-start gap-1.5"><i class="fas fa-bolt text-vio-500 mt-0.5"></i> Your code is delivered digitally — no shipping address needed.</p>
+                    <p class="text-[11px] text-slate-400 flex items-start gap-1.5"><i class="fas fa-bolt text-ink-500 mt-0.5"></i> Your code is delivered digitally — no shipping address needed.</p>
                     <p id="payError" class="text-zam-red text-sm font-semibold hidden"></p>
                     <button onclick="submitPayment()" class="w-full bg-zam-green hover:bg-green-800 text-white font-bold py-3.5 rounded-xl transition">
                         Send payment request <i class="fas fa-arrow-right ml-1"></i>
@@ -428,7 +429,7 @@
                 <p class="text-slate-500 text-sm mt-1">Order <b id="orderRef"></b> is confirmed.</p>
                 <div id="codesBox" class="mt-4 text-left space-y-3"></div>
                 <p id="codesNote" class="text-xs text-slate-400 mt-4"></p>
-                <button onclick="finishOrder()" class="mt-5 w-full bg-vio-600 hover:bg-vio-700 text-white font-bold py-3 rounded-xl transition">Done — keep shopping</button>
+                <button onclick="finishOrder()" class="mt-5 w-full bg-ink-600 hover:bg-ink-700 text-white font-bold py-3 rounded-xl transition">Done — keep shopping</button>
             </div>
         </div>
     </div>
@@ -451,17 +452,17 @@
 
                 <div class="mt-4 flex items-center gap-3">
                     <div class="flex items-center border rounded-xl">
-                        <button onclick="pmQty(-1)" class="px-3 py-2 text-slate-500 hover:text-vio-600">−</button>
+                        <button onclick="pmQty(-1)" class="px-3 py-2 text-slate-500 hover:text-ink-600">−</button>
                         <span id="pmQtyVal" class="px-2 font-bold text-sm">1</span>
-                        <button onclick="pmQty(1)" class="px-3 py-2 text-slate-500 hover:text-vio-600">+</button>
+                        <button onclick="pmQty(1)" class="px-3 py-2 text-slate-500 hover:text-ink-600">+</button>
                     </div>
-                    <button id="pmAddBtn" onclick="pmAdd()" class="flex-1 bg-vio-600 hover:bg-vio-700 text-white font-bold py-3 rounded-xl transition disabled:opacity-40" disabled>
+                    <button id="pmAddBtn" onclick="pmAdd()" class="flex-1 bg-ink-600 hover:bg-ink-700 text-white font-bold py-3 rounded-xl transition disabled:opacity-40" disabled>
                         <i class="fas fa-cart-plus mr-1"></i> <span id="pmAddLabel">Select an amount</span>
                     </button>
                 </div>
 
                 <details class="mt-4 text-sm">
-                    <summary class="font-semibold text-vio-700 cursor-pointer">How to redeem</summary>
+                    <summary class="font-semibold text-ink-700 cursor-pointer">How to redeem</summary>
                     <p id="pmRedeem" class="text-slate-500 mt-2 leading-relaxed"></p>
                 </details>
                 <p class="text-xs text-slate-400 mt-4"><i class="fas fa-bolt mr-1"></i> Delivered instantly after payment · <i class="fas fa-shield-halved mr-1"></i> Genuine code guaranteed</p>
@@ -470,19 +471,19 @@
     </div>
 
     <!-- ======================= TOAST ======================= -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-vio-900 text-white text-sm font-semibold px-5 py-3 rounded-full shadow-xl z-[70] hidden"></div>
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-ink-900 text-white text-sm font-semibold px-5 py-3 rounded-full shadow-xl z-[70] hidden"></div>
 
     <!-- ======================= DOWNLOAD APP banner (mobile) ======================= -->
-    <div id="installBanner" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-vio-900 text-white px-4 py-3 flex items-center gap-3 shadow-2xl">
+    <div id="installBanner" class="hidden fixed bottom-0 left-0 right-0 z-40 bg-ink-900 text-white px-4 py-3 flex items-center gap-3 shadow-2xl">
         <img src="icon-192.png" alt="" class="w-10 h-10 rounded-xl shrink-0">
         <div class="flex-1 min-w-0">
-            <p class="font-bold text-sm leading-tight">Get the ZedCards App 🇿🇲</p>
-            <p class="text-[11px] text-vio-100/80 leading-tight">Faster top-ups, right from your home screen</p>
+            <p class="font-bold text-sm leading-tight">Get the Vochira App 🇿🇲</p>
+            <p class="text-[11px] text-ink-100/80 leading-tight">Faster top-ups, right from your home screen</p>
         </div>
-        <button onclick="installApp()" class="shrink-0 bg-vio-600 hover:bg-vio-500 text-white text-xs font-extrabold px-4 py-2.5 rounded-full transition">
+        <button onclick="installApp()" class="shrink-0 bg-ink-600 hover:bg-ink-500 text-white text-xs font-extrabold px-4 py-2.5 rounded-full transition">
             <i class="fas fa-download mr-1"></i>DOWNLOAD APP
         </button>
-        <button onclick="dismissInstall()" class="shrink-0 text-vio-100/70 hover:text-white p-1" aria-label="Dismiss"><i class="fas fa-xmark"></i></button>
+        <button onclick="dismissInstall()" class="shrink-0 text-ink-100/70 hover:text-white p-1" aria-label="Dismiss"><i class="fas fa-xmark"></i></button>
     </div>
 
     <!-- ======================= INSTALL GUIDE overlays (with pointing arrows) ======================= -->
@@ -493,9 +494,9 @@
                 <ol class="mt-3 space-y-2.5 text-sm">
                     <li><b>1.</b> Tap the <b>Share</b> button <span class="inline-block border border-slate-300 rounded-md px-1.5 py-0.5 text-blue-500"><i class="fas fa-arrow-up-from-bracket"></i></span> at the <b>bottom of Safari</b> (the arrow below points at it)</li>
                     <li><b>2.</b> Scroll down and tap <b>"Add to Home Screen"</b> <span class="inline-block border border-slate-300 rounded-md px-1.5 py-0.5">➕</span></li>
-                    <li><b>3.</b> Tap <b>Add</b> — ZedCards appears on your home screen like an app!</li>
+                    <li><b>3.</b> Tap <b>Add</b> — Vochira appears on your home screen like an app!</li>
                 </ol>
-                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-vio-100 hover:bg-vio-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
+                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-ink-100 hover:bg-ink-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
             </div>
             <div class="guide-arrow-down mx-auto mt-4 text-5xl">⬇️</div>
         </div>
@@ -506,26 +507,26 @@
                 <ol class="mt-3 space-y-2.5 text-sm">
                     <li><b>1.</b> Tap the <b>⋮ menu</b> at the <b>top-right of Chrome</b> (the arrow above points at it)</li>
                     <li><b>2.</b> Tap <b>"Add to Home screen"</b> or <b>"Install app"</b></li>
-                    <li><b>3.</b> Confirm — ZedCards appears on your home screen like an app!</li>
+                    <li><b>3.</b> Confirm — Vochira appears on your home screen like an app!</li>
                 </ol>
-                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-vio-100 hover:bg-vio-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
+                <button onclick="closeInstallGuide()" class="mt-4 w-full bg-ink-100 hover:bg-ink-200 font-bold py-2.5 rounded-xl text-sm">Got it</button>
             </div>
         </div>
     </div>
 
     <style>
         html { scroll-behavior: smooth; }
-        .cat-chip { flex-shrink: 0; display:inline-flex; align-items:center; background: #ede9fe; border-radius: 9999px; padding: 7px 15px; font-size: 12.5px; font-weight: 700; color: #6d28d9; transition: all .2s; }
-        .cat-chip:hover { background: #ddd6fe; color: #5b21b6; }
-        .cat-chip.cat-active { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; box-shadow: 0 6px 16px -5px rgba(124,58,237,.55); }
+        .cat-chip { flex-shrink: 0; display:inline-flex; align-items:center; background: #f0e7d6; border-radius: 9999px; padding: 7px 15px; font-size: 12.5px; font-weight: 700; color: #245247; transition: all .2s; }
+        .cat-chip:hover { background: #e6d9c0; color: #1c4038; }
+        .cat-chip.cat-active { background: linear-gradient(135deg, #2d6657, #1c4038); color: #fff; box-shadow: 0 6px 16px -5px rgba(18,44,38,.45); }
         .denom-btn { border: 2px solid #e2e8f0; border-radius: 12px; padding: 10px 8px; text-align: center; transition: all .15s; cursor: pointer; }
-        .denom-btn:hover { border-color: #a78bfa; }
-        .denom-btn.selected { border-color: #7c3aed; background: #f5f3ff; }
-        .provider-btn.selected { border-color: #7c3aed !important; background: #f5f3ff; }
-        .faq-item { background: #f5f3ff; border-radius: 16px; padding: 16px 20px; }
+        .denom-btn:hover { border-color: #5f9c89; }
+        .denom-btn.selected { border-color: #ff6a3d; background: #fff3ee; }
+        .provider-btn.selected { border-color: #ff6a3d !important; background: #fff3ee; }
+        .faq-item { background: #f6efe1; border-radius: 16px; padding: 16px 20px; }
         .faq-item summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         .faq-item summary::-webkit-details-marker { display: none; }
-        .faq-item summary::after { content: '+'; font-size: 20px; color: #7c3aed; font-weight: 800; }
+        .faq-item summary::after { content: '+'; font-size: 20px; color: #ff6a3d; font-weight: 800; }
         .faq-item[open] summary::after { content: '−'; }
         .faq-item p { margin-top: 10px; color: #64748b; font-size: 14px; line-height: 1.6; }
         .guide-arrow-down { animation: bounceDown 1s ease-in-out infinite; }
@@ -537,7 +538,7 @@
 
     <script>
     /* ================================================================
-       ZEDCARDS CONFIG — edit these values
+       VOCHIRA CONFIG — edit these values
        ================================================================ */
     const CONFIG = {
         // Your backend API (the Vercel server.js: pawaPay payments + code delivery).
@@ -743,7 +744,7 @@
     /* ================================================================
        STATE
        ================================================================ */
-    let cart = JSON.parse(localStorage.getItem('zedcards_cart') || '[]');
+    let cart = JSON.parse(localStorage.getItem('vochira_cart') || '[]');
     let currentBrand = null;      // brand object open in the modal
     let pmDenomIdx = null;        // selected denomination index
     let pmQtyCount = 1;
@@ -796,10 +797,10 @@
                     <p class="text-[11px] text-slate-400 leading-snug line-clamp-1 mt-0.5">${b.denoms.length} option${b.denoms.length>1?'s':''}</p>
                     <div class="mt-2 flex items-center justify-between">
                         <span class="text-[11px] text-slate-400">from</span>
-                        <span class="font-extrabold text-vio-700">${fmtK(from)}</span>
+                        <span class="font-extrabold text-ink-700">${fmtK(from)}</span>
                     </div>
                     <button onclick="event.stopPropagation(); openBrand('${b.id}')"
-                        class="mt-2 w-full bg-vio-50 text-vio-700 hover:bg-vio-600 hover:text-white text-xs font-bold py-2 rounded-xl transition">
+                        class="mt-2 w-full bg-ink-50 text-ink-700 hover:bg-ink-600 hover:text-white text-xs font-bold py-2 rounded-xl transition">
                         <i class="fas fa-bolt mr-1"></i>Buy code
                     </button>
                 </div>
@@ -870,7 +871,7 @@
         $('pmDenoms').innerHTML = currentBrand.denoms.map((d, i) => `
             <button class="denom-btn" data-idx="${i}" onclick="selectDenom(${i})">
                 <div class="font-bold text-sm">${d.label}</div>
-                <div class="text-vio-700 font-extrabold text-sm mt-0.5">${fmtK(d.price)}</div>
+                <div class="text-ink-700 font-extrabold text-sm mt-0.5">${fmtK(d.price)}</div>
             </button>`).join('');
         updatePmAddBtn();
         $('productModal').classList.remove('hidden');
@@ -916,7 +917,7 @@
        CART
        ================================================================ */
     function saveCart() {
-        localStorage.setItem('zedcards_cart', JSON.stringify(cart));
+        localStorage.setItem('vochira_cart', JSON.stringify(cart));
         renderCart();
     }
 
@@ -962,17 +963,17 @@
             $('cartItems').innerHTML = cart.map(i => {
                 const icon = (i.fab ? 'fab ' : 'fas ') + i.icon;
                 return `
-                <div class="flex gap-3 bg-vio-50 rounded-xl p-3">
-                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0 overflow-hidden" style="background:${i.grad || '#7c3aed'}">${i.img ? `<img src="${i.img}" alt="" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none"></i>` : `<i class="${icon}"></i>`}</div>
+                <div class="flex gap-3 bg-ink-50 rounded-xl p-3">
+                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0 overflow-hidden" style="background:${i.grad || '#2d6657'}">${i.img ? `<img src="${i.img}" alt="" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none"></i>` : `<i class="${icon}"></i>`}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-slate-700 leading-tight">${i.brand}</p>
                         <p class="text-[11px] text-slate-500 leading-tight">${i.denom}</p>
                         <div class="flex items-center justify-between mt-1.5">
-                            <span class="font-bold text-sm text-vio-700">${fmtK(i.price * i.qty)}</span>
+                            <span class="font-bold text-sm text-ink-700">${fmtK(i.price * i.qty)}</span>
                             <div class="flex items-center gap-2">
-                                <button onclick="changeQty('${i.key}',-1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-vio-600 text-sm">−</button>
+                                <button onclick="changeQty('${i.key}',-1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">−</button>
                                 <span class="text-sm font-bold w-4 text-center">${i.qty}</span>
-                                <button onclick="changeQty('${i.key}',1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-vio-600 text-sm">+</button>
+                                <button onclick="changeQty('${i.key}',1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">+</button>
                                 <button onclick="removeFromCart('${i.key}')" class="text-slate-300 hover:text-zam-red ml-1"><i class="fas fa-trash-can text-xs"></i></button>
                             </div>
                         </div>
@@ -1182,8 +1183,8 @@
         }
 
         if (delivery && delivery.pending) {
-            box.innerHTML = `<div class="bg-vio-50 border border-vio-100 rounded-xl p-4 text-center">
-                <i class="fas fa-clock text-vio-500 text-2xl"></i>
+            box.innerHTML = `<div class="bg-ink-50 border border-ink-100 rounded-xl p-4 text-center">
+                <i class="fas fa-clock text-ink-500 text-2xl"></i>
                 <p class="font-bold mt-2 text-slate-700">Your code is being prepared</p>
                 <p class="text-xs text-slate-500 mt-1">We're issuing your genuine code now. It arrives at <b>${order.email}</b> and by WhatsApp within a few minutes — usually much faster.</p>
             </div>` + cartLines.map(l => `<p class="text-xs text-slate-400 text-center">${l.qty}× ${l.brand} — ${l.denom}</p>`).join('');
@@ -1200,14 +1201,14 @@
 
     function codeCardHtml(brand, denom, code, pin, redeem, demo) {
         return `
-        <div class="border ${demo ? 'border-amber-200 bg-amber-50' : 'border-vio-100 bg-vio-50'} rounded-xl p-3">
+        <div class="border ${demo ? 'border-amber-200 bg-amber-50' : 'border-ink-100 bg-ink-50'} rounded-xl p-3">
             <div class="flex items-center justify-between">
                 <p class="text-xs font-bold text-slate-600">${brand} · ${denom}</p>
                 ${demo ? '<span class="text-[9px] font-bold bg-amber-400 text-white px-1.5 py-0.5 rounded">DEMO</span>' : '<span class="text-[9px] font-bold bg-zam-green text-white px-1.5 py-0.5 rounded">GENUINE</span>'}
             </div>
             <div class="mt-1.5 flex items-center gap-2">
                 <code class="code-copy flex-1 bg-white border rounded-lg px-2.5 py-2 text-sm font-bold text-slate-800 break-all">${code}</code>
-                <button onclick="copyCode(this,'${code}')" class="shrink-0 bg-vio-600 hover:bg-vio-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fas fa-copy"></i></button>
+                <button onclick="copyCode(this,'${code}')" class="shrink-0 bg-ink-600 hover:bg-ink-700 text-white text-xs font-bold px-3 py-2 rounded-lg"><i class="fas fa-copy"></i></button>
             </div>
             ${pin ? `<p class="text-[11px] text-slate-500 mt-1">PIN: <b class="code-copy">${pin}</b></p>` : ''}
             ${redeem ? `<p class="text-[11px] text-slate-500 mt-1.5 leading-snug">${redeem}</p>` : ''}
@@ -1234,7 +1235,7 @@
             ? `📞 +260${o.phone} (${(o.provider || '').toUpperCase()})` + ((o.pointsApplied > 0) ? ` + ${fmtK(o.pointsApplied)} VeriPoints` : '')
             : `🪙 Paid fully with VeriPoints`;
         const lines = [
-            `🎁 *New ZedCards Order ${'#' + ref}*`,
+            `🎁 *New Vochira Order ${'#' + ref}*`,
             pay,
             `✉️ ${o.email}`,
             ``,
@@ -1253,7 +1254,7 @@
         cart = [];
         saveCart();
         closeCheckout();
-        showToast('🎉 Thank you for shopping with ZedCards!');
+        showToast('🎉 Thank you for shopping with Vochira!');
     }
 
     /* ================================================================
@@ -1275,7 +1276,7 @@
 
     function showInstallBanner() {
         if (IS_INSTALLED || !IS_MOBILE) return;
-        const snoozedAt = parseInt(localStorage.getItem('zedcards_install_snooze') || '0');
+        const snoozedAt = parseInt(localStorage.getItem('vochira_install_snooze') || '0');
         if (Date.now() - snoozedAt < INSTALL_SNOOZE_MS) return;
         $('installBanner').classList.remove('hidden');
     }
@@ -1283,7 +1284,7 @@
     function hideInstallBanner() { $('installBanner').classList.add('hidden'); }
 
     function dismissInstall() {
-        localStorage.setItem('zedcards_install_snooze', String(Date.now()));
+        localStorage.setItem('vochira_install_snooze', String(Date.now()));
         hideInstallBanner();
     }
 
@@ -1329,7 +1330,7 @@
         if (!VP.enabled) return;                       // OFF → the store is unchanged
         try {
             await vpLoadSdk();
-            await window.VeriPoints.init({ siteId: 'zedcards', config: CONFIG.VERIPOINTS_CONFIG || undefined });
+            await window.VeriPoints.init({ siteId: 'vochira', config: CONFIG.VERIPOINTS_CONFIG || undefined });
             VP.ready = true;
             vpInjectHeaderChip();
             window.VeriPoints.onUser(u => {
@@ -1352,7 +1353,7 @@
         if (!cartBtn) return;
         const chip = document.createElement('button');
         chip.id = 'vpChip';
-        chip.className = 'shrink-0 hidden sm:inline-flex items-center gap-1.5 bg-vio-50 text-vio-700 hover:bg-vio-100 text-xs font-bold px-3 py-2 rounded-full transition';
+        chip.className = 'shrink-0 hidden sm:inline-flex items-center gap-1.5 bg-ink-50 text-ink-700 hover:bg-ink-100 text-xs font-bold px-3 py-2 rounded-full transition';
         chip.onclick = vpChipClick;
         cartBtn.parentNode.insertBefore(chip, cartBtn);
         vpRefreshHeader();
@@ -1384,12 +1385,12 @@
         if (!panel) {
             panel = document.createElement('div');
             panel.id = 'vpPanel';
-            panel.className = 'bg-vio-50 border border-vio-100 rounded-xl p-3';
+            panel.className = 'bg-ink-50 border border-ink-100 rounded-xl p-3';
             host.insertBefore(panel, host.firstChild);
         }
         const total = cartTotals().total;
         if (!VP.user) {
-            panel.innerHTML = `<button type="button" onclick="vpChipClick()" class="w-full text-sm font-bold text-vio-700 flex items-center justify-center gap-2 py-1">
+            panel.innerHTML = `<button type="button" onclick="vpChipClick()" class="w-full text-sm font-bold text-ink-700 flex items-center justify-center gap-2 py-1">
                 <i class="fab fa-google"></i> Sign in to pay with VeriPoints &amp; earn points</button>`;
             return;
         }
@@ -1398,9 +1399,9 @@
         const applied = VP.applied > 0;
         panel.innerHTML = `
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-vio-700"><i class="fas fa-coins text-gold-deep mr-1"></i>VeriPoints: ${VP.balance.toLocaleString()} pts</span>
+                <span class="text-xs font-bold text-ink-700"><i class="fas fa-coins text-gold-deep mr-1"></i>VeriPoints: ${VP.balance.toLocaleString()} pts</span>
                 ${maxZmw > 0
-                    ? `<button type="button" onclick="vpToggleApply()" class="text-xs font-bold ${applied ? 'text-zam-red' : 'text-vio-700'} hover:underline">${applied ? 'Remove' : 'Use ' + fmtK(maxZmw)}</button>`
+                    ? `<button type="button" onclick="vpToggleApply()" class="text-xs font-bold ${applied ? 'text-zam-red' : 'text-ink-700'} hover:underline">${applied ? 'Remove' : 'Use ' + fmtK(maxZmw)}</button>`
                     : `<span class="text-[11px] text-slate-400">Earn points on this order</span>`}
             </div>
             ${applied ? `<p class="text-[11px] text-slate-500 mt-1">− ${fmtK(VP.applied)} paid with ${VP.pointsUsed} points${dueTotal() > 0 ? '; balance by Mobile Money' : '; fully covered'}</p>` : ''}`;
@@ -1420,7 +1421,7 @@
     async function vpHoldPoints(zmw, order) {
         try {
             if (!VP.ready || !VP.user || !VP.pointsUsed) return null;
-            const r = await window.VeriPoints.hold({ amount: VP.pointsUsed, reference: 'zedcards:' + (order.email || '') });
+            const r = await window.VeriPoints.hold({ amount: VP.pointsUsed, reference: 'vochira:' + (order.email || '') });
             return r && r.holdId ? { holdId: r.holdId, points: VP.pointsUsed } : null;
         } catch (e) { console.warn('VeriPoints hold failed:', e); return null; }
     }
@@ -1465,7 +1466,7 @@
        INIT
        ================================================================ */
     (function initSupportLinks() {
-        const msg = encodeURIComponent('Hello ZedCards! 👋 I need some help with my gift card / code order.');
+        const msg = encodeURIComponent('Hello Vochira! 👋 I need some help with my gift card / code order.');
         $('waSupportBtn').href = 'https://wa.me/' + CONFIG.WHATSAPP_SUPPORT + '?text=' + msg;
     })();
 

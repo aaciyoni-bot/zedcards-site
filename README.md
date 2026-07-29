@@ -1,4 +1,4 @@
-# ZedCards 🇿🇲🎁
+# Vochira 🇿🇲🎁
 
 Zambia's instant store for **genuine gift cards & subscription codes** — Netflix, DSTV, GOtv,
 Showmax, Spotify, Apple Music, Google Play, Apple/iTunes, Free Fire, PUBG Mobile, Mobile Legends,
@@ -52,4 +52,4 @@ distributor, sold with margin) — no USD conversion.
 - **Backend** → Vercel: `cd backend && npx vercel --prod --yes` (Root Directory = `backend`).
   Check `https://zedcards-site.vercel.app/api/health`.
 
-© 2026 ZedCards Zambia · an ORIZIS TECHNOLOGY brand.
+© 2026 Vochira Zambia · an ORIZIS TECHNOLOGY brand.

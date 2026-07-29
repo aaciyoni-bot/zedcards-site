@@ -1,13 +1,13 @@
 {
-  "name": "ZedCards - Gift Cards & Subscriptions, Pay with Mobile Money",
-  "short_name": "ZedCards",
-  "description": "Zambia's instant store for genuine gift cards & subscription codes: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha.",
+  "name": "Vochira - Gift Cards & Subscriptions, Pay with Mobile Money",
+  "short_name": "Vochira",
+  "description": "Instant store for genuine gift cards & subscription codes: Netflix, DSTV, GOtv, Spotify, Google Play, Apple, Free Fire, PUBG & more. Pay with MTN MoMo, Airtel Money or Zamtel Kwacha.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#160a2e",
-  "theme_color": "#7c3aed",
+  "background_color": "#122c26",
+  "theme_color": "#122c26",
   "categories": ["shopping", "entertainment", "utilities"],
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
