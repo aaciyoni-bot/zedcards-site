@@ -394,6 +394,21 @@
                         <label class="text-sm font-semibold text-slate-600 block mb-2">Email address <span class="text-slate-400 font-normal">(where we send your code &amp; receipt)</span></label>
                         <input id="payEmail" type="email" placeholder="you@example.com" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-zam-green">
                     </div>
+                    <!-- Gift mode -->
+                    <div class="border-t pt-3">
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input id="giftToggle" type="checkbox" onchange="toggleGift(this.checked)" class="w-4 h-4 accent-coral-500">
+                            <span class="text-sm font-semibold text-slate-700"><i class="fas fa-gift text-coral-500 mr-1"></i>Send it as a gift 🎁</span>
+                        </label>
+                        <div id="giftFields" class="hidden mt-3 space-y-3">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-600 block mb-2">Occasion</label>
+                                <div id="giftOccasions" class="grid grid-cols-3 gap-2"></div>
+                            </div>
+                            <input id="giftName" type="text" placeholder="Recipient's name (e.g. Chanda)" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-coral-500">
+                            <textarea id="giftMsg" rows="2" placeholder="Your message — e.g. Happy birthday! Enjoy 🎉" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-coral-500 resize-none"></textarea>
+                        </div>
+                    </div>
                     <p class="text-[11px] text-slate-400 flex items-start gap-1.5"><i class="fas fa-bolt text-ink-500 mt-0.5"></i> Your code is delivered digitally — no shipping address needed.</p>
                     <p id="payError" class="text-zam-red text-sm font-semibold hidden"></p>
                     <button onclick="submitPayment()" class="w-full bg-zam-green hover:bg-green-800 text-white font-bold py-3.5 rounded-xl transition">
@@ -516,6 +531,8 @@
         .denom-btn:hover { border-color: #5f9c89; }
         .denom-btn.selected { border-color: #ff6a3d; background: #fff3ee; }
         .provider-btn.selected { border-color: #ff6a3d !important; background: #fff3ee; }
+        .occ-btn:hover { border-color: #ffb59a; }
+        .occ-sel { border-color: #ff6a3d !important; background: #fff3ee; }
         .faq-item { background: #f6efe1; border-radius: 16px; padding: 16px 20px; }
         .faq-item summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         .faq-item summary::-webkit-details-marker { display: none; }
@@ -941,7 +958,50 @@
         $('checkoutModal').classList.remove('hidden');
         $('checkoutModal').classList.add('flex');
         vpOnCheckoutOpen();                   // no-op unless VeriPoints is enabled + ready
+        resetGift();
     }
+
+    /* ================================================================
+       GIFT MODE — turn any card into a personalised gift
+       ================================================================ */
+    const OCCASIONS = [
+        { id:'birthday', label:'Birthday', emoji:'🎂', grad:'linear-gradient(135deg,#ff6a3d,#ec5124)' },
+        { id:'wedding',  label:'Wedding',  emoji:'💍', grad:'linear-gradient(135deg,#e879a6,#be185d)' },
+        { id:'congrats', label:'Congrats', emoji:'🎉', grad:'linear-gradient(135deg,#e0a44b,#b67c2c)' },
+        { id:'thanks',   label:'Thank You',emoji:'🙏', grad:'linear-gradient(135deg,#2d6657,#16443a)' },
+        { id:'general',  label:'Just Because', emoji:'🎁', grad:'linear-gradient(135deg,#ff6a3d,#e0a44b)' }
+    ];
+    const GIFT = { on:false, occasion:'birthday', name:'', msg:'' };
+
+    function resetGift() {
+        GIFT.on = false; GIFT.occasion = 'birthday'; GIFT.name = ''; GIFT.msg = '';
+        const t = $('giftToggle'); if (t) t.checked = false;
+        $('giftFields').classList.add('hidden');
+        $('giftName').value = ''; $('giftMsg').value = '';
+        renderGiftOccasions();
+    }
+    function toggleGift(on) {
+        GIFT.on = on;
+        $('giftFields').classList.toggle('hidden', !on);
+        if (on) renderGiftOccasions();
+    }
+    function renderGiftOccasions() {
+        $('giftOccasions').innerHTML = OCCASIONS.map(o => `
+            <button type="button" data-occ="${o.id}" onclick="selectOccasion('${o.id}')"
+                class="occ-btn border-2 rounded-xl py-2 text-center transition ${o.id === GIFT.occasion ? 'occ-sel' : 'border-slate-200'}">
+                <div class="text-xl leading-none">${o.emoji}</div>
+                <div class="text-[11px] font-semibold text-slate-600 mt-1">${o.label}</div>
+            </button>`).join('');
+    }
+    function selectOccasion(id) {
+        GIFT.occasion = id;
+        document.querySelectorAll('#giftOccasions .occ-btn').forEach(b => {
+            const sel = b.dataset.occ === id;
+            b.classList.toggle('occ-sel', sel);
+            b.classList.toggle('border-slate-200', !sel);
+        });
+    }
+    const occById = id => OCCASIONS.find(o => o.id === id) || OCCASIONS[4];
 
     // Amount still due by Mobile Money after any VeriPoints points are applied.
     function dueTotal() { return Math.max(0, cartTotals().total - (VP.enabled ? VP.applied : 0)); }
@@ -1037,9 +1097,17 @@
             if (!/^(9|7)\d{8}$/.test(phone)) { err.textContent = 'Enter a valid Zambian number, e.g. 971234567.'; err.classList.remove('hidden'); return; }
         }
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = 'Enter a valid email so we can send your code.'; err.classList.remove('hidden'); return; }
+
+        // Gift details (optional)
+        let gift = null;
+        if (GIFT.on) {
+            const gName = $('giftName').value.trim();
+            if (gName.length < 2) { err.textContent = "Please enter the recipient's name for the gift."; err.classList.remove('hidden'); return; }
+            gift = { occasion: GIFT.occasion, name: gName, msg: $('giftMsg').value.trim() };
+        }
         err.classList.add('hidden');
 
-        const order = { provider: selectedProvider, phone, email, total: t.total, due, pointsApplied };
+        const order = { provider: selectedProvider, phone, email, total: t.total, due, pointsApplied, gift };
 
         // Redeem VeriPoints first: place a server-verifiable hold on the user's own
         // wallet. If it fails (e.g. balance changed) we stop before charging anything.
@@ -1099,32 +1167,78 @@
     //  - real codes from the distributor (Reloadly)  -> show them
     //  - payment ok but no auto-supplier configured   -> "code on its way"
     //  - fully simulated (no backend / demo)          -> clearly-labelled DEMO codes
+    let _giftCtx = null;   // holds { order, codes } so the "send gift" button can build its message
+
     function renderCodes(ref, order, delivery, simulated) {
         const box = $('codesBox');
         const note = $('codesNote');
         const cartLines = cart.map(i => ({ brand: i.brand, denom: i.denom, qty: i.qty }));
+        const gift = order.gift;
+        const banner = gift ? giftBannerHtml(gift) : '';
+        let inner = '', noteHtml = '', realCodes = null;
 
         if (delivery && Array.isArray(delivery.codes) && delivery.codes.length) {
-            box.innerHTML = delivery.codes.map(c => codeCardHtml(c.brand, c.denom, c.code, c.pin, c.redeem, false)).join('');
-            note.innerHTML = `<i class="fas fa-envelope mr-1"></i> A copy has been sent to <b>${order.email}</b> and our team on WhatsApp.`;
-            return;
-        }
-
-        if (delivery && delivery.pending) {
-            box.innerHTML = `<div class="bg-ink-50 border border-ink-100 rounded-xl p-4 text-center">
+            realCodes = delivery.codes;
+            inner = delivery.codes.map(c => codeCardHtml(c.brand, c.denom, c.code, c.pin, c.redeem, false)).join('');
+            noteHtml = `<i class="fas fa-envelope mr-1"></i> A copy has been sent to <b>${order.email}</b> and our team on WhatsApp.`;
+        } else if (delivery && delivery.pending) {
+            inner = `<div class="bg-ink-50 border border-ink-100 rounded-xl p-4 text-center">
                 <i class="fas fa-clock text-ink-500 text-2xl"></i>
-                <p class="font-bold mt-2 text-slate-700">Your code is being prepared</p>
+                <p class="font-bold mt-2 text-slate-700">Your ${gift ? 'gift' : 'code'} is being prepared</p>
                 <p class="text-xs text-slate-500 mt-1">We're issuing your genuine code now. It arrives at <b>${order.email}</b> and by WhatsApp within a few minutes — usually much faster.</p>
             </div>` + cartLines.map(l => `<p class="text-xs text-slate-400 text-center">${l.qty}× ${l.brand} — ${l.denom}</p>`).join('');
-            note.innerHTML = `<i class="fas fa-shield-halved mr-1"></i> Codes are released only after your payment is confirmed.`;
-            return;
+            noteHtml = `<i class="fas fa-shield-halved mr-1"></i> Codes are released only after your payment is confirmed.`;
+        } else {
+            // Simulated / demo fallback — clearly labelled, never a real code
+            realCodes = cart.flatMap(i => Array.from({ length: i.qty }, () =>
+                ({ brand: i.brand, denom: i.denom, code: 'DEMO-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-XXXX', pin: null,
+                   redeem: 'This is a DEMO code — add Reloadly credentials to deliver real codes.' })));
+            inner = realCodes.map(c => codeCardHtml(c.brand, c.denom, c.code, c.pin, c.redeem, true)).join('');
+            noteHtml = `<i class="fas fa-flask mr-1"></i> Demo mode — payment & codes are simulated until Mobile Money + a code distributor are connected.`;
         }
 
-        // Simulated / demo fallback — clearly labelled, never a real code
-        box.innerHTML = cart.flatMap(i => Array.from({ length: i.qty }, () =>
-            codeCardHtml(i.brand, i.denom, 'DEMO-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-XXXX', null,
-                'This is a DEMO code — add your distributor credentials (Reloadly) to deliver real codes.', true))).join('');
-        note.innerHTML = `<i class="fas fa-flask mr-1"></i> Demo mode — payment & codes are simulated until Mobile Money + a code distributor are connected.`;
+        // "Send gift on WhatsApp" appears once we actually have a code to hand over.
+        _giftCtx = (gift && realCodes) ? { order, codes: realCodes } : null;
+        const giftBtn = _giftCtx ? `
+            <button onclick="sendGiftWhatsApp()" class="w-full mt-1 bg-[#25D366] text-white font-extrabold py-3 rounded-xl hover:brightness-110 transition flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp text-xl"></i> Send this gift to ${gift.name}
+            </button>` : '';
+
+        box.innerHTML = banner + inner + giftBtn;
+        note.innerHTML = noteHtml;
+    }
+
+    function giftBannerHtml(gift) {
+        const o = occById(gift.occasion);
+        return `
+        <div class="rounded-xl p-4 text-white text-center mb-1" style="background:${o.grad}">
+            <div class="text-3xl leading-none">${o.emoji}</div>
+            <p class="font-display font-extrabold text-lg mt-1">${o.label} gift for ${gift.name}!</p>
+            ${gift.msg ? `<p class="text-sm text-white/90 mt-1 italic">"${gift.msg}"</p>` : ''}
+        </div>`;
+    }
+
+    // Opens WhatsApp (recipient chooser) with a ready-to-send gift message + code(s).
+    function sendGiftWhatsApp() {
+        if (!_giftCtx) return;
+        const { order, codes } = _giftCtx;
+        const o = occById(order.gift.occasion);
+        const codeLines = codes.flatMap(c => {
+            const l = [`• ${c.brand} ${c.denom} — code: ${c.code}`];
+            if (c.pin) l.push(`   PIN: ${c.pin}`);
+            if (c.redeem) l.push(`   ↳ ${c.redeem}`);
+            return l;
+        });
+        const lines = [
+            `${o.emoji} *${o.label} gift for you, ${order.gift.name}!*`,
+            order.gift.msg ? `_${order.gift.msg}_` : '',
+            ``,
+            `Here's your gift from Vochira 🎁`,
+            ...codeLines,
+            ``,
+            `Enjoy! 💚`
+        ].filter(x => x !== '');
+        window.open('https://wa.me/?text=' + encodeURIComponent(lines.join('\n')), '_blank');
     }
 
     function codeCardHtml(brand, denom, code, pin, redeem, demo) {
@@ -1171,7 +1285,8 @@
             ...itemLines,
             ``,
             `💰 *Total: ${fmtK(o.total)}*` + (o.pointsApplied > 0 ? ` (MoMo ${fmtK(o.due)} + ${fmtK(o.pointsApplied)} pts)` : ''),
-            `📦 Delivery: ${status}`
+            `📦 Delivery: ${status}`,
+            ...(o.gift ? [`🎁 GIFT (${o.gift.occasion}) → to ${o.gift.name}`] : [])
         ];
         const url = 'https://wa.me/' + CONFIG.WHATSAPP_ORDERS + '?text=' + encodeURIComponent(lines.join('\n'));
         // Open silently in a background tab where possible; harmless if blocked.
