@@ -1186,8 +1186,17 @@
     }
 
     /* ================================================================
-       DOWNLOAD APP (PWA install)
+       DOWNLOAD APP (app stores, with PWA install as fallback)
+
+       Fill these in once the listings are live, and the DOWNLOAD APP
+       button sends people straight to the store instead of the
+       "add to home screen" guide. Leave empty until then.
        ================================================================ */
+    const STORE_LINKS = {
+        android: '', // https://play.google.com/store/apps/details?id=com.orizis.vochira
+        ios: ''      // https://apps.apple.com/app/id0000000000
+    };
+
     let deferredInstallPrompt = null;
     const IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     const IS_MOBILE = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -1217,6 +1226,12 @@
     }
 
     async function installApp() {
+        const storeUrl = IS_IOS ? STORE_LINKS.ios : STORE_LINKS.android;
+        if (storeUrl) {
+            hideInstallBanner();
+            window.open(storeUrl, '_blank', 'noopener');
+            return;
+        }
         if (deferredInstallPrompt) {
             deferredInstallPrompt.prompt();
             await deferredInstallPrompt.userChoice;
