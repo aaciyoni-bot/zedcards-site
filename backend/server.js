@@ -1,7 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const { randomUUID } = require('crypto');
+const { randomUUID, randomBytes } = require('crypto');
+
+// Human-friendly single-use voucher code, e.g. VCH-7F3K-9Q2M (no ambiguous chars).
+function makeVoucherCode() {
+    const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const b = randomBytes(8);
+    let s = '';
+    for (let i = 0; i < 8; i++) s += A[b[i] % A.length];
+    return 'VCH-' + s.slice(0, 4) + '-' + s.slice(4, 8);
+}
 
 const app = express();
 app.use(cors({ origin: '*' }));
@@ -250,18 +259,38 @@ app.post('/api/redeem', async (req, res) => {
         return res.json({ simulated: true });
     }
 
-    // 2) Payment confirmed. Try authorized auto-delivery (Reloadly).
-    if (RELOADLY_ID && RELOADLY_SECRET) {
-        try {
-            const codes = await reloadlyRedeem(items, email, orderRef);
-            if (codes.length) return res.json({ codes });
-        } catch (e) {
-            console.warn('Reloadly delivery failed, falling back to manual:', e.message);
+    // 2) Payment confirmed. Deliver two kinds of items:
+    //    - ORIZIS gift vouchers (our own products) => generated instantly, no supplier
+    //    - Reloadly gift cards                     => bought from the distributor
+    const voucherItems = items.filter(i => i.voucher);
+    const cardItems = items.filter(i => i.pid);
+    const codes = [];
+
+    for (const it of voucherItems) {
+        for (let q = 0; q < (it.qty || 1); q++) {
+            codes.push({
+                brand: it.brand, denom: it.denom, code: makeVoucherCode(), voucher: true,
+                redeem: `Give this code at ${it.voucher} checkout to redeem K${it.amount} store credit. Our team activates it instantly.`
+            });
+            // (Phase 2) persist the code to the shared voucher store for auto-redemption.
         }
     }
 
-    // 3) No auto-supplier (yet) => manual fulfilment. Payment is already
-    //    confirmed, so the team issues the genuine code by email/WhatsApp.
+    if (cardItems.length && RELOADLY_ID && RELOADLY_SECRET) {
+        try {
+            const rc = await reloadlyRedeem(cardItems, email, orderRef);
+            if (rc.length) codes.push(...rc);
+            else if (!codes.length) return res.json({ pending: true });   // card leg failed, nothing else
+        } catch (e) {
+            console.warn('Reloadly delivery failed, falling back to manual:', e.message);
+            if (!codes.length) return res.json({ pending: true });
+        }
+    } else if (cardItems.length && !codes.length) {
+        return res.json({ pending: true });   // cards need a supplier that isn't configured yet
+    }
+
+    // 3) Return whatever we could deliver; if nothing, mark for manual fulfilment.
+    if (codes.length) return res.json({ codes });
     return res.json({ pending: true });
 });
 
