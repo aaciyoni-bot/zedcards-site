@@ -1,7 +1,59 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const admin = require('firebase-admin');
 const { randomUUID, randomBytes } = require('crypto');
+
+/* =====================================================================
+   SHARED VOUCHER STORE (Firebase zedmall-4301c) — the ORIZIS gift-voucher
+   registry. Vochira creates vouchers here on purchase; every ORIGIS site
+   redeems against it. All writes are server-side (Admin SDK) and atomic.
+   Set FIREBASE_SERVICE_ACCOUNT (the service-account JSON, stringified) to
+   activate; without it, vouchers still deliver but aren't auto-redeemable.
+   ===================================================================== */
+const VOUCHER_STORE = Boolean(process.env.FIREBASE_SERVICE_ACCOUNT);
+let _db = null;
+function db() {
+    if (_db) return _db;
+    if (!VOUCHER_STORE) return null;
+    if (!admin.apps.length) {
+        admin.initializeApp({ credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)) });
+    }
+    _db = admin.firestore();
+    return _db;
+}
+async function voucherCreate(code, site, amount, orderRef) {
+    const d = db(); if (!d) return false;
+    await d.collection('vouchers').doc(code).set({
+        code, site, amount: Number(amount) || 0, status: 'active',
+        orderRef: orderRef || null, createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    return true;
+}
+async function voucherCheck(code) {
+    const d = db(); if (!d) return null;
+    const snap = await d.collection('vouchers').doc(code).get();
+    if (!snap.exists) return { valid: false, error: 'NOT_FOUND' };
+    const v = snap.data();
+    return { valid: v.status === 'active', status: v.status, site: v.site, amount: v.amount };
+}
+// Atomic single-use redemption: marks the voucher redeemed only if it is
+// currently active (and, when given, the site matches).
+async function voucherRedeem(code, site) {
+    const d = db(); if (!d) throw new Error('VOUCHER_STORE_OFF');
+    const ref = d.collection('vouchers').doc(code);
+    return d.runTransaction(async tx => {
+        const snap = await tx.get(ref);
+        if (!snap.exists) return { ok: false, error: 'NOT_FOUND' };
+        const v = snap.data();
+        if (site && v.site && String(v.site).toLowerCase() !== String(site).toLowerCase()) {
+            return { ok: false, error: 'WRONG_SITE', site: v.site };
+        }
+        if (v.status !== 'active') return { ok: false, error: 'ALREADY_' + String(v.status).toUpperCase() };
+        tx.update(ref, { status: 'redeemed', redeemedAt: admin.firestore.FieldValue.serverTimestamp(), redeemedBy: site || null });
+        return { ok: true, amount: v.amount, site: v.site };
+    });
+}
 
 // Human-friendly single-use voucher code, e.g. VCH-7F3K-9Q2M (no ambiguous chars).
 function makeVoucherCode() {
@@ -70,7 +122,8 @@ app.get('/api/health', (req, res) => {
         paymentsConfigured: Boolean(PAWAPAY_TOKEN),
         paymentsEnv: process.env.PAWAPAY_ENV === 'production' ? 'production' : 'sandbox',
         codeDelivery: RELOADLY_ID && RELOADLY_SECRET ? 'reloadly-' + RELOADLY_ENV : 'manual',
-        veriPoints: VP_CONFIGURED ? 'configured' : 'off'
+        veriPoints: VP_CONFIGURED ? 'configured' : 'off',
+        voucherStore: VOUCHER_STORE ? 'firestore' : 'off'
     });
 });
 
@@ -268,11 +321,15 @@ app.post('/api/redeem', async (req, res) => {
 
     for (const it of voucherItems) {
         for (let q = 0; q < (it.qty || 1); q++) {
+            const code = makeVoucherCode();
+            // Register in the shared store so the target site can auto-redeem it.
+            // If the store isn't configured yet, the code is still delivered and
+            // the owner honours it manually (recorded via the order notification).
+            try { await voucherCreate(code, it.voucher, it.amount, orderRef); } catch (e) { console.warn('voucherCreate failed:', e.message); }
             codes.push({
-                brand: it.brand, denom: it.denom, code: makeVoucherCode(), voucher: true,
-                redeem: `Give this code at ${it.voucher} checkout to redeem K${it.amount} store credit. Our team activates it instantly.`
+                brand: it.brand, denom: it.denom, code, voucher: true,
+                redeem: `Give this code at ${it.voucher} checkout to redeem K${it.amount} store credit.`
             });
-            // (Phase 2) persist the code to the shared voucher store for auto-redemption.
         }
     }
 
@@ -361,6 +418,31 @@ app.post('/api/veripoints/earn', async (req, res) => {
         // Non-blocking: the order already succeeded; points can be reconciled later.
         res.json({ earned: 0, pending: true, message: e.message });
     }
+});
+
+/* =====================================================================
+   VOUCHER API — called by every ORIZIS site's checkout to validate and
+   redeem a Vochira gift voucher. Open CORS so any family site can call it.
+   ===================================================================== */
+
+// Non-destructive check (does the code exist / how much is on it).
+app.get('/api/voucher/check', async (req, res) => {
+    const code = String(req.query.code || '').trim().toUpperCase();
+    if (!code) return res.status(400).json({ error: 'NO_CODE' });
+    if (!VOUCHER_STORE) return res.json({ disabled: true });
+    try { res.json((await voucherCheck(code)) || { valid: false }); }
+    catch (e) { res.status(502).json({ error: e.message }); }
+});
+
+// Atomic redemption — call this when the order is placed. `site` (optional)
+// ties the voucher to the redeeming store, e.g. { code, site: 'ZedGlow' }.
+app.post('/api/voucher/redeem', async (req, res) => {
+    const code = String((req.body && req.body.code) || '').trim().toUpperCase();
+    const site = req.body && req.body.site;
+    if (!code) return res.status(400).json({ ok: false, error: 'NO_CODE' });
+    if (!VOUCHER_STORE) return res.json({ ok: false, disabled: true });
+    try { res.json(await voucherRedeem(code, site)); }
+    catch (e) { res.status(502).json({ ok: false, error: e.message }); }
 });
 
 module.exports = app;
