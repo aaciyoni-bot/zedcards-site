@@ -86,6 +86,16 @@
         @media (prefers-reduced-motion: reduce) {
             #productGrid > *, .fade-in { transition: none !important; animation: none !important; }
         }
+        /* --- Cart drawer: fit the visible viewport on mobile + clear PWA safe areas (fixes X/close and top/bottom cutoff) --- */
+        #cartDrawer {
+            height: 100vh;            /* fallback for browsers without dvh */
+            height: 100dvh;           /* fit the visible viewport (mobile browser chrome) */
+            max-height: 100vh;
+            max-height: 100dvh;
+        }
+        #cartDrawer > div:first-child { padding-top: calc(1rem + env(safe-area-inset-top)); }        /* keep the close (X) below the status bar/notch */
+        #cartDrawer > div:last-child  { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }  /* keep checkout above the home indicator */
+        #cartItems { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
     </style>
 </head>
 <body class="bg-ink-50 font-sans text-slate-800 min-h-screen flex flex-col">
