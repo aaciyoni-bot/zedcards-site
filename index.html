@@ -455,36 +455,67 @@
 
     <!-- ======================= PRODUCT MODAL ======================= -->
     <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4" onclick="if(event.target===this) closeProduct()">
-        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden fade-in max-h-[92vh] overflow-y-auto">
-            <div id="pmCover" class="relative h-32 flex items-center justify-center text-white overflow-hidden">
-                <img id="pmImg" src="" alt="" class="w-full h-full object-contain p-4" style="display:none">
-                <i id="pmIcon" class="fas fa-gift text-5xl drop-shadow"></i>
-                <button onclick="closeProduct()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/30 rounded-full w-8 h-8 flex items-center justify-center z-10"><i class="fas fa-xmark"></i></button>
-                <span id="pmBadge" class="absolute bottom-3 left-4 bg-black/25 backdrop-blur text-white text-[11px] font-bold px-2.5 py-1 rounded-full"></span>
-            </div>
-            <div class="p-5">
-                <h3 id="pmTitle" class="font-bold text-lg leading-snug"></h3>
-                <p id="pmDesc" class="text-sm text-slate-500 mt-1"></p>
-
-                <label class="text-sm font-semibold text-slate-600 block mt-4 mb-2">Choose amount</label>
-                <div id="pmDenoms" class="grid grid-cols-2 gap-2"></div>
-
-                <div class="mt-4 flex items-center gap-3">
-                    <div class="flex items-center border rounded-xl">
-                        <button onclick="pmQty(-1)" class="px-3 py-2 text-slate-500 hover:text-ink-600">−</button>
-                        <span id="pmQtyVal" class="px-2 font-bold text-sm">1</span>
-                        <button onclick="pmQty(1)" class="px-3 py-2 text-slate-500 hover:text-ink-600">+</button>
+        <div id="pmDialog" class="pm-dialog fade-in" role="dialog" aria-modal="true" aria-labelledby="pmTitle" aria-describedby="pmDesc" tabindex="-1">
+            <header class="pm-header">
+                <span class="pm-eyebrow">VOCHIRA · DIGITAL GIFTS</span>
+                <button id="pmClose" type="button" onclick="closeProduct()" class="pm-close" aria-label="Close product details"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+            </header>
+            <div class="pm-content">
+                    <div id="pmCover" class="pm-cover">
+                        <img id="pmImg" src="" alt="" class="pm-image" style="display:none">
+                        <i id="pmIcon" class="fas fa-gift text-5xl drop-shadow" aria-hidden="true"></i>
+                        <span id="pmBadge" class="pm-badge"></span>
                     </div>
-                    <button id="pmAddBtn" onclick="pmAdd()" class="flex-1 bg-ink-600 hover:bg-ink-700 text-white font-bold py-3 rounded-xl transition disabled:opacity-40" disabled>
-                        <i class="fas fa-cart-plus mr-1"></i> <span id="pmAddLabel">Select an amount</span>
-                    </button>
+                    <section class="pm-section" aria-labelledby="pmAboutTitle">
+                        <h4 id="pmAboutTitle">About this digital gift</h4>
+                        <p id="pmAbout"></p>
+                        <dl class="pm-facts">
+                            <div><dt>Brand / store</dt><dd id="pmBrand"></dd></div>
+                            <div><dt>Product type</dt><dd id="pmType"></dd></div>
+                            <div><dt>Available values</dt><dd id="pmValues"></dd></div>
+                            <div><dt>Delivery</dt><dd>Digital code · no shipping address needed</dd></div>
+                            <div><dt>Account / region</dt><dd id="pmRegion"></dd></div>
+                            <div><dt>Validity</dt><dd id="pmValidity"></dd></div>
+                        </dl>
+                    </section>
+                    <section class="pm-section" aria-labelledby="pmRedeemTitle">
+                        <h4 id="pmRedeemTitle">How to redeem</h4>
+                        <p id="pmRedeem"></p>
+                        <p class="pm-small">Keep your code private. Use the redemption instructions included with your delivered code if they differ from this catalog guide.</p>
+                    </section>
+                    <section class="pm-section" aria-labelledby="pmDeliveryTitle">
+                        <h4 id="pmDeliveryTitle">What happens after purchase</h4>
+                        <ol class="pm-steps">
+                            <li>Choose the value and quantity, then review your order at checkout.</li>
+                            <li>Complete payment using the available checkout options.</li>
+                            <li>After payment is verified, the order screen shows your code or its pending delivery status. Keep your order reference if you need help.</li>
+                        </ol>
+                    </section>
+                <div class="pm-purchase">
+                    <h3 id="pmTitle"></h3>
+                    <p id="pmDesc" class="pm-description"></p>
+                    <p id="pmFromPrice" class="pm-from-price"></p>
+                    <fieldset class="pm-amounts">
+                        <legend>Choose your value</legend>
+                        <div id="pmDenoms" class="grid grid-cols-2 gap-2"></div>
+                    </fieldset>
+                    <p id="pmSelected" class="pm-selection" aria-live="polite">Select a value to see your order price.</p>
+                    <div class="pm-buy-controls">
+                        <div class="pm-quantity" role="group" aria-label="Quantity">
+                            <button id="pmQtyMinus" type="button" onclick="pmQty(-1)" aria-label="Decrease quantity">−</button>
+                            <span id="pmQtyVal" aria-live="polite">1</span>
+                            <button id="pmQtyPlus" type="button" onclick="pmQty(1)" aria-label="Increase quantity">+</button>
+                        </div>
+                        <button id="pmAddBtn" type="button" onclick="pmAdd()" class="pm-add" disabled>
+                            <i class="fas fa-cart-plus" aria-hidden="true"></i> <span id="pmAddLabel">Select a value</span>
+                        </button>
+                    </div>
+                    <p id="pmFeeNote" class="pm-small"></p>
+                    <div class="pm-before-buying">
+                        <h4>Before you buy</h4>
+                        <p id="pmTerms"></p>
+                    </div>
                 </div>
-
-                <details class="mt-4 text-sm">
-                    <summary class="font-semibold text-ink-700 cursor-pointer">How to redeem</summary>
-                    <p id="pmRedeem" class="text-slate-500 mt-2 leading-relaxed"></p>
-                </details>
-                <p class="text-xs text-slate-400 mt-4"><i class="fas fa-bolt mr-1"></i> Delivered instantly after payment · <i class="fas fa-shield-halved mr-1"></i> Genuine code guaranteed</p>
             </div>
         </div>
     </div>
@@ -555,6 +586,53 @@
         @keyframes bounceDown { 0%,100% { transform: translateY(0); } 50% { transform: translateY(14px); } }
         @keyframes bounceUp { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
         .code-copy { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.08em; }
+        .pm-dialog { width:100%; max-width:1000px; max-height:92vh; max-height:92dvh; overflow-y:auto; overscroll-behavior:contain; background:#fff; color:#122c26; border-radius:22px; box-shadow:0 24px 80px #0004; }
+        .pm-header { position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between; padding:12px 24px; border-bottom:1px solid #e9e6dd; background:#fff; }
+        .pm-eyebrow { font-size:11px; font-weight:800; letter-spacing:.13em; }
+        .pm-close { width:44px; height:44px; border-radius:50%; background:#f0e7d6; font-size:20px; }
+        .pm-content { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:0 32px; padding:24px; }
+        .pm-cover { grid-column:1; position:relative; min-height:250px; display:flex; align-items:center; justify-content:center; border-radius:18px; overflow:hidden; color:#fff; }
+        .pm-image { width:100%; height:270px; padding:30px; object-fit:contain; }
+        .pm-badge { position:absolute; bottom:12px; left:12px; background:#0008; border-radius:20px; padding:5px 12px; font-size:11px; font-weight:700; }
+        .pm-section { grid-column:1; padding-top:24px; min-width:0; }
+        .pm-section h4,.pm-before-buying h4 { font-weight:800; margin:0 0 10px; font-size:16px; }
+        .pm-section p,.pm-before-buying p,.pm-steps { font-size:14px; line-height:1.7; color:#52635e; overflow-wrap:anywhere; }
+        .pm-facts { margin-top:16px; }
+        .pm-facts > div { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:14px; padding:12px 0; border-bottom:1px solid #eeeae3; font-size:13px; line-height:1.55; }
+        .pm-facts dt { color:#65736f; }
+        .pm-facts dd { margin:0; overflow-wrap:anywhere; font-weight:600; }
+        .pm-steps { list-style:decimal; padding-left:20px; }
+        .pm-steps li + li { margin-top:8px; }
+        .pm-purchase { grid-column:2; grid-row:1 / 5; align-self:start; position:sticky; top:94px; min-width:0; }
+        .pm-purchase h3 { font-size:28px; font-weight:800; line-height:1.18; letter-spacing:-.02em; }
+        .pm-description { font-size:14px; line-height:1.7; color:#52635e; margin-top:12px; }
+        .pm-from-price { font-size:24px; font-weight:800; margin:18px 0; }
+        .pm-amounts { margin:0; padding:0; border:0; min-width:0; }
+        .pm-amounts legend { font-size:14px; font-weight:700; margin-bottom:12px; }
+        .pm-selection { margin-top:16px; min-height:42px; font-size:13px; color:#52635e; line-height:1.6; }
+        .pm-buy-controls { display:flex; gap:10px; align-items:stretch; margin-top:12px; }
+        .pm-quantity { display:flex; align-items:center; border:1px solid #ccd6d2; border-radius:12px; font-weight:700; }
+        .pm-quantity button { width:38px; min-height:46px; font-size:20px; }
+        .pm-quantity span { min-width:24px; text-align:center; }
+        .pm-quantity button:disabled { opacity:.35; }
+        .pm-add { flex:1; min-width:0; min-height:48px; padding:10px; border-radius:12px; background:#245247; color:white; font-size:14px; font-weight:800; }
+        .pm-add:disabled { opacity:.5; cursor:not-allowed; }
+        .pm-add:not(:disabled):hover { background:#122c26; }
+        .pm-dialog .pm-small { font-size:12px; line-height:1.65; color:#65736f; margin-top:12px; }
+        .pm-before-buying { padding:16px; margin-top:24px; border:1px solid #e6d9c0; border-radius:14px; background:#fbf6ec; }
+        .pm-dialog button:focus-visible,.pm-dialog summary:focus-visible { outline:3px solid #ff6a3d; outline-offset:3px; }
+        @media(max-width:700px) {
+            #productModal { padding:8px; padding-top:max(8px,env(safe-area-inset-top)); padding-bottom:max(8px,env(safe-area-inset-bottom)); }
+            .pm-dialog { max-height:calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); border-radius:16px; }
+            .pm-header { padding:8px 16px; }
+            .pm-content { display:flex; flex-direction:column; padding:16px; }
+            .pm-cover { order:0; min-height:170px; }
+            .pm-image { height:190px; padding:24px; }
+            .pm-purchase { order:1; position:static; margin-top:20px; }
+            .pm-purchase h3 { font-size:24px; }
+            .pm-section { order:2; }
+            .pm-facts > div { gap:10px; }
+        }
     </style>
 
     <script>
@@ -765,6 +843,8 @@
     let currentBrand = null;      // brand object open in the modal
     let pmDenomIdx = null;        // selected denomination index
     let pmQtyCount = 1;
+    let pmReturnFocus = null;
+    let pmPreviousOverflow = '';
     let selectedProvider = null;
     let activeCat = 'all';
     let activeSearch = '';
@@ -816,7 +896,7 @@
                         <span class="text-[11px] text-slate-400">from</span>
                         <span class="font-extrabold text-ink-700">${fmtK(from)}</span>
                     </div>
-                    <button onclick="event.stopPropagation(); openBrand('${b.id}')"
+                    <button type="button" aria-label="View ${b.name} gift options" onclick="event.stopPropagation(); openBrand('${b.id}')"
                         class="mt-2 w-full bg-ink-50 text-ink-700 hover:bg-ink-600 hover:text-white text-xs font-bold py-2 rounded-xl transition">
                         <i class="fas fa-bolt mr-1"></i>Buy code
                     </button>
@@ -869,35 +949,69 @@
        BRAND / PRODUCT MODAL
        ================================================================ */
     function openBrand(id) {
-        currentBrand = BRANDS.find(b => b.id === id);
-        if (!currentBrand) return;
+        const brand = BRANDS.find(b => b.id === id);
+        if (!brand) return;
+        if ($('productModal').classList.contains('hidden')) {
+            pmReturnFocus = document.activeElement;
+            pmPreviousOverflow = document.body.style.overflow;
+        }
+        currentBrand = brand;
         pmDenomIdx = null;
         pmQtyCount = 1;
         $('pmQtyVal').textContent = 1;
         $('pmCover').style.background = currentBrand.grad;
         const pmImg = $('pmImg');
         if (currentBrand.img) {
-            pmImg.src = currentBrand.img; pmImg.style.display = 'block'; $('pmIcon').style.display = 'none';
             pmImg.onerror = () => { pmImg.style.display = 'none'; $('pmIcon').style.display = 'block'; };
+            pmImg.style.display = 'block'; $('pmIcon').style.display = 'none'; pmImg.src = currentBrand.img;
         } else { pmImg.style.display = 'none'; $('pmIcon').style.display = 'block'; }
+        pmImg.alt = currentBrand.name + ' gift card artwork';
         $('pmIcon').className = (currentBrand.fab ? 'fab ' : 'fas ') + currentBrand.icon + ' text-5xl drop-shadow';
         $('pmBadge').textContent = currentBrand.tag;
-        $('pmTitle').textContent = currentBrand.name + ' Gift Code';
-        $('pmDesc').textContent = currentBrand.desc;
-        $('pmRedeem').textContent = currentBrand.redeem;
+        const isVoucher = Boolean(currentBrand.voucher);
+        $('pmTitle').textContent = currentBrand.name + (isVoucher ? ' Gift Voucher' : ' Gift Code');
+        $('pmDesc').textContent = isVoucher
+            ? 'Give store credit for ' + currentBrand.voucher + '. Choose a Kwacha value below.'
+            : 'Choose a digital ' + currentBrand.name + ' gift code. The code value and your price in Zambian Kwacha are shown separately below.';
+        $('pmAbout').textContent = isVoucher
+            ? 'This voucher provides the selected amount of store credit for ' + currentBrand.voucher + '. Your purchase is a digital code; products bought with the voucher are ordered separately.'
+            : 'This listing is for a ' + currentBrand.name + ' digital code in the ' + currentBrand.tag + ' category. Choose one of the available values and use the delivered code according to the brand’s redemption instructions.';
+        $('pmBrand').textContent = currentBrand.voucher || currentBrand.name;
+        $('pmType').textContent = isVoucher ? 'Store-credit voucher' : currentBrand.tag + ' · digital code';
+        $('pmValues').textContent = currentBrand.denoms.map(d => d.label).join(' · ');
+        $('pmRegion').textContent = currentBrand.region || (isVoucher
+            ? 'For ' + currentBrand.voucher + ' checkout'
+            : 'Not specified in this listing. Confirm your account country is eligible before buying.');
+        $('pmValidity').textContent = currentBrand.validity || 'Expiry information is not provided in this listing.';
+        $('pmTerms').textContent = currentBrand.terms || (isVoucher
+            ? 'This voucher is assigned to ' + currentBrand.voucher + '. Confirm redemption conditions with the store before purchasing.'
+            : 'The code’s currency does not confirm country compatibility. Check the issuer’s account, region and redemption requirements before paying.');
+        $('pmRedeem').textContent = isVoucher
+            ? 'Enter or provide the code at ' + currentBrand.voucher + ' checkout to redeem the selected amount of store credit.'
+            : currentBrand.redeem || 'Follow the issuer’s instructions included with your delivered code.';
+        $('pmFromPrice').textContent = 'From ' + fmtK(Math.min(...currentBrand.denoms.map(d => d.price)));
+        $('pmFeeNote').textContent = CONFIG.SERVICE_FEE_PERCENT + '% service fee is added at checkout. Digital delivery begins after payment verification; some orders may require additional processing.';
         $('pmDenoms').innerHTML = currentBrand.denoms.map((d, i) => `
-            <button class="denom-btn" data-idx="${i}" onclick="selectDenom(${i})">
+            <button type="button" class="denom-btn" data-idx="${i}" aria-pressed="false" onclick="selectDenom(${i})">
                 <div class="font-bold text-sm">${d.label}</div>
                 <div class="text-ink-700 font-extrabold text-sm mt-0.5">${fmtK(d.price)}</div>
             </button>`).join('');
         updatePmAddBtn();
         $('productModal').classList.remove('hidden');
         $('productModal').classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        $('pmDialog').scrollTop = 0;
+        $('pmClose').focus({ preventScroll: true });
     }
 
     function selectDenom(i) {
+        if (!currentBrand || !Number.isInteger(i) || !currentBrand.denoms[i]) return;
         pmDenomIdx = i;
-        document.querySelectorAll('#pmDenoms .denom-btn').forEach(b => b.classList.toggle('selected', +b.dataset.idx === i));
+        document.querySelectorAll('#pmDenoms .denom-btn').forEach(b => {
+            const selected = +b.dataset.idx === i;
+            b.classList.toggle('selected', selected);
+            b.setAttribute('aria-pressed', String(selected));
+        });
         updatePmAddBtn();
     }
 
@@ -905,18 +1019,38 @@
         const btn = $('pmAddBtn');
         if (pmDenomIdx == null) {
             btn.disabled = true;
-            $('pmAddLabel').textContent = 'Select an amount';
+            $('pmAddLabel').textContent = 'Select a value';
+            $('pmSelected').textContent = 'Select a value to see your order price.';
         } else {
             btn.disabled = false;
             const d = currentBrand.denoms[pmDenomIdx];
             $('pmAddLabel').textContent = 'Add ' + fmtK(d.price * pmQtyCount);
+            $('pmSelected').textContent = pmQtyCount + ' × ' + d.label + ' · ' + fmtK(d.price * pmQtyCount) + ' before the checkout service fee.';
         }
+        $('pmQtyMinus').disabled = pmQtyCount <= 1;
+        $('pmQtyPlus').disabled = pmQtyCount >= 10;
     }
 
     function closeProduct() {
+        if ($('productModal').classList.contains('hidden')) return;
         $('productModal').classList.add('hidden');
         $('productModal').classList.remove('flex');
+        document.body.style.overflow = pmPreviousOverflow;
+        if (pmReturnFocus && pmReturnFocus.isConnected) pmReturnFocus.focus({ preventScroll: true });
     }
+
+    document.addEventListener('keydown', event => {
+        if ($('productModal').classList.contains('hidden')) return;
+        if (event.key === 'Escape') { event.preventDefault(); closeProduct(); return; }
+        if (event.key !== 'Tab') return;
+        const controls = Array.from($('pmDialog').querySelectorAll('button:not(:disabled), a[href], input, select, textarea, [tabindex="0"]'))
+            .filter(el => el.getClientRects().length);
+        if (!controls.length) { event.preventDefault(); $('pmDialog').focus(); return; }
+        const first = controls[0], last = controls[controls.length - 1];
+        const inside = controls.includes(document.activeElement);
+        if (event.shiftKey && (document.activeElement === first || !inside)) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && (document.activeElement === last || !inside)) { event.preventDefault(); first.focus(); }
+    });
 
     function pmQty(d) {
         pmQtyCount = Math.max(1, Math.min(10, pmQtyCount + d));
