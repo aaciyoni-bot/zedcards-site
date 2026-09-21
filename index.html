@@ -48,41 +48,7 @@
         .pulse-ring { animation: pulseRing 1.5s ease-out infinite; }
         @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(25,138,0,0.4); } 100% { box-shadow: 0 0 0 16px rgba(25,138,0,0); } }
 
-        /* ===== VOCHIRA — voucher-stub identity =====
-           The whole brand is one idea: a paper voucher you tear off.
-           Perforations, warm stock, evergreen ink. No glow, no neon. */
-        .font-display { letter-spacing: -0.015em; }
-
-        /* Product cards read as tear-off vouchers: a perforated top edge
-           and a warm paper lift, instead of a glowing game tile. */
-        #productGrid > * { position: relative; transition: transform .2s ease-out, box-shadow .2s ease-out; }
-        #productGrid > *::before {
-            content: ''; position: absolute; top: 0; left: 12px; right: 12px; height: 2px;
-            background-image: radial-gradient(circle, #c9b89a 1px, transparent 1.2px);
-            background-size: 8px 2px; opacity: .5; pointer-events: none;
-        }
-        #productGrid > *:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(18,44,38,.06), 0 14px 30px -12px rgba(18,44,38,.34) !important; }
-
-        /* Torn-edge rule under the hero headline — the perforation you tear along. */
-        .stub-rule { position: relative; display: inline-block; }
-        .stub-rule::after {
-            content: ''; position: absolute; left: 0; bottom: -7px; height: 4px; width: 100%;
-            background-image: radial-gradient(circle, #ff6a3d 1.6px, transparent 1.8px);
-            background-size: 9px 4px;
-        }
-
-        /* Hero texture: a sheet of voucher stock, not an arcade grid. */
-        #heroSection::before {
-            content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5;
-            background-image: repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 13px);
-        }
-        /* The tear line where the hero ends and the shop begins. */
-        #heroSection::after {
-            content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 8px; pointer-events: none;
-            background-image: radial-gradient(circle at 50% 100%, #fbf6ec 5px, transparent 5.5px);
-            background-size: 18px 10px;
-        }
-
+        .font-display { letter-spacing: -.025em; }
         @media (prefers-reduced-motion: reduce) {
             #productGrid > *, .fade-in { transition: none !important; animation: none !important; }
         }
@@ -98,96 +64,80 @@
         #cartItems { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
     </style>
 </head>
-<body class="bg-ink-50 font-sans text-slate-800 min-h-screen flex flex-col">
+<body class="vochira-future bg-ink-50 font-sans text-slate-800 min-h-screen flex flex-col">
 
-    <!-- ======================= TOP BAR ======================= -->
-    <div class="bg-ink-900 text-white text-xs sm:text-sm py-1.5 px-4 text-center">
-        <i class="fas fa-bolt mr-1 text-gold-soft"></i> Instant code delivery &nbsp;•&nbsp; Pay with <b>MTN MoMo</b>, <b>Airtel Money</b> &amp; <b>Zamtel Kwacha</b>
-    </div>
-
-    <!-- ======================= HEADER ======================= -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3 sm:gap-6">
-            <a href="#" onclick="goHome(); return false;" class="flex items-center gap-2 shrink-0">
-                <img src="icon.svg" alt="logo" class="w-10 h-10 rounded-xl object-contain">
-                <div class="hidden sm:block">
-                    <h1 class="text-xl font-display font-extrabold tracking-tight leading-none text-ink-900">Vochira</h1>
-                    <p class="text-[10px] text-ink-500 font-semibold leading-none mt-1 tracking-wide uppercase">Codes in seconds</p>
-                </div>
+    <div class="vc-announcement"><span>Digital gifts. Local payments.</span><span>Pay with MTN MoMo, Airtel Money or Zamtel Kwacha</span></div>
+    <header class="vc-header">
+        <div class="vc-header-inner">
+            <a href="#" onclick="goHome(); return false;" class="vc-logo" aria-label="Vochira home">
+                <img src="icon.svg" alt="" width="42" height="42">
+                <span>Vochira<small>GIVE A LITTLE MORE.</small></span>
             </a>
-
-            <div class="flex-1 relative">
-                <input id="searchInput" type="text" placeholder="Search Netflix, DSTV, Free Fire..."
-                    class="w-full border-2 border-ink-500 rounded-full py-2.5 pl-5 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-ink-100"
-                    oninput="doSearch()" onkeydown="if(event.key==='Enter') doSearch()">
-                <button onclick="doSearch()" class="absolute right-1 top-1 bottom-1 bg-ink-600 hover:bg-ink-700 text-white rounded-full w-10 flex items-center justify-center transition">
-                    <i class="fas fa-search"></i>
-                </button>
+            <nav class="vc-primary-nav" aria-label="Main navigation">
+                <a href="#catalog" onclick="browseCards(); return false;" class="is-current">Gift cards</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="#support">Help</a>
+            </nav>
+            <div class="vc-search">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <label class="sr-only" for="searchInput">Search gift cards</label>
+                <input id="searchInput" type="search" placeholder="Search a brand, game or gift…" oninput="doSearch()" onkeydown="if(event.key==='Enter') doSearch()">
             </div>
-
-            <button onclick="toggleCart(true)" class="relative shrink-0 text-slate-600 hover:text-ink-600 transition p-2">
-                <i class="fas fa-cart-shopping text-2xl"></i>
-                <span id="cartCount" class="absolute -top-1 -right-1 bg-zam-red text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+            <button id="cartOpenBtn" onclick="toggleCart(true)" class="vc-cart-button" aria-label="Open shopping cart" aria-controls="cartDrawer" aria-expanded="false">
+                <i class="fas fa-bag-shopping" aria-hidden="true"></i><span class="vc-cart-label">Your cart</span>
+                <span id="cartCount" class="vc-cart-count hidden">0</span>
             </button>
         </div>
-
-        <!-- Categories -->
-        <nav class="max-w-7xl mx-auto px-4 pb-2.5 flex gap-2 items-center overflow-x-auto no-scrollbar">
-            <button onclick="filterCategory('all')" data-cat="all" class="cat-chip cat-active shrink-0"><i class="fas fa-border-all mr-1.5"></i>All</button>
-            <button onclick="filterCategory('streaming')" data-cat="streaming" class="cat-chip shrink-0"><i class="fas fa-tv mr-1.5"></i>Streaming &amp; TV</button>
-            <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip shrink-0"><i class="fas fa-gamepad mr-1.5"></i>Gaming</button>
-            <button onclick="filterCategory('appstore')" data-cat="appstore" class="cat-chip shrink-0"><i class="fas fa-mobile-screen mr-1.5"></i>App Stores</button>
-            <button onclick="filterCategory('shopping')" data-cat="shopping" class="cat-chip shrink-0"><i class="fas fa-bag-shopping mr-1.5"></i>Shopping &amp; Travel</button>
-            <button onclick="filterCategory('payments')" data-cat="payments" class="cat-chip shrink-0"><i class="fas fa-credit-card mr-1.5"></i>Payments</button>
-            <button onclick="filterCategory('orizis')" data-cat="orizis" class="cat-chip shrink-0"><i class="fas fa-gift mr-1.5"></i>ORIZIS Gifts</button>
+        <nav class="vc-category-nav no-scrollbar" aria-label="Gift card categories">
+            <button onclick="filterCategory('all')" data-cat="all" class="cat-chip cat-active" aria-pressed="true">All gifts</button>
+            <button onclick="filterCategory('streaming')" data-cat="streaming" class="cat-chip" aria-pressed="false"><i class="fas fa-tv" aria-hidden="true"></i>Streaming</button>
+            <button onclick="filterCategory('gaming')" data-cat="gaming" class="cat-chip" aria-pressed="false"><i class="fas fa-gamepad" aria-hidden="true"></i>Gaming</button>
+            <button onclick="filterCategory('appstore')" data-cat="appstore" class="cat-chip" aria-pressed="false"><i class="fas fa-mobile-screen" aria-hidden="true"></i>App stores</button>
+            <button onclick="filterCategory('shopping')" data-cat="shopping" class="cat-chip" aria-pressed="false"><i class="fas fa-bag-shopping" aria-hidden="true"></i>Shopping &amp; travel</button>
+            <button onclick="filterCategory('payments')" data-cat="payments" class="cat-chip" aria-pressed="false"><i class="fas fa-credit-card" aria-hidden="true"></i>Payments</button>
+            <button onclick="filterCategory('orizis')" data-cat="orizis" class="cat-chip" aria-pressed="false"><i class="fas fa-gift" aria-hidden="true"></i>ORIZIS gifts</button>
         </nav>
     </header>
-
-    <!-- ======================= HERO (compact — products stay above the fold) ======================= -->
-    <section id="heroSection" class="relative overflow-hidden bg-ink-900 text-white">
-        <div class="absolute inset-0 bg-gradient-to-br from-ink-700 via-ink-900 to-[#1e0b3a]"></div>
-        <div class="absolute -top-20 -right-24 w-80 h-80 bg-ink-500/25 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-16 w-72 h-72 bg-gold/15 rounded-full blur-3xl"></div>
-        <div class="relative max-w-7xl mx-auto px-4 py-7 sm:py-9">
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                <div class="max-w-2xl">
-                    <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur text-ink-100 text-[11px] font-bold px-3 py-1 rounded-full border border-white/10"><i class="fas fa-bolt text-gold-soft"></i> Instant digital delivery — no shipping, no wait</span>
-                    <h2 class="mt-3 text-2xl sm:text-4xl font-display font-bold leading-tight tracking-tight">Top up your world, pay in <span class="bg-gradient-to-r from-gold-soft to-coral bg-clip-text text-transparent stub-rule">Kwacha</span> 🇿🇲</h2>
-                    <p class="mt-2 text-ink-100/85 text-sm sm:text-base max-w-xl">Netflix, DSTV, Spotify, Google Play, Free Fire, PUBG &amp; more — buy the code in seconds with the mobile money you already use.</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-2 text-xs font-semibold shrink-0">
-                    <span class="bg-white/10 px-3 py-1.5 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-yellow-300"></i> MTN</span>
-                    <span class="bg-white/10 px-3 py-1.5 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-red-400"></i> Airtel</span>
-                    <span class="bg-white/10 px-3 py-1.5 rounded-full border border-white/10"><i class="fas fa-mobile-screen mr-1 text-green-400"></i> Zamtel</span>
-                    <span class="bg-gold/15 text-gold-soft px-3 py-1.5 rounded-full border border-gold/25"><i class="fas fa-shield-halved mr-1"></i> Genuine codes</span>
-                </div>
+    <section id="heroSection" class="vc-hero">
+        <div class="vc-hero-inner">
+            <div class="vc-hero-copy">
+                <p class="vc-eyebrow">LITTLE GIFTS. BIG POSSIBILITIES.</p>
+                <h1>More play.<br>More possibilities.<br><span>One perfect gift.</span></h1>
+                <p class="vc-hero-description">A favourite game. A movie night. Something just for them. Find digital gift cards and pay in Kwacha with the Mobile Money you already use.</p>
+                <div class="vc-hero-actions"><button type="button" onclick="browseCards()" class="vc-primary-button">Explore gift cards<i class="fas fa-arrow-right" aria-hidden="true"></i></button><span>For someone special.<br>Or a little treat for you.</span></div>
+                <div class="vc-hero-payments"><i class="fas fa-mobile-screen" aria-hidden="true"></i><span>MTN MoMo</span><span>Airtel Money</span><span>Zamtel Kwacha</span></div>
+            </div>
+            <div class="vc-featured-gifts" aria-label="Featured digital gifts">
+                <button type="button" class="vc-feature-card vc-feature-main" onclick="openBrand('netflix')" aria-label="Explore Netflix gift cards">
+                    <img src="https://cdn.reloadly.com/giftcards/dd02b7e3-a772-40e2-bba6-c11f9b0c3bda.jpeg" alt="Netflix gift card" fetchpriority="high">
+                    <span class="vc-feature-info"><span><small>MAKE IT A MOVIE NIGHT</small><strong>Netflix</strong></span><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+                </button>
+                <button type="button" class="vc-feature-card" onclick="openBrand('steam')" aria-label="Explore Steam gift cards"><img src="https://cdn.reloadly.com/giftcards/795088c7-da49-4cfa-a631-e1cc2ff6b089.png" alt="Steam gift card"><span class="vc-feature-info"><strong>For the next adventure</strong><i class="fas fa-arrow-right" aria-hidden="true"></i></span></button>
+                <button type="button" class="vc-feature-card" onclick="openBrand('apple')" aria-label="Explore Apple gift cards"><img src="https://cdn.reloadly.com/giftcards/08ed62a9-52d3-47d2-9ad8-ae27d0a3f3a2.png" alt="Apple gift card"><span class="vc-feature-info"><strong>A little of everything</strong><i class="fas fa-arrow-right" aria-hidden="true"></i></span></button>
             </div>
         </div>
     </section>
 
     <!-- ======================= MAIN ======================= -->
-    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-1">
-        <div class="flex items-center justify-between mb-4">
-            <h3 id="resultsTitle" class="text-xl font-bold">Popular in Zambia</h3>
-            <span id="resultsCount" class="text-sm text-slate-400"></span>
-        </div>
+    <main id="catalog" class="vc-catalog max-w-7xl mx-auto px-4 py-8 w-full flex-1">
+        <div class="vc-catalog-heading"><div><p class="vc-eyebrow">FIND THEIR NEXT FAVOURITE</p><h2 id="resultsTitle">Popular in Zambia</h2></div><span id="resultsCount" aria-live="polite"></span></div><p class="vc-catalog-note">Choose a brand, then choose a value. Prices are in ZMW; a 3% service fee is shown at checkout.</p>
 
         <div id="emptyBox" class="hidden text-center py-16 text-slate-400">
             <i class="fas fa-magnifying-glass text-4xl mb-3"></i>
             <p class="text-sm">No cards match your search. Try "Netflix", "DSTV" or "gaming".</p>
         </div>
 
-        <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3"></div>
+        <div id="productGrid" class="vc-product-grid"></div>
     </main>
 
     <!-- ======================= ORIZIS ACADEMY PROMO — flagship course ======================= -->
-    <section class="relative overflow-hidden bg-gradient-to-br from-ink-700 via-ink-900 to-[#0e2420] text-white">
-        <div class="absolute -top-20 -right-16 w-80 h-80 bg-ink-500/30 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-16 w-80 h-80 bg-gold/20 rounded-full blur-3xl"></div>
+    <section class="vc-academy-promo relative overflow-hidden text-white">
+        
+        
         <div class="relative max-w-7xl mx-auto px-4 py-14 grid lg:grid-cols-2 gap-8 items-center">
             <div>
                 <span class="inline-flex items-center gap-1.5 bg-white/10 text-gold-soft text-xs font-bold px-3 py-1.5 rounded-full border border-white/10 uppercase tracking-wide"><i class="fas fa-graduation-cap"></i> From Lernoto</span>
-                <h3 class="mt-4 text-2xl sm:text-4xl font-display font-extrabold leading-tight">Learn a real profession:<br><span class="bg-gradient-to-r from-gold-soft to-white bg-clip-text text-transparent">build websites for a living</span> 🇿🇲</h3>
+                <h3 class="mt-4 text-2xl sm:text-4xl font-display font-extrabold leading-tight">Learn a real profession:<br><span class="vc-accent-text">build websites for a living</span> 🇿🇲</h3>
                 <p class="mt-3 text-ink-100/90 text-sm sm:text-base max-w-lg">A step-by-step online course: build real websites with Claude — connect GitHub &amp; Firebase, publish live, and get paid. No background needed. Finish it and you can <b>apply to work with ORIZIS Technology</b>, an international company.</p>
                 <p class="mt-1 text-ink-100/50 text-xs">An opportunity to apply for paid projects — not a guarantee of employment.</p>
                 <div class="mt-5 flex flex-wrap items-center gap-3">
@@ -219,7 +169,7 @@
                     <div class="text-4xl text-ink-500"><i class="fas fa-gift"></i></div>
                     <div class="mt-3 text-xs font-bold text-ink-600">STEP 1</div>
                     <h4 class="font-bold mt-1">Pick your card</h4>
-                    <p class="text-sm text-slate-500 mt-1">Choose a brand and the amount you want — every price is in Kwacha, all-in.</p>
+                    <p class="text-sm text-slate-500 mt-1">Choose a brand and the amount you want. Prices are in Kwacha, with a 3% service fee shown at checkout.</p>
                 </div>
                 <div class="text-center p-5 rounded-2xl bg-ink-50">
                     <div class="text-4xl text-ink-500"><i class="fas fa-mobile-screen"></i></div>
@@ -340,7 +290,7 @@
                     <span class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Airtel Money</span>
                     <span class="bg-green-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Zamtel Kwacha</span>
                 </div>
-                <p class="mt-4 text-ink-100/50 text-xs">Prices shown in Zambian Kwacha (ZMW), all-in. Codes from authorized distributors only.</p>
+                <p class="mt-4 text-ink-100/50 text-xs">Prices are in Zambian Kwacha (ZMW). A 3% service fee is shown at checkout. Codes from authorized distributors only.</p>
             </div>
         </div>
         <div class="border-t border-white/10 text-center py-4 text-xs text-ink-100/50">© 2026 Vochira Zambia · an ORIZIS TECHNOLOGY brand. All rights reserved.</div>
@@ -348,10 +298,10 @@
 
     <!-- ======================= CART DRAWER ======================= -->
     <div id="cartOverlay" class="fixed inset-0 bg-black/50 z-50 hidden" onclick="toggleCart(false)"></div>
-    <aside id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    <aside role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true" tabindex="-1" id="cartDrawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="flex items-center justify-between p-4 border-b">
             <h3 class="font-bold text-lg"><i class="fas fa-cart-shopping text-ink-600 mr-2"></i>Your Cart</h3>
-            <button onclick="toggleCart(false)" class="text-slate-400 hover:text-slate-700 p-2"><i class="fas fa-xmark text-xl"></i></button>
+            <button id="cartCloseBtn" aria-label="Close shopping cart" onclick="toggleCart(false)" class="text-slate-400 hover:text-slate-700 p-2"><i class="fas fa-xmark text-xl"></i></button>
         </div>
         <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
         <div class="border-t p-4 space-y-3 bg-ink-50">
@@ -634,6 +584,7 @@
             .pm-facts > div { gap:10px; }
         }
     </style>
+    <link rel="stylesheet" href="future-studio.css?v=20260921">
 
     <script>
     /* ================================================================
@@ -881,27 +832,14 @@
     function brandCardHtml(b) {
         const from = b.denoms.reduce((m, d) => Math.min(m, d.price), Infinity);
         const icon = (b.fab ? 'fab ' : 'fas ') + b.icon;
-        return `
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer group fade-in" onclick="openBrand('${b.id}')">
-                <div class="relative h-24 sm:h-28 flex items-center justify-center text-white overflow-hidden" style="background:${b.grad}">
-                    ${b.img
-                        ? `<img src="${b.img}" alt="${b.name}" loading="lazy" class="w-full h-full object-contain p-3 group-hover:scale-105 transition duration-300" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon} text-4xl sm:text-5xl drop-shadow" style="display:none"></i>`
-                        : `<i class="${icon} text-4xl sm:text-5xl drop-shadow group-hover:scale-110 transition duration-300"></i>`}
-                    <span class="absolute top-2 left-2 bg-black/30 backdrop-blur text-white text-[9px] font-bold px-2 py-0.5 rounded-full">${b.tag}</span>
-                </div>
-                <div class="p-3">
-                    <p class="font-bold text-sm leading-snug">${b.name}</p>
-                    <p class="text-[11px] text-slate-400 leading-snug line-clamp-1 mt-0.5">${b.denoms.length} option${b.denoms.length>1?'s':''}</p>
-                    <div class="mt-2 flex items-center justify-between">
-                        <span class="text-[11px] text-slate-400">from</span>
-                        <span class="font-extrabold text-ink-700">${fmtK(from)}</span>
-                    </div>
-                    <button type="button" aria-label="View ${b.name} gift options" onclick="event.stopPropagation(); openBrand('${b.id}')"
-                        class="mt-2 w-full bg-ink-50 text-ink-700 hover:bg-ink-600 hover:text-white text-xs font-bold py-2 rounded-xl transition">
-                        <i class="fas fa-bolt mr-1"></i>Buy code
-                    </button>
-                </div>
-            </div>`;
+        return `<article class="vc-product-card fade-in">
+            <button type="button" class="vc-product-art" onclick="openBrand('${b.id}')" aria-label="View ${b.name} gift options">
+                ${b.img ? `<img src="${b.img}" alt="${b.name} gift card" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none" aria-hidden="true"></i>` : `<i class="${icon}" aria-hidden="true"></i>`}
+                <span class="vc-product-type">${b.voucher ? 'STORE CREDIT' : 'DIGITAL GIFT'}</span>
+            </button>
+            <div class="vc-product-info"><p class="vc-product-category">${b.tag}</p><h3><button type="button" onclick="openBrand('${b.id}')">${b.name}</button></h3><p class="vc-product-options">${b.denoms.length} values available</p>
+                <div class="vc-product-bottom"><span><small>From</small><strong>${fmtK(from)}</strong></span><button type="button" class="vc-product-open" onclick="openBrand('${b.id}')" aria-label="Choose a ${b.name} gift value"><i class="fas fa-arrow-right" aria-hidden="true"></i></button></div>
+            </div></article>`;
     }
 
     function renderCatalog() {
@@ -924,7 +862,7 @@
         activeCat = cat;
         activeSearch = '';
         $('searchInput').value = '';
-        document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('cat-active', c.dataset.cat === cat));
+        document.querySelectorAll('.cat-chip').forEach(c => { c.classList.toggle('cat-active', c.dataset.cat === cat); c.setAttribute('aria-pressed', String(c.dataset.cat === cat)); });
         renderCatalog();
         window.scrollTo({ top: $('heroSection').offsetHeight, behavior: 'smooth' });
     }
@@ -933,7 +871,7 @@
         activeSearch = $('searchInput').value;
         if (activeSearch.trim()) {
             activeCat = 'all';
-            document.querySelectorAll('.cat-chip').forEach(c => c.classList.toggle('cat-active', c.dataset.cat === 'all'));
+            document.querySelectorAll('.cat-chip').forEach(c => { c.classList.toggle('cat-active', c.dataset.cat === 'all'); c.setAttribute('aria-pressed', String(c.dataset.cat === 'all')); });
         }
         renderCatalog();
     }
@@ -959,7 +897,7 @@
         pmDenomIdx = null;
         pmQtyCount = 1;
         $('pmQtyVal').textContent = 1;
-        $('pmCover').style.background = currentBrand.grad;
+        $('pmCover').style.background = '#edf3ee';
         const pmImg = $('pmImg');
         if (currentBrand.img) {
             pmImg.onerror = () => { pmImg.style.display = 'none'; $('pmIcon').style.display = 'block'; };
@@ -1079,7 +1017,7 @@
         if (existing) existing.qty = Math.min(10, existing.qty + qty);
         else cart.push({ key: p.key, brand: p.brand, denom: p.denom, price: p.price, icon: p.icon, fab: p.fab, grad: p.grad, img: p.img, pid: p.pid, face: p.face, dtype: p.dtype, voucher: p.voucher, amount: p.amount, qty });
         saveCart();
-        showToast('✅ Added to cart');
+        showToast('Added to your cart');
     }
 
     function changeQty(key, d) {
@@ -1115,17 +1053,17 @@
                 const icon = (i.fab ? 'fab ' : 'fas ') + i.icon;
                 return `
                 <div class="flex gap-3 bg-ink-50 rounded-xl p-3">
-                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0 overflow-hidden" style="background:${i.grad || '#2d6657'}">${i.img ? `<img src="${i.img}" alt="" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none"></i>` : `<i class="${icon}"></i>`}</div>
+                    <div class="w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl shrink-0 overflow-hidden" style="background:#edf3ee;color:#17382b">${i.img ? `<img src="${i.img}" alt="" class="w-full h-full object-contain p-1" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><i class="${icon}" style="display:none"></i>` : `<i class="${icon}"></i>`}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-slate-700 leading-tight">${i.brand}</p>
                         <p class="text-[11px] text-slate-500 leading-tight">${i.denom}</p>
                         <div class="flex items-center justify-between mt-1.5">
                             <span class="font-bold text-sm text-ink-700">${fmtK(i.price * i.qty)}</span>
                             <div class="flex items-center gap-2">
-                                <button onclick="changeQty('${i.key}',-1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">−</button>
+                                <button aria-label="Decrease ${i.brand} quantity" onclick="changeQty('${i.key}',-1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">−</button>
                                 <span class="text-sm font-bold w-4 text-center">${i.qty}</span>
-                                <button onclick="changeQty('${i.key}',1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">+</button>
-                                <button onclick="removeFromCart('${i.key}')" class="text-slate-300 hover:text-zam-red ml-1"><i class="fas fa-trash-can text-xs"></i></button>
+                                <button aria-label="Increase ${i.brand} quantity" onclick="changeQty('${i.key}',1)" class="w-6 h-6 bg-white border rounded-md text-slate-500 hover:text-ink-600 text-sm">+</button>
+                                <button aria-label="Remove ${i.brand} from cart" onclick="removeFromCart('${i.key}')" class="text-slate-300 hover:text-zam-red ml-1"><i class="fas fa-trash-can text-xs"></i></button>
                             </div>
                         </div>
                     </div>
@@ -1140,11 +1078,32 @@
         $('checkoutBtn').disabled = !cart.length;
     }
 
+    let cartReturnFocus = null;
+    let cartPreviousOverflow = '';
     function toggleCart(open) {
+        const drawer = $('cartDrawer');
+        const wasOpen = !drawer.classList.contains('translate-x-full');
+        if (open && !wasOpen) { cartReturnFocus = document.activeElement; cartPreviousOverflow = document.body.style.overflow; }
         $('cartOverlay').classList.toggle('hidden', !open);
-        $('cartDrawer').classList.toggle('translate-x-full', !open);
-        if (open) renderCart();
+        drawer.classList.toggle('translate-x-full', !open);
+        drawer.setAttribute('aria-hidden', String(!open));
+        drawer.inert = !open;
+        $('cartOpenBtn').setAttribute('aria-expanded', String(open));
+        if (open) { renderCart(); document.body.style.overflow = 'hidden'; $('cartCloseBtn').focus({ preventScroll:true }); }
+        else if (wasOpen) { document.body.style.overflow = cartPreviousOverflow; if (cartReturnFocus && cartReturnFocus.isConnected) cartReturnFocus.focus({ preventScroll:true }); }
     }
+    function browseCards() { filterCategory('all'); $('catalog').scrollIntoView({ behavior:'smooth', block:'start' }); }
+    document.addEventListener('keydown', event => {
+        if ($('cartDrawer').classList.contains('translate-x-full')) return;
+        if (event.key === 'Escape') { event.preventDefault(); toggleCart(false); return; }
+        if (event.key !== 'Tab') return;
+        const items = Array.from($('cartDrawer').querySelectorAll('button:not(:disabled),a[href],input,[tabindex="0"]')).filter(el => el.getClientRects().length);
+        const first = items[0], last = items[items.length - 1];
+        if (!first) { event.preventDefault(); $('cartDrawer').focus(); return; }
+        if (event.shiftKey && (document.activeElement === first || !items.includes(document.activeElement))) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && (document.activeElement === last || !items.includes(document.activeElement))) { event.preventDefault(); first.focus(); }
+    });
+    $('cartDrawer').inert = true;
 
     /* ================================================================
        CHECKOUT — Mobile Money flow (pawaPay in the backend; simulated
@@ -1746,4 +1705,3 @@
 <div style="font-family:system-ui,sans-serif;font-size:12.5px;color:#8a8f99;text-align:center;padding:16px 12px;background:#0f1116;border-top:1px solid #23262e"><a href="terms.html" style="color:#aeb4bf;margin:0 8px;text-decoration:none">Terms</a><a href="privacy.html" style="color:#aeb4bf;margin:0 8px;text-decoration:none">Privacy</a><a href="refunds.html" style="color:#aeb4bf;margin:0 8px;text-decoration:none">Refunds</a><a href="accessibility.html" style="color:#aeb4bf;margin:0 8px;text-decoration:none">Accessibility</a><a href="mailto:office@orizisgroup.com" style="color:#aeb4bf;margin:0 8px;text-decoration:none">Contact</a><div style="margin-top:6px;color:#5c616b">ORIZIS TECHNOLOGIES LIMITED &middot; TPIN 2002580846 &middot; office@orizisgroup.com</div></div>
 </body>
 </html>
-// Build trigger

@@ -1,5 +1,5 @@
 /* Vochira service worker - enables app installation and basic offline shell */
-const CACHE = 'Vochira-v1';
+const CACHE = 'vochira-future-studio-20260921';
 
 self.addEventListener('install', e => {
     self.skipWaiting();
