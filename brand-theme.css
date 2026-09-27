@@ -1,0 +1,58 @@
+/* Vochira: violet, coral and warm paper. A distinct identity for digital gifts. */
+:root{--vc-forest:#302052;--vc-forest-soft:#513781;--vc-lime:#ffddce;--vc-white:#302052;--vc-muted:#635d73;--vc-ink:#302052;--vc-line:#e4ddec}
+body.vochira-future{background:#fff;color:#302052}
+.vochira-future .vc-announcement{background:#6d3dc1;color:#fff;border:0}
+.vochira-future .vc-announcement>span:first-child{color:#fff}
+.vochira-future .vc-header{background:#fff;color:#302052;border-color:#e4ddec;box-shadow:0 2px 16px #3020520a}
+.vochira-future .vc-logo,.vochira-future .vc-primary-nav,.vochira-future .vc-cart-button{color:#302052}
+.vochira-future .vc-logo small{color:#6c627d}
+.vochira-future .vc-primary-nav a:hover,.vochira-future .vc-primary-nav a.is-current{border-color:#6d3dc1}
+.vochira-future .vc-cart-count{background:#6d3dc1;color:#fff}
+.vochira-future .vc-search{background:#f8f6fc;border-color:#dad1e7;color:#6d3dc1}
+.vochira-future .vc-search input{color:#302052;font-size:16px}
+.vochira-future .vc-search input::placeholder{color:#70657e}
+.vochira-future .vc-header .cat-chip{background:#f4ecff;color:#633cab;border-color:#e8dafa}
+.vochira-future .vc-header .cat-chip:nth-child(3n){background:#ffede2;color:#a74824;border-color:#f5dccb}
+.vochira-future .vc-header .cat-chip:nth-child(3n+2){background:#e6f5f2;color:#1a6f62;border-color:#cfe8e1}
+.vochira-future .vc-header .cat-chip.cat-active{background:#6d3dc1;color:#fff;border-color:#6d3dc1}
+.vochira-future .vc-hero{background:linear-gradient(115deg,#f0e6ff,#ffede3);color:#302052}
+.vochira-future .vc-eyebrow,.vochira-future .vc-hero h1 span{color:#b84b2d}
+.vochira-future .vc-hero-description,.vochira-future .vc-hero-actions>span,.vochira-future .vc-hero-payments{color:#635773}
+.vochira-future .vc-hero-actions>span{border-color:#cdbbd9}
+.vochira-future .vc-hero-payments>i{color:#6d3dc1}
+.vochira-future .vc-primary-button{background:#6d3dc1;color:#fff;box-shadow:0 6px 20px #6d3dc122}
+.vochira-future .vc-primary-button:hover{background:#51308d}
+.vochira-future .vc-feature-card{background:#fff;border:1px solid #fff;box-shadow:0 10px 30px #30205214}
+.vochira-future .vc-feature-card>img{background:#fff}
+.vochira-future .vc-feature-main>img{background:#19121e}
+.vochira-future .vc-feature-info{border-top:3px solid #ee865e}
+.vochira-future .vc-feature-info small,.vochira-future .vc-feature-info>i{color:#6d3dc1}
+.vochira-future .vc-catalog{padding-top:36px;color:#302052}
+.vochira-future .vc-catalog-heading>span{color:#6d3dc1}
+.vochira-future .vc-catalog-note{color:#6b6278}
+.vochira-future .vc-product-card{background:#fff;border-color:#e7e0ee}
+.vochira-future .vc-product-art{background:#f5efff}
+.vochira-future .vc-product-card:nth-child(3n+2) .vc-product-art{background:#fff0e6}
+.vochira-future .vc-product-card:nth-child(3n) .vc-product-art{background:#eaf7f3}
+.vochira-future .vc-product-art>i{color:#6d3dc1}
+.vochira-future .vc-product-type,.vochira-future .vc-product-category{color:#6d3dc1}
+.vochira-future .vc-product-options,.vochira-future .vc-product-bottom small{color:#70657d}
+.vochira-future .vc-product-open{background:#6d3dc1;color:#fff;min-width:44px;min-height:44px}
+.vochira-future .vc-product-open:hover{background:#51308d}
+.vochira-future .vc-academy-promo{background:#302052;color:#fff}
+.vochira-future .vc-accent-text{color:#ffc4a3}
+.vochira-future #how-it-works,.vochira-future #faq{background:#faf8fe}
+.vochira-future #about{background:#fff0e6}
+.vochira-future #support{background:#eee5fa}
+.vochira-future footer{background:#302052}
+.vochira-future :is(.pm-dialog,#cartDrawer){color:#302052;background:#fff}
+.vochira-future :is(.pm-header,#payStep1>div:first-child){background:#302052;color:#fff}
+.vochira-future .pm-close{background:#ffffff22}
+.vochira-future :is(.pm-cover,.pm-before-buying,#cartDrawer>div:last-child,#cartItems>div.flex){background:#f6f0fe;border-color:#e2d7ef}
+.vochira-future :is(.pm-add,#checkoutBtn,#payStep1 button[onclick="submitPayment()"]){background:#6d3dc1;color:#fff}
+.vochira-future :is(.pm-add:not(:disabled):hover,#checkoutBtn:hover){background:#51308d}
+.vochira-future .denom-btn.selected,.vochira-future .provider-btn.selected{border-color:#6d3dc1!important;background:#f0e6ff}
+.vochira-future .denom-btn:hover{border-color:#6d3dc1}
+.vochira-future #cartCloseBtn{background:#f0e6ff;color:#633cab}
+.vochira-future #emptyBox{color:#635d73;border-color:#e4ddec}
+.vochira-future :is(button,a,input,select):focus-visible{outline-color:#b84b2d}

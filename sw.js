@@ -1,5 +1,5 @@
 /* Vochira service worker - enables app installation and basic offline shell */
-const CACHE = 'vochira-future-studio-20260921';
+const CACHE = 'vochira-future-studio-20260927';
 
 self.addEventListener('install', e => {
     self.skipWaiting();
@@ -25,6 +25,10 @@ self.addEventListener('fetch', e => {
                 caches.open(CACHE).then(c => c.put(e.request, copy));
                 return res;
             })
-            .catch(() => caches.match(e.request).then(m => m || caches.match('./index.html')))
+            .catch(() => caches.match(e.request).then(async m => {
+                if (m) return m;
+                if (e.request.mode === 'navigate') return (await caches.match('./index.html')) || Response.error();
+                return Response.error();
+            }))
     );
 });
