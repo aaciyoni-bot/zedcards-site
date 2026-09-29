@@ -1,5 +1,5 @@
 /* Vochira service worker - enables app installation and basic offline shell */
-const CACHE = 'vochira-future-studio-20260927';
+const CACHE = 'zedcards-site-contact-20260929';
 
 self.addEventListener('install', e => {
     self.skipWaiting();
